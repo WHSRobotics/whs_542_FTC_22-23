@@ -1,0 +1,38 @@
+package org.whitneyrobotics.ftc.teamcode.lib.geometry;
+
+import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
+
+public class CircularIntersection {
+    private Position center;
+    public double radius;
+
+    public CircularIntersection(Position center, double radius){
+        setCircle(center, radius);
+    }
+
+    public CircularIntersection(double centerX, double centerY, double radius){
+        setCircle(centerX,centerY,radius);
+    }
+
+    public void setCircle(Position center, double radius){
+        this.center = center;
+        this.radius = radius;
+    }
+
+    public void setCircle(double centerX, double centerY, double radius){
+        this.center = new Position(centerX,centerY);
+        this.radius = radius;
+    }
+
+    public boolean checkForIntersection(Position point){
+        return Functions.distanceFormula(point.getX(),point.getY(),center.getX(),center.getY()) <= radius;
+    }
+
+    public boolean checkForIntersection(double centerX, double centerY){
+        return checkForIntersection(new Position(centerX,centerY));
+    }
+
+    public Position getCenter(){return center;}
+
+    public double getRadius(){return radius;}
+}
