@@ -158,7 +158,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Added SimpleOmniDrive sample OpMode.
 * Adds UVC white balance control API.
 * Fixes [issue #259](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/259) Most blocks samples for TensorFlow can't be used for a different model.
-    * The blocks previously labeled TensorFlowObjectDetectionFreightFrenzy (from the subcategory named "Optimized for Freight Frenzy") and TensorFlowObjectDetectionCustomModel (from the subcategory named "Custom Model") have been replaced with blocks labeled TensorFlowObjectDetection. Blocks in existing opmodes will be automatically updated to the new blocks when opened in the blocks editor.
+    * The blocks previously labeled TensorFlowObjectDetectionFreightFrenzy (from the subcategory named "Optimized for Freight Frenzy") and TensorFlowObjectDetectionCustomModel (from the subcategory named "Custom Model") have been replaced with blocks labeled TensorFlowObjectDetection. Blocks in existing org.whitneyrobotics.ftc.teamcode.framework.opmodes will be automatically updated to the new blocks when opened in the blocks editor.
 * Fixes [issue #260](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/260) Blocks can't call java method that has a VuforiaLocalizer parameter.
     * Blocks now has a block labeled VuforiaFreightFrenzy.getVuforiaLocalizer for this.
 * Added a page to manage the TensorFlow Lite models in /sdcard/FIRST/tflitemodels. To get to the TFLite Models page:
@@ -231,7 +231,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
  * Fixes issue where an Op Mode was responsible for calling shutdown on the
    TensorFlow TFObjectDetector. Now this is done automatically.
  * Fixes Vuforia initialization blocks to allow user to chose AxesOrder. Updated
-   relevant blocks sample opmodes.
+   relevant blocks sample org.whitneyrobotics.ftc.teamcode.framework.opmodes.
  * Fixes [FtcRobotController issue #114](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/114)
    LED blocks and Java class do not work.
  * Fixes match logging for Op Modes that contain special characters in their names.
