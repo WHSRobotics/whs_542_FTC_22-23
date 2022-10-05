@@ -13,8 +13,6 @@ import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 @TeleOp(name="Better Telemetry Test")
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OpModeExTest extends OpModeEx {
-    BetterTelemetry betterTelemetry = BetterTelemetry.getInstance(this);
-
     @Override
     public void init() {
         initializeDashboardTelemetry(50);

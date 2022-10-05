@@ -40,14 +40,12 @@ public class BetterTelemetry  {
 
     private static BetterTelemetry instance;
 
-    public static BetterTelemetry getInstance(OpMode o){
-        if(instance == null){
-            synchronized (BetterTelemetry.class){
-                if(instance == null){
-                    instance = new BetterTelemetry(o);
-                }
-            }
-        }
+    public static BetterTelemetry setOpMode(OpMode o){
+        instance = new BetterTelemetry(o);
+        return instance;
+    }
+
+    public static BetterTelemetry getCurrentInstance(){
         return instance;
     }
 

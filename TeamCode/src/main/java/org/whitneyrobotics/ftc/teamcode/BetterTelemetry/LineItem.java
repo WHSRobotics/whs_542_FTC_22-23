@@ -2,6 +2,10 @@ package org.whitneyrobotics.ftc.teamcode.BetterTelemetry;
 
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class LineItem {
     public enum Color {
         BLACK("000000"),
@@ -30,6 +34,12 @@ public abstract class LineItem {
             return "#" + hexCode;
         }
     }
+
+    public enum RichTextFormat {
+        BOLD, ITALICS, UNDERLINE
+    }
+
+    private Set<RichTextFormat> rtfFormats = new HashSet<>();
 
     public static abstract class Interactable extends LineItem {
         private GamepadEx gamepad;
@@ -66,15 +76,21 @@ public abstract class LineItem {
     protected LineItem(String caption){
         this.caption = caption;
     }
-    protected LineItem(String caption, Color color){
+    protected LineItem(String caption, Color color, RichTextFormat... rtfFormats){
         this.caption = caption;
         this.color = color;
+        this.rtfFormats.addAll(Arrays.asList(rtfFormats));
     }
 
     protected Color color;
 
     public void setColor(Color c){
         this.color = c;
+    }
+
+    public LineItem setRichTextFormat(RichTextFormat... rtf) {
+        this.rtfFormats.addAll(Arrays.asList(rtf));
+        return this;
     }
 
     public abstract void reset();

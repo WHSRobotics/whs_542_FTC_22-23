@@ -9,7 +9,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
@@ -17,7 +16,6 @@ import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 import java.util.function.Consumer;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -26,7 +24,7 @@ public abstract class OpModeEx extends OpMode {
     GamepadEx gamepad1 = new GamepadEx(super.gamepad1);
     GamepadEx gamepad2 = new GamepadEx(super.gamepad2);
 
-    BetterTelemetry betterTelemetry = BetterTelemetry.getInstance(this);
+    protected BetterTelemetry betterTelemetry = BetterTelemetry.setOpMode(this);
 
     private FtcDashboard dashboard;
     private Telemetry dashboardTelemetry;
