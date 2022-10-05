@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.util.LinkedList;
 
-public abstract class OpModeEx extends OpMode {
+public abstract class OpModeExOld extends OpMode {
 
     private static class QueueableAction{
         private Callback action;
@@ -25,12 +25,7 @@ public abstract class OpModeEx extends OpMode {
 
     private LinkedList<QueueableAction.Callback> actionQueue;
 
-
-
-    @Override
-    public void init(){
-
-    }
+    abstract public void init();
 
     @Override
     public void loop(){
