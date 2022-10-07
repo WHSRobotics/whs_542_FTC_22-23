@@ -7,17 +7,17 @@ import java.util.function.Consumer;
 
 public class ProgressBarLine extends LineItem {
 
-    private double progress = 0.0d;
+    protected double progress = 0.0d;
     /**
      * Scale to set completion as. For instance, 1 would scale the set the progression bar to be from 0-1,
      * while 5 would scale it to be from 0-5, where 2.5 is 50%.
      * */
-    private int numChars = 30;
-    private double scale = 1.0d;
-    private static char completed = '█';
-    private static char empty = '▒';
+    protected int numChars = 30;
+    protected double scale = 1.0d;
+    protected static char completed = '█';
+    protected static char empty = '▒'; //▒
 
-    private Func<Double> valueProvider;
+    protected Func<Double> valueProvider;
 
     public void setValueProvider(Func<Double> valueProvider){
         this.valueProvider = valueProvider;
@@ -60,7 +60,8 @@ public class ProgressBarLine extends LineItem {
     }
 
     public ProgressBarLine(String caption, Func<Double> valueProvider, Color c){
-        super(caption,c);
+        super(caption,true, c);
+        this.valueProvider = valueProvider;
     }
 
     public ProgressBarLine setScale(double scale) {
@@ -91,6 +92,6 @@ public class ProgressBarLine extends LineItem {
         if(valueProvider != null) progress=valueProvider.value();
         double progress = Functions.map(this.progress, 0, scale, 0,1);
         int numCompletedChars = (int)Math.floor(progress * numChars);
-        return String.format("%s: %d%<br>",caption, Math.floor(progress*100) + repeat(completed, numCompletedChars) + repeat(empty, numChars-numCompletedChars));
+        return String.format("%s: %s%% <br> <strong>%s</strong>",caption, Math.floor(progress*100), repeat(completed, numCompletedChars) + "<font color=\"#FFFFFF\">" + repeat(empty, numChars-numCompletedChars) + "</font>");
     }
 }

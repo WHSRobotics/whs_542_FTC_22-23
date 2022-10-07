@@ -47,20 +47,22 @@ public class GamepadScalarHardware implements GamepadHardware{
 
     @Override
     public void onInteraction(Consumer<GamepadInteractionEvent> callback) {
-        this.interactionConsumer = interactionConsumer;
+        this.interactionConsumer = callback;
     }
 
     @Override
     public void update(Object newState) {
         Float input = (Float) newState;
-        if(limitSensitivity) {
-            if((Math.abs(previousState - input) < previousState*sensitivityThreshold)){
-                GamepadInteractionEvent event = new GamepadInteractionEvent(null,inverted ? -1 : 1 * input,lastChanged);
+        if(previousState != input) {
+            if (limitSensitivity) {
+                if ((Math.abs(previousState - input) < previousState * sensitivityThreshold)) {
+                    GamepadInteractionEvent event = new GamepadInteractionEvent(null, inverted ? -1 : 1 * input, lastChanged);
+                    interactionConsumer.accept(event);
+                }
+            } else {
+                GamepadInteractionEvent event = new GamepadInteractionEvent(null, inverted ? -1 : 1 * input, lastChanged);
                 interactionConsumer.accept(event);
             }
-        } else {
-            GamepadInteractionEvent event = new GamepadInteractionEvent(null,inverted ? -1 : 1 * input,lastChanged);
-            interactionConsumer.accept(event);
         }
         lastChanged = System.currentTimeMillis();
         previousState = input;

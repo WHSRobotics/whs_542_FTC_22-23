@@ -12,14 +12,14 @@ public class KeyValueLine<T> extends LineItem {
         separator = sep;
     }
 
-    public KeyValueLine(String caption, Object data, Color color){
-        super(caption, color);
+    public KeyValueLine(String caption, boolean persistent, Object data, Color color, RichTextFormat... richTextFormats){
+        super(caption, persistent, color, richTextFormats);
         this.caption = caption;
         this.value = data;
     }
 
-    public KeyValueLine(String caption, Func<T> valueProducer, Color color){
-        super(caption, color);
+    public KeyValueLine(String caption, boolean persistent, Func<T> valueProducer, Color color, RichTextFormat... richTextFormats){
+        super(caption, persistent, color, richTextFormats);
         this.valueProducer = valueProducer;
     }
 

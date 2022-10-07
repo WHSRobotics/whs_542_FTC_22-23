@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public abstract class OpModeEx extends OpMode {
 
-    GamepadEx gamepad1 = new GamepadEx(super.gamepad1);
-    GamepadEx gamepad2 = new GamepadEx(super.gamepad2);
+    protected GamepadEx gamepad1;
+    protected GamepadEx gamepad2;
 
     protected BetterTelemetry betterTelemetry = BetterTelemetry.setOpMode(this);
 
@@ -36,8 +36,6 @@ public abstract class OpModeEx extends OpMode {
         telemetry = new MultipleTelemetry(dashboardTelemetry,telemetry);
         telemetry.setMsTransmissionInterval(msTransmissionInterval);
     }
-
-
 /*    public OpModeEx(boolean useFTCDashboard){
         this(useFTCDashboard,100);
     }
@@ -70,12 +68,21 @@ public abstract class OpModeEx extends OpMode {
     protected Timeable current;
 
     @Override
-    public void start() {
-        resetRuntime();
-        start_internal();
+    public void init(){
+        gamepad1 = new GamepadEx(super.gamepad1);
+        gamepad2 = new GamepadEx(super.gamepad2);
+        initInternal();
     }
 
-    public void start_internal(){
+    public abstract void initInternal();
+
+    @Override
+    public void start() {
+        resetRuntime();
+        startInternal();
+    }
+
+    public void startInternal(){
 
     }
 
@@ -114,7 +121,7 @@ public abstract class OpModeEx extends OpMode {
         return this;
     }
 
-    protected void playSound(String identifier){ playSound(identifier,"raw",1.0f); }
+    protected void playSound(String identifier){ playSound(identifier,"raw",50.0f); }
 
     protected void playSound(String identifier, float volume){
         playSound(identifier, "raw", volume);

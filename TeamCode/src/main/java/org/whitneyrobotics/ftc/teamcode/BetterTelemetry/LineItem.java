@@ -35,11 +35,17 @@ public abstract class LineItem {
         }
     }
 
+    protected boolean isVisible = false;
+
     public enum RichTextFormat {
         BOLD, ITALICS, UNDERLINE
     }
 
-    private Set<RichTextFormat> rtfFormats = new HashSet<>();
+    private boolean persistent = false;
+
+    public boolean isPersistent() {return persistent;}
+
+    private Set<RichTextFormat> rtfFormats = new HashSet<RichTextFormat>();
 
     public static abstract class Interactable extends LineItem {
         private GamepadEx gamepad;
@@ -48,8 +54,8 @@ public abstract class LineItem {
             super(caption);
         }
 
-        public Interactable(String caption, Color color){
-            super(caption, color);
+        public Interactable(String caption, Color color, RichTextFormat... richTextFormats){
+            super(caption, true, color, richTextFormats);
         }
         public void connectGamepad(GamepadEx gamepad){
 
@@ -76,10 +82,14 @@ public abstract class LineItem {
     protected LineItem(String caption){
         this.caption = caption;
     }
-    protected LineItem(String caption, Color color, RichTextFormat... rtfFormats){
+    protected LineItem(String caption, boolean persistent, Color color, RichTextFormat... rtfFormats){
         this.caption = caption;
         this.color = color;
         this.rtfFormats.addAll(Arrays.asList(rtfFormats));
+    }
+
+    public void setPersistent(boolean persistent){
+        this.persistent = persistent;
     }
 
     protected Color color;
@@ -97,7 +107,11 @@ public abstract class LineItem {
 
     protected abstract String format(boolean blink);
 
-    public String getFormatted(boolean blink){
-        return String.format("<font color=\"%s\">%s</font>", this.color.getHexCode(), format(blink));
+    public String render(boolean blink){
+        return String.format(
+                ((rtfFormats.contains(RichTextFormat.BOLD) ? "<strong>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "<em>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "<u>" : "") +
+                        "<font color=\"%s\">%s</font>" +
+                        (rtfFormats.contains(RichTextFormat.BOLD) ? "</strong>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "</em>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "</u>" : "")),
+                this.color.getHexCode(), format(blink));
     }
 }

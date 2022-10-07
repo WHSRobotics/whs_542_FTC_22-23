@@ -41,13 +41,13 @@ public class GamepadEx {
     public final Button BUMPER_LEFT = new Button();
     public final Button BUMPER_RIGHT = new Button();
 
-    @GamepadScalarHardware.LimitSensitivity
+    //@GamepadScalarHardware.LimitSensitivity
     public final GamepadScalarHardware LEFT_STICK_X = new GamepadScalarHardware();
-    @GamepadScalarHardware.LimitSensitivity
+    //@GamepadScalarHardware.LimitSensitivity
     public final GamepadScalarHardware LEFT_STICK_Y = new GamepadScalarHardware(true);
-    @GamepadScalarHardware.LimitSensitivity
+    //@GamepadScalarHardware.LimitSensitivity
     public final GamepadScalarHardware RIGHT_STICK_X = new GamepadScalarHardware();
-    @GamepadScalarHardware.LimitSensitivity
+    //@GamepadScalarHardware.LimitSensitivity
     public final GamepadScalarHardware RIGHT_STICK_Y = new GamepadScalarHardware(true);
 
     public final GamepadScalarHardware LEFT_TRIGGER = new GamepadScalarHardware();
@@ -107,6 +107,12 @@ public class GamepadEx {
         HOME.update(gamepad.ps);
         BUMPER_LEFT.update(gamepad.left_bumper);
         BUMPER_RIGHT.update(gamepad.right_bumper);
+        LEFT_STICK_X.update(gamepad.left_stick_x);
+        LEFT_STICK_Y.update(gamepad.left_stick_y);
+        RIGHT_STICK_X.update(gamepad.right_stick_x);
+        RIGHT_STICK_Y.update(gamepad.right_stick_y);
+        LEFT_TRIGGER.update(gamepad.left_trigger);
+        RIGHT_TRIGGER.update(gamepad.right_trigger);
     }
 
 }
