@@ -128,7 +128,7 @@ public class WHSTeleOpBoeing extends DashboardOpMode {
     @Override
     public void start(){
         startTime = System.nanoTime();
-        resetStartTime();
+        //resetStartTime();
         gamepad1.runRumbleEffect(matchRumble);
     }
 

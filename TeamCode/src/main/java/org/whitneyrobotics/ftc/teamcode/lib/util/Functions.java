@@ -110,6 +110,10 @@ public class Functions {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
+    public static double clamp(double x, double min, double max){
+        return Math.min(Math.max(x,min),max);
+    }
+
     public static Position body2field(Position bodyVector, Coordinate currentCoord) {
         Position fieldVector;
         double heading = currentCoord.getHeading();
