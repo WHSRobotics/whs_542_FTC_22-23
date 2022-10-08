@@ -15,8 +15,13 @@ public class Button implements GamepadHardware{
     private Consumer<GamepadInteractionEvent> releaseEventConsumer = defaultConsumer;
     private Consumer<GamepadInteractionEvent> doublePressEventConsumer = defaultConsumer;
     private Consumer<GamepadInteractionEvent> holdEventConsumer = defaultConsumer;
+
     private boolean lastState = false;
     private Long lastChanged = null;
+    private int consecutivePresses = 0;
+    private int timeoutInterval = 500;
+    private int holdThreshold = 500;
+    private long lastReleased = Long.MAX_VALUE;
 
     @Override
     public void onInteraction(@NonNull Consumer<GamepadInteractionEvent> callback) {
@@ -52,16 +57,36 @@ public class Button implements GamepadHardware{
         return lastState;
     }
 
+    public Button setTimeoutInterval(int interval){
+        timeoutInterval = interval;
+        return this;
+    }
+
     @Override
     public void update(Object newState) {
-        GamepadInteractionEvent event = new GamepadInteractionEvent((boolean)newState, null, lastChanged);
+        GamepadInteractionEvent event = new GamepadInteractionEvent((boolean)newState, null, lastChanged, consecutivePresses);
         if(lastState != (boolean)newState){
             interactionEventConsumer.accept(event);
             if((boolean)newState) {
                 pressEventConsumer.accept(event);
+                if(consecutivePresses ==  2){
+                    doublePressEventConsumer.accept(event);
+                }
             } else {
                 releaseEventConsumer.accept(event);
+                lastReleased = System.currentTimeMillis();
             }
+        } else {
+            if((boolean) newState && (System.currentTimeMillis() - lastReleased >= holdThreshold)){
+                holdEventConsumer.accept(event);
+                lastReleased = Long.MAX_VALUE;
+            }
+        }
+
+        if((boolean)newState && (System.currentTimeMillis() - lastReleased <= timeoutInterval)) {
+            consecutivePresses++;
+        } else {
+            consecutivePresses = 0;
         }
         lastChanged = System.currentTimeMillis();
         lastState = (boolean)newState;

@@ -12,6 +12,7 @@ import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.ProgressBarLine;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.SliderDisplayLine;
+import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.TextLine;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 
@@ -56,6 +57,14 @@ public class OpModeExTest extends OpModeEx {
         gamepad1.RIGHT_STICK_X.onInteraction(event -> {
             //betterTelemetry.addLine(String.format("Stick moved to %s", event.floatVal), LineItem.Color.ROBOTICS);
             scroll = Functions.clamp((scroll + event.floatVal) * (gamepad1.CIRCLE.value() ? 5 : 1) ,0,1000);
+        });
+
+        gamepad1.TRIANGLE.onDoublePress(event -> {
+            betterTelemetry.addItem(new TextLine(String.format("Button pressed %s times",event.consecutivePresses), true, LineItem.Color.PURPLE, LineItem.RichTextFormat.BOLD));
+        });
+
+        gamepad1.SQUARE.onButtonHold(event -> {
+            betterTelemetry.addItem(new TextLine(String.format("Button held!",event.consecutivePresses), true, LineItem.Color.FUCHSIA, LineItem.RichTextFormat.BOLD));
         });
 
         Gamepad og = gamepad1.getEncapsulatedGamepad();

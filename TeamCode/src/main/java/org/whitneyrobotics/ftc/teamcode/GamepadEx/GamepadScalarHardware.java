@@ -56,11 +56,11 @@ public class GamepadScalarHardware implements GamepadHardware{
         if(previousState != input) {
             if (limitSensitivity) {
                 if ((Math.abs(previousState - input) < previousState * sensitivityThreshold)) {
-                    GamepadInteractionEvent event = new GamepadInteractionEvent(null, inverted ? -1 : 1 * input, lastChanged);
+                    GamepadInteractionEvent event = new GamepadInteractionEvent(null, inverted ? -1 : 1 * input, lastChanged, null);
                     interactionConsumer.accept(event);
                 }
             } else {
-                GamepadInteractionEvent event = new GamepadInteractionEvent(null, inverted ? -1 : 1 * input, lastChanged);
+                GamepadInteractionEvent event = new GamepadInteractionEvent(null, inverted ? -1 : 1 * input, lastChanged, null);
                 interactionConsumer.accept(event);
             }
         }

@@ -25,9 +25,9 @@ public class GrabberTest extends OpMode {
         } else if (gamepad1.dpad_left = true) {
             positionTog.setState(positionTog.currentState()-1);
         } else if (gamepad1.dpad_down) {
-            servoSelect.currentState(servos[1]);
+            //servoSelect.currentState(servos[1]);
         } else if (gamepad1.dpad_up) {
-            servoSelect.currentState(servos[2]);
+            //servoSelect.currentState(servos[2]);
         }
         telemetry.addData("Current Servo", servoSelect.currentState());
         telemetry.addData("Position", positionTog.currentState());

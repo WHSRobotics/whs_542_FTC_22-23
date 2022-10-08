@@ -54,11 +54,12 @@ public class BetterTelemetry  {
     public void update(){
         //blink every second
         boolean blink = currentOpMode.getRuntime() % 2 > 1;
-        for (LineItem item : items){
+        for (LineItem item : items) {
             opModeTelemetry.addLine(
-                    (lineNumbers ? "   " + (items.size() < 10 ? "    " : "") + items.indexOf(item)  + "| " : "")  +
-                    item.render(blink));
+                    (lineNumbers ? "   " + (items.size() < 10 ? "    " : "") + items.indexOf(item) + "| " : "") +
+                            item.render(blink));
         }
+        //purge();
         //opModeTelemetry.clear();
     }
 
