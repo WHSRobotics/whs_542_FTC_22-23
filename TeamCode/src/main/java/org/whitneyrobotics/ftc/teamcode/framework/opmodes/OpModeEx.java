@@ -1,17 +1,30 @@
 package org.whitneyrobotics.ftc.teamcode.framework.opmodes;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
+import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
+import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 
-import java.util.Queue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public abstract class OpModeEx extends OpMode {
+
+    protected GamepadEx gamepad1;
+    protected GamepadEx gamepad2;
+
+    protected BetterTelemetry betterTelemetry = BetterTelemetry.setOpMode(this);
 
     private FtcDashboard dashboard;
     private Telemetry dashboardTelemetry;
@@ -23,62 +36,78 @@ public abstract class OpModeEx extends OpMode {
         telemetry = new MultipleTelemetry(dashboardTelemetry,telemetry);
         telemetry.setMsTransmissionInterval(msTransmissionInterval);
     }
-
-    public OpModeEx(boolean useFTCDashboard){
+/*    public OpModeEx(boolean useFTCDashboard){
         this(useFTCDashboard,100);
     }
 
     public OpModeEx(boolean useFTCDashboard, int msTransmissionInterval){
-
-    }
+        if(useFTCDashboard) initializeDashboardTelemetry(msTransmissionInterval);
+    }*/
 
     public static class Timeable {
 
         @FunctionalInterface
-        public interface ConditionalCallback {
-            boolean call();
+        public interface TemporalCallback {
+            void call(Consumer<Boolean> resolve);
         }
-        public ConditionalCallback callback;
+        public TemporalCallback callback;
         public boolean persistent = false;
         public double timeoutMs;
-        Timeable(ConditionalCallback callback, double timeoutMs){
+        Timeable(TemporalCallback callback, double timeoutMs){
             this.callback = callback;
             this.timeoutMs = timeoutMs;
         }
-        Timeable(ConditionalCallback callback, double timeoutMs, boolean persistent){
+        Timeable(TemporalCallback callback, double timeoutMs, boolean persistent){
             this.callback = callback;
             this.timeoutMs = timeoutMs;
             this.persistent = persistent;
         }
     }
 
-    private SynchronousQueue<Timeable> queue = new SynchronousQueue<Timeable>();
+    private LinkedBlockingQueue<Timeable> queue = new LinkedBlockingQueue<Timeable>();
     protected Timeable current;
+
+    @Override
+    public void init(){
+        gamepad1 = new GamepadEx(super.gamepad1);
+        gamepad2 = new GamepadEx(super.gamepad2);
+        initInternal();
+    }
+
+    public abstract void initInternal();
+
+    @Override
+    public void start() {
+        resetRuntime();
+        startInternal();
+    }
+
+    public void startInternal(){
+
+    }
 
     @Override
     public void loop(){
         loopInternal();
         processQueue();
+        betterTelemetry.update();
+        gamepad1.update();
+        gamepad2.update();
     }
 
-    abstract void loopInternal();
+    protected abstract void loopInternal();
 
-    public void test(){
-        addTemporalCallback(() -> {
-            gamepad1.rumble(2);
-            return true;
-        }, 10000);
+    private void advanceQueue(boolean shouldAdvance){
+        if(shouldAdvance) current = null;
     }
 
     private void processQueue(){
         if(current == null) {
             if(queue.size() < 1) return;
-            if(getRuntime() >= queue.peek().timeoutMs) return;
+            if(getRuntime() <= (queue.peek().timeoutMs)/1000) return;
             current = queue.remove();
-            current.callback.call();
-            if(!current.persistent) current = null;
-        } else {
-            if (current.callback.call()) current = null;
+            current.callback.call(this::advanceQueue);
+            if(current != null && !current.persistent) current = null;
         }
     }
 
@@ -87,8 +116,24 @@ public abstract class OpModeEx extends OpMode {
         return this;
     }
 
-    public OpModeEx addTemporalCallback(Timeable.ConditionalCallback callback, double timeoutMs){
+    public OpModeEx addTemporalCallback(Timeable.TemporalCallback callback, double timeoutMs){
         queue.add(new Timeable(callback, timeoutMs));
         return this;
+    }
+
+    protected void playSound(String identifier){ playSound(identifier,"raw",50.0f); }
+
+    protected void playSound(String identifier, float volume){
+        playSound(identifier, "raw", volume);
+    }
+
+    protected void playSound(String identifier, String folder, float volume){
+        int id = hardwareMap.appContext.getResources().getIdentifier(identifier, folder, hardwareMap.appContext.getPackageName());
+        if(id == 0){
+            betterTelemetry.addLine(String.format("Sound '%s' not found in '%s'", identifier,folder), LineItem.Color.MAROON);
+        } else {
+            SoundPlayer.getInstance().setMasterVolume(volume);
+            SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, id);
+        }
     }
 }

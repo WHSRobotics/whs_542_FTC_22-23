@@ -8,9 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.whitneyrobotics.ftc.teamcode.framework.DashboardOpMode;
 import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDController;
-
-import control.PIDCoefficients;
-import utilities.Functions;
+import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 
 @TeleOp(
         name="MotorPIDTest",

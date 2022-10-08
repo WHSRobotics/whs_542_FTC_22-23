@@ -1,7 +1,5 @@
 package org.whitneyrobotics.ftc.teamcode.lib.libraryProto;
 
-import control.PIDCoefficients;
-
 public class PIDController {
     private double kP = 1;
     public double getKP() { return kP; }
