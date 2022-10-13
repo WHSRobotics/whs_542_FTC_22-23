@@ -6,72 +6,83 @@ import androidx.annotation.RequiresApi;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.Button;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
+import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDController;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 import java.lang.Math;
 
 //To do: Find level positions, find lower and upper bounds
-//Make motor PID controller and
+//Make motor PID controller
 
+//Add PIDcontrolling
 /**
  * Create by Gavin-kai Vida on 10/5/2022
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
+@RequiresApi(api = Build.VERSION_CODES.N) //
 public class LinearSlides {
     public final DcMotorEx LSleft;
     public final DcMotorEx LSright;
 
-    private double slidesPosition = 0.0;
-    public double getSlidesPosition(){return slidesPosition;}
+    public double getSlidesPosition(){return ((LSleft.getCurrentPosition()+LSright.getCurrentPosition())/2);}
     private double slidesPositionTarget = 0.0;
-    public boolean isOnTarget(){return slidesPositionTarget == slidesPosition;}
+    public boolean isOnTarget(){return slidesPositionTarget == ((LSleft.getCurrentPosition()+LSright.getCurrentPosition())/2);}
     private double slidesVelocity = 0.0;
     public double getSlidesVelocity(){return slidesVelocity;}
 
-    public boolean slidingInProgress = false;
+    private boolean slidingInProgress = false;
+    public boolean isSlidingInProgress(){return slidingInProgress;}
+    public double getMotorPower(){return (LSleft.getPower()+LSright.getPower())/2;}
     private final double GEAR_RATIO = 2;
 
     private enum LinearSlidesSTATE{
-        LEVELED, //default, linear slides leveled control
-        DRIVER_CONTROLLED; //driver custom position control
-        public final static double leveled_interval = 325.33;
-        public final static double driver_interval = 1.0;
+        LEVELED(325.3333333), //default, linear slides leveled control
+        DRIVER_CONTROLLED(1.0); //driver custom position control
+        private final double interval;
+        LinearSlidesSTATE(double interval){this.interval = interval;}
     }
-    private enum LinearSlidesLEVELS {
-        LEVEL0(0.0),//default
-        LEVEL1(325.33),
-        LEVEL2(650.67),
-        LEVEL3(976);
-        private final double position;
-        LinearSlidesLEVELS(double position){this.position = position;}
-        public double getPosition(){return this.position;}
-    }
-    private int currentLevel;
+    private int currentLevel = 0;
     private LinearSlidesSTATE linearSlidesSTATE;
-    private LinearSlidesLEVELS linearSlidesLEVELS;
+    private PIDController pidController = new PIDController(1,0,0);
 
     //Emergency Stops
     private static final double SLIDES_UPPER_BOUND = 976.0;
     private static final double SLIDES_LOWER_BOUND = 0.0;
-    private int direction = 0;
 
     public LinearSlides(HardwareMap hardwareMap, Button inc, Button dec, Button switchState) {
         LSleft = hardwareMap.get(DcMotorEx.class, "LinearSlidesLeft");
         LSright = hardwareMap.get(DcMotorEx.class, "LinearSlidesRight");
         LSleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LSright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        linearSlidesLEVELS = linearSlidesLEVELS.LEVEL0;
+        LSright.setDirection(DcMotorSimple.Direction.REVERSE);
         linearSlidesSTATE = linearSlidesSTATE.LEVELED;
-        inc.onPress((GamepadInteractionEvent callback) -> direction++);
-        dec.onPress((GamepadInteractionEvent callback) -> direction--);
-        inc.onRelease((GamepadInteractionEvent callback) -> direction--);
-        dec.onRelease((GamepadInteractionEvent callback) -> direction++);
+        inc.onPress((GamepadInteractionEvent callback) -> {if (((slidesPositionTarget+linearSlidesSTATE.interval) <= SLIDES_UPPER_BOUND) && linearSlidesSTATE == LinearSlidesSTATE.LEVELED)
+            slidesPositionTarget += linearSlidesSTATE.interval;
+            if (linearSlidesSTATE == linearSlidesSTATE.LEVELED){
+                currentLevel = (int)(SLIDES_UPPER_BOUND/linearSlidesSTATE.interval);}});
+        dec.onPress((GamepadInteractionEvent callback) -> {if (((slidesPositionTarget-linearSlidesSTATE.interval) >= SLIDES_LOWER_BOUND) && linearSlidesSTATE == LinearSlidesSTATE.LEVELED)
+            slidesPositionTarget -= linearSlidesSTATE.interval;
+            if (linearSlidesSTATE == LinearSlidesSTATE.LEVELED) {
+                currentLevel = (int)(SLIDES_UPPER_BOUND/linearSlidesSTATE.interval);}});
+        inc.onButtonHold((GamepadInteractionEvent callback) -> {if ((linearSlidesSTATE == linearSlidesSTATE.DRIVER_CONTROLLED) && ((slidesPositionTarget+linearSlidesSTATE.interval) <= SLIDES_UPPER_BOUND))
+            setMotorPower(1.0);});
+        dec.onButtonHold((GamepadInteractionEvent callback) -> {if ((linearSlidesSTATE == linearSlidesSTATE.DRIVER_CONTROLLED) && ((slidesPositionTarget-linearSlidesSTATE.interval) >= SLIDES_LOWER_BOUND))
+            setMotorPower(-1.0);});
+        inc.onRelease((GamepadInteractionEvent callback) -> {if (linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED)
+            setMotorPower(0.0);});
+        dec.onRelease((GamepadInteractionEvent callback) -> {if (linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED)
+            setMotorPower(0.0);});
         resetEncoder();
+    }
+    private void setMotorPower(double power) {
+        LSleft.setPower(power);
+        LSright.setPower(power);
     }
     public void resetEncoder() {
         LSleft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -83,28 +94,29 @@ public class LinearSlides {
 
     private void moveToTarget() {
         //moving position to position target
+
     }
 
     public void changeState(LinearSlidesSTATE state) {
+        if (state == linearSlidesSTATE.DRIVER_CONTROLLED) {
+            currentLevel = -1;
+        }
         linearSlidesSTATE = state;
     }
 
-    private int lastDirection = 0;
+    private Supplier<Double> targetPositionEventListener = () -> 0.0;
+
+    public void addTargetPositionListener(Supplier<Double> eventListener){
+        targetPositionEventListener = eventListener;
+    }
+
     public void operate() {
-        switch (linearSlidesSTATE) {
-            case LEVELED:
-                //direction = Math.signum(direction);
-                if (direction != lastDirection) {
-                    slidesPositionTarget += linearSlidesSTATE.leveled_interval*direction;
-                    linearSlidesLEVELS = linearSlidesLEVELS.values()[linearSlidesLEVELS.ordinal()+(1*direction)];
-                    lastDirection = (int)direction;
-                }
-                moveToTarget();
-                break;
-            case DRIVER_CONTROLLED:
-                slidesPositionTarget += linearSlidesSTATE.driver_interval*direction;
-                moveToTarget();
-                break;
+        if (!isOnTarget()) {
+            slidingInProgress = true;
+            moveToTarget();
+        }
+        else {
+            slidingInProgress = false;
         }
     }
 
