@@ -59,7 +59,7 @@ public class BetterTelemetry  {
                     (lineNumbers ? "   " + (items.size() < 10 ? "    " : "") + items.indexOf(item) + "| " : "") +
                             item.render(blink));
         }
-        //purge();
+        purge();
         //opModeTelemetry.clear();
     }
 
@@ -114,6 +114,11 @@ public class BetterTelemetry  {
     public BetterTelemetry addItem(LineItem item){
         items.add(item);
         if(item instanceof LineItem.Interactable) interactables.add((LineItem.Interactable) item);
+        return this;
+    }
+
+    public BetterTelemetry addLine(){
+        items.add(new SeparatorLine("blank line", SeparatorLine.LineStyle.NEWLINE));
         return this;
     }
 

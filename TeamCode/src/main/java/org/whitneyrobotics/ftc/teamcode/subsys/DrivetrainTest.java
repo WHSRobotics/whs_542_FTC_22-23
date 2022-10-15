@@ -23,10 +23,10 @@ public class DrivetrainTest {
     public class EncoderConverter {
         private double encoderTicks = 0.0;
 
-        public EncoderConverter(double wheelRadius, double encoderTicksperRev, double gearRatio)
+        //public EncoderConverter(double wheelRadius, double encoderTicksperRev, double gearRatio);
 
         double circOfWheel = wheelRadius * 2 * Math.PI;
-        encoderTicks = encoderTicksperRev / (circOfWheel * gearRatio);
+        //encoderTicks = encoderTicksperRev / (circOfWheel * gearRatio);
     }
 
 

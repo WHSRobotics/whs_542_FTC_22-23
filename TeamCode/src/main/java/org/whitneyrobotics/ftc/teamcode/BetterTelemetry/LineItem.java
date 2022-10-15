@@ -84,6 +84,7 @@ public abstract class LineItem {
     }
     protected LineItem(String caption, boolean persistent, Color color, RichTextFormat... rtfFormats){
         this.caption = caption;
+        this.persistent = persistent;
         this.color = color;
         this.rtfFormats.addAll(Arrays.asList(rtfFormats));
     }
@@ -92,7 +93,7 @@ public abstract class LineItem {
         this.persistent = persistent;
     }
 
-    protected Color color;
+    protected Color color = Color.WHITE;
 
     public void setColor(Color c){
         this.color = c;

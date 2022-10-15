@@ -63,24 +63,22 @@ public class Matrix {
         return new Matrix(result);
     }
 
-    public Matrix multiplyCurrentMatrixByMatrix(Matrix b){
-        if((rows != b.columns) || (columns != b.rows)) return null;
-        double[][] result = new double[rows][columns];
-        for(int i = 0; i<rows; i++){
-            for(int j = 0; j<columns; j++){
-                double[] vectorB = new double[columns];
-                //iteration for getting matrix values from second factor
-                for(int k = 0; k<columns; k++){
-                    vectorB[k] = b.get(k,i);
+    public Matrix multiply(Matrix b){
+        if(columns != b.rows) return null;
+        double[][] result = new double[rows][b.columns];
+        for(int row = 0; row<result.length; row++){
+            for(int col = 0; col<result[row].length; col++){
+                //iterate through the COLUMNS of b
+                for (int i = 0; i<b.rows; i++){
+                    result[row][col] += matrix[row][i] * b.matrix[i][col];
                 }
-                result[i][j] = dot(matrix[i],vectorB);
             }
         }
         return new Matrix(result);
     }
 
-    public static Matrix multiplyMatrixByMatrix(Matrix a, Matrix b){
-        return a.multiplyCurrentMatrixByMatrix(b);
+    public static Matrix multiply(Matrix a, Matrix b){
+        return a.multiply(b);
     }
 
     /**
@@ -161,5 +159,57 @@ public class Matrix {
             res += " ]";
         }
         return res;
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * <p>
+     * The {@code equals} method implements an equivalence relation
+     * on non-null object references:
+     * <ul>
+     * <li>It is <i>reflexive</i>: for any non-null reference value
+     *     {@code x}, {@code x.equals(x)} should return
+     *     {@code true}.
+     * <li>It is <i>symmetric</i>: for any non-null reference values
+     *     {@code x} and {@code y}, {@code x.equals(y)}
+     *     should return {@code true} if and only if
+     *     {@code y.equals(x)} returns {@code true}.
+     * <li>It is <i>transitive</i>: for any non-null reference values
+     *     {@code x}, {@code y}, and {@code z}, if
+     *     {@code x.equals(y)} returns {@code true} and
+     *     {@code y.equals(z)} returns {@code true}, then
+     *     {@code x.equals(z)} should return {@code true}.
+     * <li>It is <i>consistent</i>: for any non-null reference values
+     *     {@code x} and {@code y}, multiple invocations of
+     *     {@code x.equals(y)} consistently return {@code true}
+     *     or consistently return {@code false}, provided no
+     *     information used in {@code equals} comparisons on the
+     *     objects is modified.
+     * <li>For any non-null reference value {@code x},
+     *     {@code x.equals(null)} should return {@code false}.
+     * </ul>
+     * <p>
+     * The {@code equals} method for class {@code Object} implements
+     * the most discriminating possible equivalence relation on objects;
+     * that is, for any non-null reference values {@code x} and
+     * {@code y}, this method returns {@code true} if and only
+     * if {@code x} and {@code y} refer to the same object
+     * ({@code x == y} has the value {@code true}).
+     * <p>
+     * Note that it is generally necessary to override the {@code hashCode}
+     * method whenever this method is overridden, so as to maintain the
+     * general contract for the {@code hashCode} method, which states
+     * that equal objects must have equal hash codes.
+     *
+     * @param obj the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj
+     * argument; {@code false} otherwise.
+     * @see #hashCode()
+     * @see HashMap
+     */
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(!(obj instanceof Matrix)) return false;
+        return this.hashCode() == obj.hashCode();
     }
 }

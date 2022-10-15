@@ -15,7 +15,9 @@ import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 
+import java.util.Comparator;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.function.Consumer;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -64,7 +66,11 @@ public abstract class OpModeEx extends OpMode {
         }
     }
 
-    private LinkedBlockingQueue<Timeable> queue = new LinkedBlockingQueue<Timeable>();
+    private PriorityBlockingQueue<Timeable> queue = new PriorityBlockingQueue<>(Integer.MAX_VALUE, (o1, o2) -> {
+        if(o1.timeoutMs == o2.timeoutMs) return 0;
+        if(o1.timeoutMs < o2.timeoutMs) return -1;
+        return 1;
+    });
     protected Timeable current;
 
     @Override

@@ -3,7 +3,7 @@ package org.whitneyrobotics.ftc.teamcode.lib.libraryProto;
 /**
  * Class for compacting PID Constants.
  * */
-public class PIDCoefficients {
+public class PIDCoefficientsNew {
     private double kP = 1;
     private double kI = 0;
     private double kD = 0;
@@ -29,7 +29,7 @@ public class PIDCoefficients {
      * Constructor for proportional controller constants
      * @param kP Proportional Gain
      */
-    public PIDCoefficients(double kP){
+    public PIDCoefficientsNew(double kP){
         setKP(kP);
     }
     /**
@@ -37,7 +37,7 @@ public class PIDCoefficients {
      * @param kP Proportional Gain
      * @param kD Derivative Gain
      */
-    public PIDCoefficients(double kP, double kD){
+    public PIDCoefficientsNew(double kP, double kD){
         setKP(kP);
         setKD(kD);
     }
@@ -48,7 +48,7 @@ public class PIDCoefficients {
      * @param kI Integral Gain
      * @param kD Derivative Gain
      */
-    public PIDCoefficients(double kP, double kI, double kD){
+    public PIDCoefficientsNew(double kP, double kI, double kD){
         setKP(kP);
         setKI(kI);
         setKD(kD);
@@ -62,7 +62,7 @@ public class PIDCoefficients {
      * @param kF Feedforward Gain
      * @param F Feedforward Provider Function
      */
-    public PIDCoefficients(double kP, double kI, double kD, double kF, FeedForwardProvider F){
+    public PIDCoefficientsNew(double kP, double kI, double kD, double kF, FeedForwardProvider F){
 
     }
 

@@ -1,6 +1,6 @@
 package org.whitneyrobotics.ftc.teamcode.lib.libraryProto;
 
-public class PIDController {
+public class PIDControllerNew {
     private double kP = 1;
     public double getKP() { return kP; }
     public void setKP(double kP) { this.kP = kP; }
@@ -18,8 +18,8 @@ public class PIDController {
     public void setKF(double kF) { this.kF = kF; }
 
 
-    private PIDCoefficients.FeedForwardProvider F = (double t, double c, long time) -> 0;
-    public void setF(PIDCoefficients.FeedForwardProvider f) {
+    private PIDCoefficientsNew.FeedForwardProvider F = (double t, double c, long time) -> 0;
+    public void setF(PIDCoefficientsNew.FeedForwardProvider f) {
         this.F = f;
     }
 
@@ -29,16 +29,16 @@ public class PIDController {
      * @see #setKI(double)
      * @see #setKD(double)
      * @see #setKF(double)
-     * @see #setF(PIDCoefficients.FeedForwardProvider)
+     * @see #setF(PIDCoefficientsNew.FeedForwardProvider)
      */
-    public PIDController(){};
+    public PIDControllerNew(){};
 
     /**
      * Create a PIDF controller with constants bundle. Ideal for production-ready code.
      * @param pidCoefficients
-     * @see PIDCoefficients
+     * @see PIDCoefficientsNew
      */
-    public PIDController(PIDCoefficients pidCoefficients){
+    public PIDControllerNew(PIDCoefficientsNew pidCoefficients){
         this.kP = pidCoefficients.getKP();
         this.kI = pidCoefficients.getKI();
         this.kD = pidCoefficients.getKD();
@@ -52,7 +52,7 @@ public class PIDController {
      * @param kI
      * @param kD
      */
-    public PIDController(double kP, double kI, double kD){
+    public PIDControllerNew(double kP, double kI, double kD){
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
@@ -66,7 +66,7 @@ public class PIDController {
      * @param kF
      * @param F
      */
-    public PIDController(double kP, double kI, double kD, double kF, PIDCoefficients.FeedForwardProvider F){
+    public PIDControllerNew(double kP, double kI, double kD, double kF, PIDCoefficientsNew.FeedForwardProvider F){
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
@@ -105,7 +105,7 @@ public class PIDController {
      * @see #setTarget(double)
      */
     public void reset() {
-        lastKnownTime = System.nanoTime() * (long)1E9;
+        lastKnownTime = System.nanoTime() / (long)1E9;
         lastKnownError = target - lastKnownInput;
         integral = 0;
     }

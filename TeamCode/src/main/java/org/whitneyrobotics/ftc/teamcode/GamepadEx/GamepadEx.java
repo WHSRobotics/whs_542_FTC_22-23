@@ -25,7 +25,7 @@ public class GamepadEx {
     public final Button TRIANGLE = Y;
 
     public final Button LEFT_STICK_DOWN = new Button();
-    private final Button RIGHT_STICK_DOWN = new Button();
+    public final Button RIGHT_STICK_DOWN = new Button();
 
     public final Button DPAD_UP = new Button();
     public final Button DPAD_RIGHT = new Button();

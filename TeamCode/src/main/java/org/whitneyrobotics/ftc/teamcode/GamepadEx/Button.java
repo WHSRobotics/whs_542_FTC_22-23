@@ -15,6 +15,7 @@ public class Button implements GamepadHardware{
     private Consumer<GamepadInteractionEvent> releaseEventConsumer = defaultConsumer;
     private Consumer<GamepadInteractionEvent> doublePressEventConsumer = defaultConsumer;
     private Consumer<GamepadInteractionEvent> holdEventConsumer = defaultConsumer;
+    private Consumer<GamepadInteractionEvent> shortPressConsumer = defaultConsumer;
 
     private boolean lastState = false;
     private Long lastChanged = null;
@@ -42,6 +43,14 @@ public class Button implements GamepadHardware{
 
     public void onButtonHold(@NonNull Consumer<GamepadInteractionEvent> callback){
         this.holdEventConsumer = callback;
+    }
+
+    /**
+     * Unsupported as of 10/9/22
+     * @param callback
+     */
+    public void onShortPress(@NonNull Consumer<GamepadInteractionEvent> callback){
+        this.shortPressConsumer = callback;
     }
 
     public Button(){
@@ -111,6 +120,8 @@ public class Button implements GamepadHardware{
     public void removeHoldHandler(){
         this.releaseEventConsumer = defaultConsumer;
     }
+
+    public void removeShortPressHandler(){this.shortPressConsumer = defaultConsumer;}
 
     @Override
     public void disconnectAllHandlers(){
