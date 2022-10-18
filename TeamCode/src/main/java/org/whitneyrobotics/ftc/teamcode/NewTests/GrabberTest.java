@@ -9,7 +9,7 @@ public class GrabberTest extends OpMode {
     private Servo gate;
     private Servo[] servos = new Servo[2];
     private Toggler positionTog = new Toggler(101);
-    public boolean GrabberDrop = True;
+    public boolean GrabberDrop = true;
     private Servo ServoGrip = null;
     private boolean GripOpen = false;
     private static Toggler ServoGateToggle = new Toggler(2);
@@ -18,6 +18,7 @@ public class GrabberTest extends OpMode {
     @Override
     public void init() {
         ArmServos = hardwareMap.get(Servo.class, "servo 1");
+        ArmServos = new Toggler(1);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class GrabberTest extends OpMode {
 //        gate.setPosition(ServoGateToggle.currentState());
 //
 //    }
-    private enum GrabberStates {
+    public enum GrabberStates {
         CLOSE(0),
         OPEN(1);
 
