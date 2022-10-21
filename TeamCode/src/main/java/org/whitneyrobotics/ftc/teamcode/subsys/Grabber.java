@@ -1,75 +1,92 @@
 package org.whitneyrobotics.ftc.teamcode.subsys;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.whitneyrobotics.ftc.teamcode.framework.Subsystem;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
-public class Grabber extends OpMode{
-    private Servo gate;
+public class Grabber implements Subsystem {
+    private final Servo gate;
+    private RevColorSensorV3 sensor;
+    private double initializationCutoff = 3.5;
+    private boolean override = false;
+
     private Servo[] servos = new Servo[2];
-    private Toggler positionTog = new Toggler(101);
-    public boolean GrabberDrop = true;
-    private Servo ServoGrip = null;
-    private boolean GripOpen = false;
-    private static Toggler ServoGateToggle = new Toggler(2);
-    private Toggler ArmServos;
 
+    public enum GrabberStates {
+        OPEN(0), CLOSE(1);
+        private double position;
+        GrabberStates(double position){
+            this.position = position;
+        }
+        public double getPosition() {
+            return position;
+        }
+    }
+
+    public GrabberStates currentState = GrabberStates.OPEN;
+
+    public Grabber(HardwareMap hardwareMap){
+        gate = hardwareMap.get(Servo.class,"gate");
+        sensor = (RevColorSensorV3) hardwareMap.get(ColorSensor.class,"grabber_sensor");
+        if (sensor.getDistance(DistanceUnit.INCH) < initializationCutoff){ //if a cone is retained in autonomous
+            currentState = GrabberStates.CLOSE;
+        }
+    }
+
+    public void toggleState(){
+        currentState = (currentState == GrabberStates.OPEN ? GrabberStates.CLOSE : GrabberStates.OPEN);
+    }
+
+    public void setState(boolean opened){
+        currentState = (opened ? GrabberStates.CLOSE : GrabberStates.OPEN);
+    }
+
+    public void updateState(GrabberStates state){
+        currentState = state;
+    }
+
+    public void setForceOpen(boolean state){
+        override = state;
+    }
+
+    public void forceOpen(){ override = true; }
+
+    public void tick() {
+        if(override){
+            gate.setPosition(GrabberStates.OPEN.getPosition());
+            //override should be updated every loop
+            override = false;
+        }
+        gate.setPosition(currentState.getPosition());
+    }
+
+    public double getPosition(){
+        return gate.getPosition();
+    }
+
+    public GrabberStates getCurrentState(){
+        return currentState;
+    }
+
+    public Servo getArmServo(){
+        return gate;
+    }
+
+    /**
+     * Standardized reset method for resetting encoders
+     */
     @Override
-    public void init() {
-        ArmServos = hardwareMap.get(Servo.class, "servo 1");
-        ArmServos = new Toggler(1);
-    }
-
-    @Override
-    public void loop() {
-        positionTog.changeState(gamepad1.dpad_right,gamepad1.dpad_left);
-        if (gamepad1.dpad_right = true) {
-            positionTog.setState(positionTog.currentState()+1);
-        } else if (gamepad1.dpad_left = true) {
-            positionTog.setState(positionTog.currentState()-1);
-        }
-        telemetry.addData("Position", positionTog.currentState());
-    }
-    //    private void ServoGateToggler(boolean touch) {
-//        ServoGateToggle.changeState(touch);
-//
-//        gate.setPosition(ServoGateToggle.currentState());
-//
-//    }
-    private enum GrabberStates {
-        CLOSE(0),
-        OPEN(1);
-
-        double val;
-        GrabberStates(double val){
-            this.val = val;
-        }
-
-        double getPosition(){
-            return val;
-        }
-    }
-    public void armDrop() {
-        if (GrabberDrop) {
-            ServoGateToggle.setState(1);
-            gate.setPosition(org.whitneyrobotics.ftc.teamcode.NewTests.GrabberTest.GrabberStates.CLOSE.getPosition());
-        } else {
-            ServoGateToggle.setState(1);
-            gate.setPosition(org.whitneyrobotics.ftc.teamcode.NewTests.GrabberTest.GrabberStates.OPEN.getPosition());
-        }
+    public void resetEncoders() {
 
     }
-    public void GripPosition() {
-        if (GripOpen) {
-            GripOpen = false;
-            ServoGrip.setPosition(org.whitneyrobotics.ftc.teamcode.NewTests.GrabberTest.GrabberStates.CLOSE.getPosition());
-        } else {
-            GripOpen = true;
-            ServoGrip.setPosition(org.whitneyrobotics.ftc.teamcode.NewTests.GrabberTest.GrabberStates.OPEN.getPosition());
-        }
-    }
-
 }
 
 
