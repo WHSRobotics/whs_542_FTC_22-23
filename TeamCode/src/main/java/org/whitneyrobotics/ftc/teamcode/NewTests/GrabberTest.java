@@ -17,7 +17,7 @@ public class GrabberTest extends OpMode {
 
     @Override
     public void init() {
-        ArmServos = hardwareMap.get(Servo.class, "servo 1");
+//        ArmServos = hardwareMap.get(Servo.class, "servo 1");
         ArmServos = new Toggler(1);
     }
 
@@ -28,13 +28,10 @@ public class GrabberTest extends OpMode {
             positionTog.setState(positionTog.currentState()+1);
         } else if (gamepad1.dpad_left = true) {
             positionTog.setState(positionTog.currentState()-1);
-<<<<<<< HEAD
         } else if (gamepad1.dpad_down) {
             //servoSelect.currentState(servos[1]);
         } else if (gamepad1.dpad_up) {
             //servoSelect.currentState(servos[2]);
-=======
->>>>>>> main
         }
         telemetry.addData("Position", positionTog.currentState());
     }
