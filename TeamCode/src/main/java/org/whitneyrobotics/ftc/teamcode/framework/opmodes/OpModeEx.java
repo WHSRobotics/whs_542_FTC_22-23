@@ -16,6 +16,7 @@ import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 
 import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.function.Consumer;
@@ -66,7 +67,7 @@ public abstract class OpModeEx extends OpMode {
         }
     }
 
-    private PriorityBlockingQueue<Timeable> queue = new PriorityBlockingQueue<>(Integer.MAX_VALUE, (o1, o2) -> {
+    private PriorityQueue<Timeable> queue = new PriorityQueue<>(1, (o1, o2) -> {
         if(o1.timeoutMs == o2.timeoutMs) return 0;
         if(o1.timeoutMs < o2.timeoutMs) return -1;
         return 1;
@@ -74,7 +75,7 @@ public abstract class OpModeEx extends OpMode {
     protected Timeable current;
 
     @Override
-    public void init(){
+    public final void init(){
         gamepad1 = new GamepadEx(super.gamepad1);
         gamepad2 = new GamepadEx(super.gamepad2);
         initInternal();
@@ -83,7 +84,7 @@ public abstract class OpModeEx extends OpMode {
     public abstract void initInternal();
 
     @Override
-    public void start() {
+    public final void start() {
         resetRuntime();
         startInternal();
     }
@@ -93,7 +94,7 @@ public abstract class OpModeEx extends OpMode {
     }
 
     @Override
-    public void loop(){
+    public final void loop(){
         loopInternal();
         processQueue();
         betterTelemetry.update();
