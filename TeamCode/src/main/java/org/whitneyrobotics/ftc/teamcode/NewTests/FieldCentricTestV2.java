@@ -60,8 +60,8 @@ public class FieldCentricTestV2 extends OpModeEx{
 
         double botHeading = -imu.getAngularOrientation().firstAngle;
 
-        double rotY = x * Math.cos(botHeading) + y * Math.sin(botHeading);
-        double rotX = -x * Math.sin(botHeading) + y * Math.cos(botHeading);
+        double rotX = x * Math.cos(botHeading) + y * Math.sin(botHeading);
+        double rotY = x * -Math.sin(botHeading) + y * Math.cos(botHeading);
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;

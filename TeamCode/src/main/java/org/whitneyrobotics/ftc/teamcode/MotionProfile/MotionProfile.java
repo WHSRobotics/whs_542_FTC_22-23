@@ -1,6 +1,6 @@
-package org.whitneyrobotics.ftc.teamcode.motionProfiling;
+package org.whitneyrobotics.ftc.teamcode.MotionProfile;
 
-public class motionProfileGeneric {
+public abstract class MotionProfile {
     protected double constantJerk;
     protected double maxAcceleration;
     protected double usedAcceleration;
@@ -12,7 +12,9 @@ public class motionProfileGeneric {
     public double accelTime;
     public double cruiseTime = 0;
 
-    public motionProfileGeneric (double initialVal, double finalValue, double usedAcceleration, double maxVelocity){
-        
+    public MotionProfile(double initialVal, double finalValue, double usedAcceleration, double maxVelocity){
+
     }
+
+    public abstract double calculate(double time);
 }

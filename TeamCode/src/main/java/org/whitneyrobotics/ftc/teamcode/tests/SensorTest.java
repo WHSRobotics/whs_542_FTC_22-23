@@ -16,11 +16,13 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
+import org.whitneyrobotics.ftc.teamcode.lib.Hardware.DigitalLedIndicator;
 
 @TeleOp(name="Sensor Test")
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class SensorTest extends OpModeEx {
     public DigitalChannel green, red;
+    public DigitalLedIndicator led;
     public RevColorSensorV3 color;
     public Rev2mDistanceSensor distance;
     public TouchSensor magnet;
@@ -30,15 +32,13 @@ public class SensorTest extends OpModeEx {
     public void initInternal() {
         green = hardwareMap.get(DigitalChannel.class, "green");
         red = hardwareMap.get(DigitalChannel.class, "red");
+        led = new DigitalLedIndicator(red, green);
         color = hardwareMap.get(RevColorSensorV3.class, "color");
         distance = hardwareMap.get(Rev2mDistanceSensor.class, "distance");
         magnet = hardwareMap.get(TouchSensor.class, "magnet");
         encoder = hardwareMap.get(DcMotor.class, "encoder");
 
-        green.setMode(DigitalChannel.Mode.OUTPUT);
-        red.setMode(DigitalChannel.Mode.OUTPUT);
-        green.setState(true);
-        red.setState(true);
+        led.off();
 
         gamepad1.TRIANGLE.onPress(e -> green.setState(!green.getState()));
         gamepad1.SQUARE.onPress(e -> red.setState(!red.getState()));
