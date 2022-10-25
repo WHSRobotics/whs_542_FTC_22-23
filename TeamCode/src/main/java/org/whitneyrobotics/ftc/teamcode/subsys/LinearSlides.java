@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.Button;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
-import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDController;
+import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDControllerNew;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 
 //To do: Find level positions, find lower and upper bounds
@@ -54,7 +54,7 @@ public class LinearSlides {
     private int currentLevel = 0;
     public int getCurrentLevel() {return currentLevel;}
     private LinearSlidesSTATE linearSlidesSTATE;
-    private final PIDController pidController = new PIDController(1,0,0);
+    private final PIDControllerNew pidController = new PIDControllerNew(1,0,0);
 
     public LinearSlides(HardwareMap hardwareMap, Button inc, Button dec, Button switchState, Button reset) {
         LSleft = hardwareMap.get(DcMotorEx.class, "LinearSlidesLeft");
