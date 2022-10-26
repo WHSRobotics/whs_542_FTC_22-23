@@ -9,7 +9,7 @@ import org.whitneyrobotics.ftc.teamcode.framework.Subsystem;
 
 public class OmniDrivetrain implements Subsystem {
 
-    protected enum DrivetrainState {
+    protected enum OmniDrivetrainState {
         DRIVER_CONTROLLED, AUTONOMOUS
     }
 

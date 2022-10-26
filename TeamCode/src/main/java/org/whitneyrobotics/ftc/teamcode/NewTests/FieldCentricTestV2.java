@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.SliderDisplayLine;
+import org.whitneyrobotics.ftc.teamcode.framework.Vector;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
 
@@ -23,6 +24,8 @@ public class FieldCentricTestV2 extends OpModeEx{
     public DcMotor backLeft;
     public DcMotor backRight;
     public BNO055IMU imu;
+
+    public static boolean fieldCentric = true;
 
     @Override
     public void initInternal() {
@@ -58,10 +61,18 @@ public class FieldCentricTestV2 extends OpModeEx{
         double x = gamepad1.LEFT_STICK_X.value() * -1.1;
         double rx = gamepad1.RIGHT_STICK_X.value();
 
+        Vector input = new Vector(x, y);
+
+
         double botHeading = -imu.getAngularOrientation().firstAngle;
 
-        double rotX = x * Math.cos(botHeading) + y * Math.sin(botHeading);
-        double rotY = x * -Math.sin(botHeading) + y * Math.cos(botHeading);
+        Vector transformed = input;
+        if(fieldCentric){
+            transformed = input.rotate(botHeading);
+        }
+
+        double rotX = transformed.get(0,0);
+        double rotY = transformed.get(1,0);
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;

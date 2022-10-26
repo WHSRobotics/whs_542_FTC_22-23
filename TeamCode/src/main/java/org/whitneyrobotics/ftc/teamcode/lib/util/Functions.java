@@ -137,6 +137,8 @@ public class Functions {
 
     }
 
+
+
     public static Position front2back(Position frontVector) {
         Position backVector;
         double heading = 180;
@@ -183,6 +185,7 @@ public class Functions {
             return dotProduct;
         }
 
+        //is this not dot product?
         public static double getCross3dMagnitude(Position pos1, Position pos2) {
             double z = pos1.getX() * pos2.getY() - pos1.getY() * pos2.getX();
             return z;
