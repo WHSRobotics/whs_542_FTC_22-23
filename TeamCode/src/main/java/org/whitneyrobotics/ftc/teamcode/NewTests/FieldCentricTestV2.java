@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.SliderDisplayLine;
+import org.whitneyrobotics.ftc.teamcode.framework.Vector;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
 
@@ -24,15 +25,22 @@ public class FieldCentricTestV2 extends OpModeEx{
     public DcMotor backRight;
     public BNO055IMU imu;
 
+    public static boolean fieldCentric = true;
+
     @Override
     public void initInternal() {
-        DcMotor frontLeft = hardwareMap.dcMotor.get("driveFl");
-        DcMotor frontRight = hardwareMap.dcMotor.get("driveFR");
-        DcMotor backLeft = hardwareMap.dcMotor.get("driveBL");
-        DcMotor backRight = hardwareMap.dcMotor.get("driveBR");
+        frontLeft = hardwareMap.dcMotor.get("driveFL");
+        frontRight = hardwareMap.dcMotor.get("driveFR");
+        backLeft = hardwareMap.dcMotor.get("driveBL");
+        backRight = hardwareMap.dcMotor.get("driveBR");
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(BNO055IMU.class,"IMU");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -49,14 +57,22 @@ public class FieldCentricTestV2 extends OpModeEx{
     @Override
     protected void loopInternal() {
 
-        double y = -gamepad1.LEFT_STICK_Y.value();
-        double x = gamepad1.LEFT_STICK_X.value() * 1.1;
+        double y = gamepad1.LEFT_STICK_Y.value();
+        double x = gamepad1.LEFT_STICK_X.value() * -1.1;
         double rx = gamepad1.RIGHT_STICK_X.value();
+
+        Vector input = new Vector(x, y);
+
 
         double botHeading = -imu.getAngularOrientation().firstAngle;
 
-        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+        Vector transformed = input;
+        if(fieldCentric){
+            transformed = input.rotate(botHeading);
+        }
+
+        double rotX = transformed.get(0,0);
+        double rotY = transformed.get(1,0);
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;

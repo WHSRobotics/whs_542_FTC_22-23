@@ -10,7 +10,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.whitneyrobotics.ftc.teamcode.framework.DashboardOpMode;
 
-@TeleOp(name="Vision Test", group="New Tests")
+//@TeleOp(name="Vision Test", group="New Tests")
 public class CameraAutoSid extends DashboardOpMode {
     PtzControl ptz;
     OpenCvWebcam webcam;

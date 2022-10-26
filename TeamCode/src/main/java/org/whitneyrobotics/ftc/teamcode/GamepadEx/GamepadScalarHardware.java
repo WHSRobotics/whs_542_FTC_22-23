@@ -42,7 +42,7 @@ public class GamepadScalarHardware implements GamepadHardware{
     }
 
     public float value() {
-        return inverted ? -1 : 1 * previousState;
+        return (inverted ? -1 : 1) * previousState;
     }
 
     @Override
