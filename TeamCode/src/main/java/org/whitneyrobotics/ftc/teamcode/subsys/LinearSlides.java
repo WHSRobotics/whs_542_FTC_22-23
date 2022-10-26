@@ -7,8 +7,8 @@ import androidx.annotation.RequiresApi;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.Button;
+import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
 import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDControllerNew;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
@@ -56,7 +56,12 @@ public class LinearSlides {
     private LinearSlidesSTATE linearSlidesSTATE;
     private final PIDControllerNew pidController = new PIDControllerNew(1,0,0);
 
-    public LinearSlides(HardwareMap hardwareMap, Button inc, Button dec, Button switchState, Button reset) {
+    //Button inc, Button dec, Button switchState, Button reset
+    public LinearSlides(HardwareMap hardwareMap, GamepadEx gamepad1) {
+        Button inc = gamepad1.DPAD_UP;
+        Button dec = gamepad1.DPAD_DOWN;
+        Button switchState = gamepad1.BUMPER_LEFT;
+        Button reset = gamepad1.X;
         LSleft = hardwareMap.get(DcMotorEx.class, "LinearSlidesLeft");
         LSright = hardwareMap.get(DcMotorEx.class, "LinearSlidesRight");
         LSleft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -72,9 +77,9 @@ public class LinearSlides {
             if (linearSlidesSTATE == LinearSlidesSTATE.LEVELED) {
                 currentLevel = (int)(SLIDES_UPPER_BOUND/slidesPositionTarget);}});
         inc.onButtonHold((GamepadInteractionEvent callback) -> {if ((linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED) && ((slidesPositionTarget+linearSlidesSTATE.interval) <= SLIDES_UPPER_BOUND))
-            setMotorPower(1.0);});
+            setMotorPower(0.5);});
         dec.onButtonHold((GamepadInteractionEvent callback) -> {if ((linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED) && ((slidesPositionTarget-linearSlidesSTATE.interval) >= SLIDES_LOWER_BOUND))
-            setMotorPower(-1.0);});
+            setMotorPower(-0.5);});
         inc.onRelease((GamepadInteractionEvent callback) -> {if (linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED)
             setMotorPower(0.0);});
         dec.onRelease((GamepadInteractionEvent callback) -> {if (linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED)
