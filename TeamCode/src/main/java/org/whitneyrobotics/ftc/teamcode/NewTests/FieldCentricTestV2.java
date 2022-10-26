@@ -25,7 +25,7 @@ public class FieldCentricTestV2 extends OpModeEx{
     public DcMotor backRight;
     public BNO055IMU imu;
 
-    public static boolean fieldCentric = true;
+    public static boolean fieldCentric = false;
 
     @Override
     public void initInternal() {
@@ -52,6 +52,8 @@ public class FieldCentricTestV2 extends OpModeEx{
         betterTelemetry.addItem(new SliderDisplayLine("frontRight", frontRight::getPower, LineItem.Color.AQUA).setMin(-1));
         betterTelemetry.addItem(new SliderDisplayLine("backLeft", backLeft::getPower, LineItem.Color.AQUA).setMin(-1));
         betterTelemetry.addItem(new SliderDisplayLine("backRight", backRight::getPower, LineItem.Color.AQUA).setMin(-1));
+
+        gamepad1.CROSS.onPress(e -> fieldCentric = !fieldCentric);
     }
 
     @Override
@@ -62,8 +64,7 @@ public class FieldCentricTestV2 extends OpModeEx{
         double rx = gamepad1.RIGHT_STICK_X.value();
 
         Vector input = new Vector(x, y);
-
-
+        betterTelemetry.addData("Input Vector",input);
         double botHeading = -imu.getAngularOrientation().firstAngle;
 
         Vector transformed = input;
@@ -85,5 +86,8 @@ public class FieldCentricTestV2 extends OpModeEx{
         frontRight.setPower(frontRightPower);
         backRight.setPower(backRightPower);
 
+        betterTelemetry.addData("numRows",transformed.rows);
+        betterTelemetry.addData("Transformed Vector",transformed);
+        betterTelemetry.addData("Field centric mode",fieldCentric, LineItem.Color.ROBOTICS);
     }
 }

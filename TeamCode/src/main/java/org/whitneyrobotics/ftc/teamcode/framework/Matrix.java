@@ -96,6 +96,15 @@ public class Matrix {
         return a.multiply(b);
     }
 
+    public Vector toColumnVector(){
+        double x1 = matrix[0][0];
+        double[] x = new double[rows-1];
+        for (int i = 1; i<rows; i++){
+            x[i-1] = matrix[i][0];
+        }
+        return new Vector(x1, x);
+    }
+
     /**
      * Returns a hash code value for the object. This method is
      * supported for the benefit of hash tables such as those provided by
