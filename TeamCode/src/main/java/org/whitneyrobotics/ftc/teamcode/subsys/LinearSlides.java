@@ -87,9 +87,14 @@ public class LinearSlides {
         switchState.onPress((GamepadInteractionEvent callback) -> {
             if (linearSlidesSTATE == LinearSlidesSTATE.LEVELED) linearSlidesSTATE = LinearSlidesSTATE.DRIVER_CONTROLLED;
             else linearSlidesSTATE = LinearSlidesSTATE.LEVELED;});
-        reset.onPress((GamepadInteractionEvent callback) -> {slidesPositionTarget = 0.0; currentLevel = 0;});
+        reset.onPress((GamepadInteractionEvent callback) -> reset());
         resetEncoder();
     }
+    public void reset() {
+        slidesPositionTarget = 0.0;
+        currentLevel = 0;
+    }
+
     private void setMotorPower(double power) {
         LSleft.setPower(power);
         LSright.setPower(power);

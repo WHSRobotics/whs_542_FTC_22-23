@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.OmniDrivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
@@ -41,6 +42,12 @@ public class WHSRobotImpl {
         if (intakeAutoTimer.isExpired() && (robotIntake.currentState == Grabber.GrabberStates.OPEN)){
             robotIntake.toggleState();
         }
+    }
+
+    public void teleOpGrabber(GamepadEx gamepadOne) {
+        gamepadOne.BUMPER_LEFT.onButtonHold((GamepadInteractionEvent callback) -> robotIntake.forceOpen());
+        gamepadOne.A.onButtonHold((GamepadInteractionEvent callback) -> robotIntake.setState(true));
+        gamepadOne.A.onRelease((GamepadInteractionEvent callback) -> robotIntake.setState(false));
     }
 
 }
