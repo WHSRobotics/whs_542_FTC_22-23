@@ -23,7 +23,7 @@ public class WHSRobotImpl {
     GamepadEx gamePadOne;
     GamepadEx gamePadTwo;
 
-    SimpleTimer intakeAutoTimer;
+    SimpleTimer autoTimer;
 
     public WHSRobotImpl (HardwareMap hardwareMap, GamepadEx gamepadOne){
         robotDriveTrain = new OmniDrivetrain(hardwareMap);
@@ -37,9 +37,9 @@ public class WHSRobotImpl {
     public void autoGrabber(int waitTime){
         if (robotIntake.currentState == Grabber.GrabberStates.CLOSE){
             robotIntake.toggleState();
-            intakeAutoTimer.set(waitTime);
+            autoTimer.set(waitTime);
         }
-        if (intakeAutoTimer.isExpired() && (robotIntake.currentState == Grabber.GrabberStates.OPEN)){
+        if (autoTimer.isExpired() && (robotIntake.currentState == Grabber.GrabberStates.OPEN)){
             robotIntake.toggleState();
         }
     }
@@ -48,6 +48,23 @@ public class WHSRobotImpl {
         gamepadOne.BUMPER_LEFT.onButtonHold((GamepadInteractionEvent callback) -> robotIntake.forceOpen());
         gamepadOne.A.onButtonHold((GamepadInteractionEvent callback) -> robotIntake.setState(true));
         gamepadOne.A.onRelease((GamepadInteractionEvent callback) -> robotIntake.setState(false));
+    }
+
+    public void autoLinearSlides(LinearSlidesSTATE state, int waitTime) {
+        robotLinearSlides.changeState(state);
+        robotLinearSlides.operate();
+
+        if (robotLinearSlides.currentLevel == 0) {
+            autoTimer.set(waitTime);
+        }
+
+        if (autoTimer.isExpired() && (robotLinerSlides.slidingInProgress == False)){
+            robotLinearSlides.reset();
+        }
+    }
+
+    public void teleOpLinearSlides() {
+
     }
 
 }
