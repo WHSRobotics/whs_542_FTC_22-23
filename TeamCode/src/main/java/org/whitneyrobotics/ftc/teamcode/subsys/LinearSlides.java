@@ -45,7 +45,7 @@ public class LinearSlides {
 
 
 
-    private enum LinearSlidesSTATE{
+    public enum LinearSlidesSTATE{
         LEVELED(SLIDES_UPPER_BOUND/3), //default, linear slides leveled control
         DRIVER_CONTROLLED(1.0); //driver custom position control
         private final double interval;
@@ -53,7 +53,7 @@ public class LinearSlides {
     }
     private int currentLevel = 0;
     public int getCurrentLevel() {return currentLevel;}
-    private LinearSlidesSTATE linearSlidesSTATE;
+    public LinearSlidesSTATE linearSlidesSTATE;
     private final PIDControllerNew pidController = new PIDControllerNew(1,0,0);
 
     //Button inc, Button dec, Button switchState, Button reset
