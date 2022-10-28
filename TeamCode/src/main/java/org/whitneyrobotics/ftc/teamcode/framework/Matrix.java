@@ -11,10 +11,10 @@ import java.util.HashMap;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class Matrix {
-    private int rows;
-    private int columns;
+    public final int rows;
+    public final int columns;
 
-    private double[][] matrix;
+    protected final double[][] matrix;
 
     public Matrix(double[][] matrix){
         validate(matrix);
@@ -41,7 +41,7 @@ public class Matrix {
         return matrix;
     }
 
-    private double get(int row, int column){
+    public double get(int row, int column){
         return matrix[row][column];
     }
 
@@ -77,8 +77,32 @@ public class Matrix {
         return new Matrix(result);
     }
 
+    public Matrix add(Matrix b){
+        if(columns != b.columns && rows != b.rows) return null;
+        double[][] result = new double[columns][rows];
+        for(int i = 0; i<rows; i++){
+            for(int j=0; j<columns; j++){
+                result[i][j] = matrix[i][j] + b.matrix[i][j];
+            }
+        }
+        return new Matrix(result);
+    }
+
+    public Matrix subtract(Matrix b){
+        return this.add(b.multiplyByScalar(-1));
+    }
+
     public static Matrix multiply(Matrix a, Matrix b){
         return a.multiply(b);
+    }
+
+    public Vector toColumnVector(){
+        double x1 = matrix[0][0];
+        double[] x = new double[rows-1];
+        for (int i = 1; i<rows; i++){
+            x[i-1] = matrix[i][0];
+        }
+        return new Vector(x1, x);
     }
 
     /**
