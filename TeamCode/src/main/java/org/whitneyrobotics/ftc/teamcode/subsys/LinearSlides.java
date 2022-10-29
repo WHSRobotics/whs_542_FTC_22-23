@@ -93,6 +93,12 @@ public class LinearSlides {
     public void reset() {
         slidesPositionTarget = 0.0;
         currentLevel = 0;
+        moveToTarget();
+    }
+
+    public void resetVars() {
+        slidesPositionTarget = 0.0;
+        currentLevel = 0;
     }
 
     private void setMotorPower(double power) {
