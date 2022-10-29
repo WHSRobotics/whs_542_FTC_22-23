@@ -50,7 +50,11 @@ public class WHSRobotImpl {
         gamepadOne.A.onRelease((GamepadInteractionEvent callback) -> robotIntake.setState(false));
     }
 
+<<<<<<< Updated upstream
     public void autoLinearSlides(LinearSlides.LinearSlidesSTATE state, int waitTime) {
+=======
+    public void autoLinearSlides(LinearSlidesSTATE state, int waitTime) {
+>>>>>>> Stashed changes
         robotLinearSlides.changeState(state);
         robotLinearSlides.operate();
 
