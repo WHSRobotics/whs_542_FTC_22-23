@@ -64,6 +64,8 @@ public class Grabber implements Subsystem {
             gate.setPosition(GrabberStates.OPEN.getPosition());
             //override should be updated every loop
             override = false;
+        } else {
+            gate.setPosition(GrabberStates.CLOSE.getPosition());
         }
         gate.setPosition(currentState.getPosition());
     }
