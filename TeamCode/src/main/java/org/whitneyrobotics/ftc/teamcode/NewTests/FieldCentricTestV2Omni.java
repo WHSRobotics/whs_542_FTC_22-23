@@ -33,9 +33,6 @@ public class FieldCentricTestV2Omni extends OpModeEx{
         backLeft = hardwareMap.dcMotor.get("driveBL");
         backRight = hardwareMap.dcMotor.get("driveBR");
 
-        //frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        //backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -61,7 +58,7 @@ public class FieldCentricTestV2Omni extends OpModeEx{
     protected void loopInternal() {
 
         double y = gamepad1.LEFT_STICK_Y.value();
-        double x = gamepad1.LEFT_STICK_X.value() * -1.1;
+        double x = gamepad1.LEFT_STICK_X.value() * 1.1;
         double rx = gamepad1.RIGHT_STICK_X.value();
 
         Vector input = new Vector(x, y);
@@ -73,14 +70,14 @@ public class FieldCentricTestV2Omni extends OpModeEx{
             transformed = input.rotate(botHeading);
         }
 
-        double rotX = transformed.get(0,0);
+        double rotX = -transformed.get(0,0);
         double rotY = transformed.get(1,0);
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;
         double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotX - rotY - rx) / denominator;
-        double backRightPower = (-rotX - rotY - rx) / denominator;
+        double frontRightPower = (-rotY + rotX + rx) / denominator;
+        double backRightPower = (-rotY - rotX + rx) / denominator;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);

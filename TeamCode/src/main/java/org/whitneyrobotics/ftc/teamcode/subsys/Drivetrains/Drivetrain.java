@@ -20,6 +20,8 @@ public abstract class Drivetrain implements Subsystem {
     protected double powerReduction = 0;
     protected boolean fieldCentric = true;
 
+
+
     /**
      * To construct an implementing class of Drivetrain, pass in the hardwareMap, and pass in as many motor names as you will need.
      * @param hardwareMap HardwareMap of robot hardware, pass through super().
@@ -50,6 +52,7 @@ public abstract class Drivetrain implements Subsystem {
 
     public void operateByCommand(double stickX, double stickY, double rotate){
         Vector vector2D = new Vector(stickX, stickY);
+
     }
 
     protected abstract void applyPowersToMotors(double translatedX, double translatedY, double angularRotationPower);
