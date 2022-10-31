@@ -1,5 +1,6 @@
 package org.whitneyrobotics.ftc.teamcode.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,6 +14,7 @@ import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 import java.util.List;
 
 @TeleOp(name = "Shooting Test", group = "Tests")
+@Disabled
 public class ShootingTest extends OpMode {
     WHSRobotImplOld robot;
     String stackSize;

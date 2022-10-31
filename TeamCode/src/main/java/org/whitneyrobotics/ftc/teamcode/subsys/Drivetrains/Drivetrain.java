@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.framework.Subsystem;
 import org.whitneyrobotics.ftc.teamcode.framework.Vector;
+import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -19,8 +20,8 @@ public abstract class Drivetrain implements Subsystem {
     protected final Map<String, DcMotorEx> motorMap;
     protected double powerReduction = 0;
     protected boolean fieldCentric = true;
-
-
+    public final IMU imu;
+    protected boolean slowdown = false;
 
     /**
      * To construct an implementing class of Drivetrain, pass in the hardwareMap, and pass in as many motor names as you will need.
@@ -28,13 +29,15 @@ public abstract class Drivetrain implements Subsystem {
      * @param motorNames Variadic parameter of motor names to instantiate
      * Note: To retrieve the motors in the child class instance, use the motorMap's {@link Map#get} method.
      */
-    public Drivetrain(HardwareMap hardwareMap, String... motorNames){
+    public Drivetrain(HardwareMap hardwareMap, IMU imu, String... motorNames){
         if(motorNames.length < 2){
             throw new IllegalArgumentException("Drivetrains must have at least 2 motors.");
         }
+        this.imu = imu;
         motorMap = new Hashtable<>();
         for(String name : motorNames){
             DcMotorEx motor = hardwareMap.get(DcMotorEx.class,name);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorMap.put(name, motor);
         }
     }
@@ -49,13 +52,21 @@ public abstract class Drivetrain implements Subsystem {
     public void setPowerReduction(double reduction){
         powerReduction = reduction;
     }
+    public void setSlowdown(boolean slowdown){
+        this.slowdown = slowdown;
+    }
 
     public void operateByCommand(double stickX, double stickY, double rotate){
         Vector vector2D = new Vector(stickX, stickY);
-
+        if(fieldCentric){
+            vector2D = vector2D.rotate(imu.getHeadingRadians());
+        }
+        double rotX = vector2D.get(0,0);
+        double rotY = vector2D.get(1,0);
+        applyPowersToMotors(rotX, rotY, rotate);
     }
 
-    protected abstract void applyPowersToMotors(double translatedX, double translatedY, double angularRotationPower);
+    protected abstract void applyPowersToMotors(double rotatedX, double rotatedY, double angularRotationPower);
 
     /**
      * Standardized reset method for resetting encoders
@@ -68,5 +79,12 @@ public abstract class Drivetrain implements Subsystem {
                 motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
         }
+    }
+
+    public boolean fieldCentricEnabled(){
+        return fieldCentric;
+    }
+    public boolean slowMode(){
+        return slowdown;
     }
 }

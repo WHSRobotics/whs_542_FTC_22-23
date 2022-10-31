@@ -1,5 +1,6 @@
 package org.whitneyrobotics.ftc.teamcode.NewTests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,6 +11,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
 
 @TeleOp(name="Outtake Direction Test", group="New Tests")
+@Disabled
 public class OuttakeMotorDirectionsTest extends DashboardOpMode {
     private DcMotorEx left, right;
     private Toggler leftDirectionTog = new Toggler(2);

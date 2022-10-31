@@ -1,5 +1,6 @@
 package org.whitneyrobotics.ftc.teamcode.NewTests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 @TeleOp(name = "Motor Sus Test")
+@Disabled
 public class DrivetrainMotorTest extends OpMode {
     private Toggler speedTog = new Toggler(4);
     private double[] powers = {0.25,0.5,0.75,1};

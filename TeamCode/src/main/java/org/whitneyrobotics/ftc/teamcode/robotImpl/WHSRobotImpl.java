@@ -12,13 +12,15 @@ import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.OmniDrivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
+import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
 import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlides;
 
 @RequiresApi(Build.VERSION_CODES.N)
 public class WHSRobotImpl {
-    OmniDrivetrain robotDriveTrain;
-    LinearSlides robotLinearSlides;
-    Grabber robotIntake;
+    public OmniDrivetrain drivetrain;
+    public LinearSlides robotLinearSlides;
+    public Grabber robotIntake;
+    public IMU imu;
 
     GamepadEx gamePadOne;
     GamepadEx gamePadTwo;
@@ -26,12 +28,11 @@ public class WHSRobotImpl {
     SimpleTimer autoTimer;
 
     public WHSRobotImpl (HardwareMap hardwareMap, GamepadEx gamepadOne){
-        robotDriveTrain = new OmniDrivetrain(hardwareMap);
-        robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
-        robotIntake = new Grabber(hardwareMap);
-
-        robotDriveTrain.resetEncoders();
-        robotIntake.resetEncoders();
+        imu = new IMU(hardwareMap);
+        drivetrain = new OmniDrivetrain(hardwareMap, imu);
+        //robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
+        //robotIntake = new Grabber(hardwareMap);
+        //robotIntake.resetEncoders();
     }
 
     public void autoGrabber(int waitTime){
@@ -64,7 +65,5 @@ public class WHSRobotImpl {
             robotLinearSlides.reset();
         }
     }
-
-
 
 }

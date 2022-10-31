@@ -1,9 +1,11 @@
 package org.whitneyrobotics.ftc.teamcode.NewTests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.DataToolsLite;
 
+@Disabled
 public class Dataclass extends OpMode {
 
     boolean[] robotConfig;

@@ -1,10 +1,12 @@
 package org.whitneyrobotics.ftc.teamcode.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 @TeleOp(name = "Odometry Test Deadwheel")
+@Disabled
 public class DeadwheelEncoderTest extends OpMode {
     WHSRobotImplOld robot;
 

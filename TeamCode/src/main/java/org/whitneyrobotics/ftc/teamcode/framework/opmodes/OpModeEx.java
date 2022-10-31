@@ -29,12 +29,11 @@ public abstract class OpModeEx extends OpMode {
 
     protected BetterTelemetry betterTelemetry = BetterTelemetry.setOpMode(this);
 
-    private FtcDashboard dashboard;
+    private FtcDashboard dashboard = FtcDashboard.getInstance();
     private Telemetry dashboardTelemetry;
     protected TelemetryPacket packet = new TelemetryPacket();
 
     protected void initializeDashboardTelemetry(int msTransmissionInterval) {
-        dashboard = FtcDashboard.getInstance();
         dashboardTelemetry = dashboard.getTelemetry();
         telemetry = new MultipleTelemetry(dashboardTelemetry,telemetry);
         telemetry.setMsTransmissionInterval(msTransmissionInterval);
@@ -95,11 +94,13 @@ public abstract class OpModeEx extends OpMode {
 
     @Override
     public final void loop(){
+        packet = new TelemetryPacket();
         loopInternal();
         processQueue();
         betterTelemetry.update();
         gamepad1.update();
         gamepad2.update();
+        dashboard.sendTelemetryPacket(packet);
     }
 
     protected abstract void loopInternal();

@@ -25,7 +25,7 @@ public class DrivetrainOmniTest extends LinearOpMode {
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
-        frontRight = hardwareMap.dcMotor.get("frontRight")
+        frontRight = hardwareMap.dcMotor.get("frontRight");
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -37,13 +37,14 @@ public class DrivetrainOmniTest extends LinearOpMode {
         backRight.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
 
-        imu = hardwareMap.get(BNO055IMU.class , "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
+    }
 
         public double getHeading(){
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -57,6 +58,7 @@ public class DrivetrainOmniTest extends LinearOpMode {
             heading = heading - reset_angle;
             return heading;
         }
+
 
     public double drive() {
             double Protate = gamepad1.right_stick_x / 4;
@@ -106,8 +108,9 @@ public class DrivetrainOmniTest extends LinearOpMode {
 
         telemetry.addData("Stick_X", stick_x);
         telemetry.addData("Stick_Y", stick_y);
-        telemetry.addData("Magnitude", Math.sqrt(Math.pow(stick_x, 2) + Math.pow(stick_y, 2)));)
-        telemetry.addData()
-}
+        //telemetry.addData("Magnitude", Math.sqrt(Math.pow(stick_x, 2) + Math.pow(stick_y, 2)));)
+        //telemetry.addData();
+        return 0.0;
+    }
 
 }

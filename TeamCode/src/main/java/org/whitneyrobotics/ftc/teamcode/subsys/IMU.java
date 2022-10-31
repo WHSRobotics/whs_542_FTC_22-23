@@ -20,10 +20,13 @@ public class IMU {
     private double calibration = 0;
     private final double Z_ACCEL_THRESHOLD = 6;
 
-    BNO055IMU imu;
-    BNO055IMU.Parameters parameters;
+    public final BNO055IMU imu;
 
-    public IMU(HardwareMap theMap) {
+    public IMU(HardwareMap hardwareMap){
+        this(hardwareMap, "imu");
+    }
+
+    public IMU(HardwareMap theMap, String name) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -33,7 +36,7 @@ public class IMU {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
 
-        imu = theMap.get(BNO055IMU.class, "imu");
+        imu = theMap.get(BNO055IMU.class, name);
         imu.initialize(parameters);
     }
 
@@ -54,8 +57,17 @@ public class IMU {
         heading = Functions.normalizeAngle(heading); // -180 to 180 deg
         return heading;
     }
+
+    public double getHeadingRadians(){
+        return getHeading()*(Math.PI/180);
+    }
+
     public void zeroHeading(){
-        calibration = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.XYZ).thirdAngle ;
+        zeroHeading(0.0d);
+    }
+
+    public void zeroHeading(double offset){
+        calibration = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.XYZ).thirdAngle - offset;
     }
 
     // Returns the magnitude of the acceleration, not the direction.

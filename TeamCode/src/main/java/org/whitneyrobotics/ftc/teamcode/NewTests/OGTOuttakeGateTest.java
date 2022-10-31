@@ -1,10 +1,12 @@
 package org.whitneyrobotics.ftc.teamcode.NewTests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp (name = "OGTOuttakeGateTest", group = "Tests")
+@Disabled
 public class OGTOuttakeGateTest extends OpMode {
 
     public Servo gate;

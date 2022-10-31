@@ -42,7 +42,7 @@ public class GamepadEx {
     public final Button BUMPER_RIGHT = new Button();
 
     //@GamepadScalarHardware.LimitSensitivity
-    public final GamepadScalarHardware LEFT_STICK_X = new GamepadScalarHardware(true);
+    public final GamepadScalarHardware LEFT_STICK_X = new GamepadScalarHardware();
     //@GamepadScalarHardware.LimitSensitivity
     public final GamepadScalarHardware LEFT_STICK_Y = new GamepadScalarHardware(true);
     //@GamepadScalarHardware.LimitSensitivity
