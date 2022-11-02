@@ -90,15 +90,15 @@ public class LinearSlides {
         reset.onPress((GamepadInteractionEvent callback) -> reset());
         resetEncoder();
     }
-    public void reset() {
-        slidesPositionTarget = 0.0;
-        currentLevel = 0;
-        moveToTarget();
+    public void setLevelTarget(int levelTarget) {
+        if (levelTarget <= 3 && levelTarget >= 0) {
+            slidesPositionTarget = levelTarget*linearSlidesSTATE.interval;
+            currentLevel = levelTarget;
+        }
     }
 
-    public void resetVars() {
-        slidesPositionTarget = 0.0;
-        currentLevel = 0;
+    public void reset() {
+        setLevelTarget(0);
     }
 
     private void setMotorPower(double power) {
