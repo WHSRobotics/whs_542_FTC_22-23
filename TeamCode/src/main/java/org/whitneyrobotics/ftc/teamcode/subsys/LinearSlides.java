@@ -12,6 +12,7 @@ import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
 import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDControllerNew;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
+import org.whitneyrobotics.ftc.teamcode.lib.util.PIDVAcontroller;
 
 //To do: Find level positions, find lower and upper bounds
 //Make motor PID controller
@@ -30,18 +31,19 @@ public class LinearSlides {
     }
     private double slidesPositionTarget = 0.0;
     public boolean isOnTarget(){return slidesPositionTarget == ((LSleft.getCurrentPosition()+LSright.getCurrentPosition())/2.0);}
-    private double slidesVelocity = 0.0;
-    public double getSlidesVelocity(){return slidesVelocity;}
+    public double getSlidesVelocity(){return (LSleft.getVelocity()+LSright.getVelocity())/2.0;}
 
-    private boolean slidingInProgress = false;
-    public boolean isSlidingInProgress(){return slidingInProgress;}
+    public boolean isSlidingInProgress(){return getSlidesVelocity() != 0;}
     public double getMotorPower(){return (LSleft.getPower()+LSright.getPower())/2;}
 
     //Emergency Stops
     private static final double SLIDES_UPPER_BOUND = 976.0;
     private static final double SLIDES_LOWER_BOUND = 0.0;
+    private static final double MAX_ACCELERATION = 5; // mm/sec^2
+    private static final double MAX_VELOCITY = 50; // mm/s
+    private static final double SHAFT_DIAMETER = 2; //mm
     private static final int CYCLES_PER_REVOLUTION = 7;
-    private static final double GEAR_RATIO = 1/1;
+    private static final double GEAR_RATIO = 1.0/2.0;
 
 
 
@@ -55,6 +57,7 @@ public class LinearSlides {
     public int getCurrentLevel() {return currentLevel;}
     public LinearSlidesSTATE linearSlidesSTATE;
     private final PIDControllerNew pidController = new PIDControllerNew(1,0,0);
+    private final PIDVAcontroller pidvaController = new PIDVAcontroller(MAX_VELOCITY,MAX_ACCELERATION);
 
     //Button inc, Button dec, Button switchState, Button reset
     public LinearSlides(HardwareMap hardwareMap, GamepadEx gamepad1) {
@@ -115,9 +118,11 @@ public class LinearSlides {
 
     private void moveToTarget() {
         //moving position to position target
+        /*
         pidController.calculate(slidesPositionTarget,getSlidesPosition());
         double power = Functions.map(pidController.getOutput(),-100,100,-1,1);
         setMotorPower(power);
+         */
     }
 
     public void changeState(LinearSlidesSTATE state) {
@@ -129,11 +134,10 @@ public class LinearSlides {
 
     public void operate() {
         if (!isOnTarget()) {
-            slidingInProgress = true;
-            moveToTarget();
-        }
-        else {
-            slidingInProgress = false;
+            if (getSlidesVelocity() == 0.0) {
+                pidvaController.setDesiredPos(slidesPositionTarget, getSlidesPosition(), System.nanoTime());
+            }
+            setMotorPower(pidvaController.output(getSlidesPosition(), System.nanoTime()));
         }
     }
 

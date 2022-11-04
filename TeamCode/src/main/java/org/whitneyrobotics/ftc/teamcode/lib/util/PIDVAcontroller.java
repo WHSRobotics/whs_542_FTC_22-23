@@ -6,6 +6,7 @@ public class PIDVAcontroller {
     double desiredPos;
     double expectedPosChange;
     double lastPos = 0;
+    double lastVel = 0;
     double lastTime = 0;
 
     public PIDVAcontroller(double mV, double mA)  {
@@ -24,28 +25,41 @@ public class PIDVAcontroller {
         this.desiredPos = desiredPos;
         this.lastPos = lastPos;
         this.lastTime = time;
+        this.lastVel = 0;
     }
 
     /**
      *
-     * @return
+     * @return power of motor
      */
     public double output(double currentPos, double currentTime) {
         double posChange = currentPos-lastPos;
-        double posError = desiredPos - currentPos;
+        double direction = Math.signum(desiredPos - currentPos);
+        double posError = Math.abs(desiredPos - currentPos);
         double timeElapsed = currentTime-lastTime;
 
         double currentVelocity = posChange/timeElapsed;
+        double velChange = Math.abs(currentVelocity-lastVel);
 
-        if (posError != 0) {
-            if (posError > expectedPosChange) {
-                return 1.0;
+        double currentAcceleration = velChange/timeElapsed;
+
+        double realMaxVelocity = Functions.clamp(direction*Math.sqrt(currentAcceleration*posError)
+                ,-maxVelocity,
+                maxVelocity);
+        double acceleratePos = (realMaxVelocity*realMaxVelocity)/(2*currentAcceleration);
+
+        if (posError > 0) {
+            if (posError > acceleratePos) {
+                return direction;
+            } else {
+                return -1 * direction;
             }
         }
 
+
         lastTime = currentTime;
         lastPos = currentPos;
-
+        lastVel = currentVelocity;
         return 0.0;
     }
 }
