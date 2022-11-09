@@ -38,7 +38,7 @@ public class PIDVAcontroller {
         double posError = Math.abs(desiredPos - currentPos);
         double timeElapsed = currentTime-lastTime;
 
-        double currentVelocity = posChange/timeElapsed;
+        double currentVelocity = (posChange/timeElapsed)*2;
         double velChange = Math.abs(currentVelocity-lastVel);
 
         double currentAcceleration = velChange/timeElapsed;
@@ -46,16 +46,13 @@ public class PIDVAcontroller {
         double realMaxVelocity = Functions.clamp(direction*Math.sqrt(currentAcceleration*desiredPos)
                 ,-maxVelocity,
                 maxVelocity);
-        double acceleratePos = (realMaxVelocity * realMaxVelocity) / (2 * maxAcceleration);
-        if (currentAcceleration != 0) {
-             acceleratePos = (realMaxVelocity * realMaxVelocity) / (2 * currentAcceleration);
-        }
+        double acceleratePos = (realMaxVelocity * realMaxVelocity) / (2 * currentAcceleration);
 
         if (posError > 0) {
-            if (posError > acceleratePos) {
-                return direction;
-            } else {
+            if (posError <= acceleratePos) {
                 return -1 * direction;
+            } else {
+                return direction;
             }
         }
 
