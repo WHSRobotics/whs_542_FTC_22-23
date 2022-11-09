@@ -1,5 +1,9 @@
 package org.whitneyrobotics.ftc.teamcode.subsys;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDController;
@@ -16,11 +20,12 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
  * Created by Jason on 10/20/2017.
  */
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class WHSRobotImplOld {
 
     public Drivetrain drivetrain;
     public IMU imu;
-    public Canister canister;
+    //public Canister canister;
     public Intake intake;
     //public OldOuttake oldOuttake;
     public Wobble wobble;
@@ -76,7 +81,7 @@ public class WHSRobotImplOld {
 
         intake = new Intake(hardwareMap);
         outtake = new OldOuttake2(hardwareMap);
-        canister = new Canister(hardwareMap);
+        //canister = new Canister(hardwareMap);
         wobble = new Wobble(hardwareMap);
 
         DRIVE_MIN = RobotConstants.drive_min;
@@ -94,12 +99,12 @@ public class WHSRobotImplOld {
         Position vectorToTarget = Functions.Positions.subtract(targetPos, currentCoord.getPos()); //field frame
         vectorToTarget = Functions.field2body(vectorToTarget, currentCoord); //body frame
         vectorToTargetDebug = vectorToTarget;
-        double distanceToTarget = vectorToTarget.getX()/*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
-        distanceToTargetDebug = distanceToTarget;
+        //double distanceToTarget = vectorToTarget.getX()/*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
+        //distanceToTargetDebug = distanceToTarget;
 
-        double degreesToRotate = Math.atan2(vectorToTarget.getY(), vectorToTarget.getX()); //from -pi to pi rad
-        degreesToRotate = degreesToRotate * 180 / Math.PI;
-        targetHeading = Functions.normalizeAngle(currentCoord.getHeading() + degreesToRotate); //-180 to 180 deg
+        //double degreesToRotate = Math.atan2(vectorToTarget.getY(), vectorToTarget.getX()); //from -pi to pi rad
+        //degreesToRotate = degreesToRotate * 180 / Math.PI;
+        //targetHeading = Functions.normalizeAngle(currentCoord.getHeading() + degreesToRotate); //-180 to 180 deg
 
         switch (driveSwitch) {
             case 0:
@@ -113,17 +118,17 @@ public class WHSRobotImplOld {
 
                 if (firstDriveLoop) {
                     driveToTargetInProgress = true;
-                    driveController.init(distanceToTarget);
+                    //driveController.init(distanceToTarget);
                     firstDriveLoop = false;
                 }
 
                 driveController.setConstants(RobotConstants.DRIVE_CONSTANTS);
-                driveController.calculate(distanceToTarget);
+                //driveController.calculate(distanceToTarget);
 
                 double power = Functions.map(Math.abs(driveController.getOutput()), DEADBAND_DRIVE_TO_TARGET, 1500, DRIVE_MIN, DRIVE_MAX);
 
                 // this stuff may be causing the robot to oscillate around the target position
-                if (distanceToTarget < 0) {
+                /*if (distanceToTarget < 0) {
                     power = -power;
                 } else if (distanceToTarget > 0) {
                     power = Math.abs(power);
@@ -139,7 +144,7 @@ public class WHSRobotImplOld {
                     rotateToTargetInProgress = false;
                     firstDriveLoop = true;
                     driveSwitch = 0;
-                }
+                }*/
                 // end of weird code
                 break;
         }
@@ -365,9 +370,9 @@ public class WHSRobotImplOld {
                 break;
             case 3:
                 outtake.operateFlywheel(GOAL_POSITION[ringsShot]);
-                canister.setLoaderPosition(Canister.LoaderPositions.PUSH);
+                //canister.setLoaderPosition(Canister.LoaderPositions.PUSH);
                 if (loadRingTimer.isExpired()) {
-                    canister.setLoaderPosition(Canister.LoaderPositions.REST);
+                    //canister.setLoaderPosition(Canister.LoaderPositions.REST);
                     canisterResetTimer.set(canisterResetDelay);
                     powershotSwitch++;
                 }
@@ -412,10 +417,10 @@ public class WHSRobotImplOld {
             case 2:
                 outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 if (shootingTimer.isExpired()) {
-                    canister.shootRing();
-                    if (!canister.shootingInProgress()) {
+                    //canister.shootRing();
+                    /*if (!canister.shootingInProgress()) {
                         aimCase++;
-                    }
+                    }*/
                 }
                 break;
             case 3:
@@ -447,10 +452,10 @@ public class WHSRobotImplOld {
             case 2:
                 outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN_FAR);
                 if (shootingTimer.isExpired()) {
-                    canister.shootRing();
+                    /*canister.shootRing();
                     if (!canister.shootingInProgress()) {
                         aimCase++;
-                    }
+                    }*/
                 }
                 break;
             case 3:
@@ -488,7 +493,7 @@ public class WHSRobotImplOld {
                 outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 if (loadRingTimer.isExpired()) {
                     if(ringsShot > 0) {
-                        canister.setLoaderPosition(Canister.LoaderPositions.PUSH);
+                        //canister.setLoaderPosition(Canister.LoaderPositions.PUSH);
                     }
                     canisterResetTimer.set(canisterResetDelay);
                     powershotSwitch++;
@@ -498,7 +503,7 @@ public class WHSRobotImplOld {
             case 3:
                 outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 if (canisterResetTimer.isExpired()) {
-                    canister.setLoaderPosition(Canister.LoaderPositions.REST);
+                    //canister.setLoaderPosition(Canister.LoaderPositions.REST);
                     ringsShot++;
                     if (ringsShot >= 5) {
                         shootingInProgress = false;

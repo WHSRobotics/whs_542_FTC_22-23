@@ -1,10 +1,15 @@
 package org.whitneyrobotics.ftc.teamcode.lib.geometry;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 /**
  * Class for carrying coordinate values
  *
  * @see Position - Alternative class, without heading
  */
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class Coordinate extends Position {
 
     private double orientation;

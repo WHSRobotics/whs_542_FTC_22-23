@@ -36,12 +36,12 @@ public class WHSTeleOp extends OpModeEx {
             gamepad2.getEncapsulatedGamepad().runRumbleEffect(endgame);
             betterTelemetry.addItem(new TextLine("Endgame approaching soon!",true, LineItem.Color.ROBOTICS, LineItem.RichTextFormat.BOLD));
             resolve.accept(!gamepad1.getEncapsulatedGamepad().isRumbling() && gamepad2.getEncapsulatedGamepad().isRumbling());
-        }, 5000);
+        }, 55000);
 
         addTemporalCallback(resolve -> {
             betterTelemetry.removeLineByCaption("Endgame approaching soon!");
             resolve.accept(true);
-        },10000);
+        },60000);
 
         addTemporalCallback(resolve -> {
             playSound("matchend",100f);
@@ -49,14 +49,14 @@ public class WHSTeleOp extends OpModeEx {
             gamepad2.getEncapsulatedGamepad().runRumbleEffect(matchEnd);
             betterTelemetry.addItem(new TextLine("Match ends in 5 seconds!",true, LineItem.Color.FUCHSIA, LineItem.RichTextFormat.BOLD));
             resolve.accept(!gamepad1.getEncapsulatedGamepad().isRumbling() && gamepad2.getEncapsulatedGamepad().isRumbling());
-        }, 12000);
+        }, 83000);
 
         addTemporalCallback(resolve -> {
             playSound("slay",100f);
             betterTelemetry.removeLineByCaption("Match ends in 5 seconds!");
             betterTelemetry.addItem(new TextLine("Match has ended.", true, LineItem.Color.LIME, LineItem.RichTextFormat.ITALICS));
             resolve.accept(true);
-        },19000);
+        },90000);
     }
 
     @Override
@@ -68,6 +68,9 @@ public class WHSTeleOp extends OpModeEx {
 
     @Override
     protected void loopInternal() {
+        if(gamepad2.Y.value()){
+            robot.robotGrabber.forceOpen();
+        }
         robot.tick();
         double xPower = Math.pow(gamepad1.LEFT_STICK_X.value(),3);
         double yPower = Math.pow(gamepad1.LEFT_STICK_Y.value(),3);

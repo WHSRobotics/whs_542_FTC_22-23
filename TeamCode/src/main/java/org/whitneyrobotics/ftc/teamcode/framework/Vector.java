@@ -4,6 +4,8 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
+
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class Vector extends Matrix {
     public Vector(double x1, double... x) {
@@ -26,8 +28,12 @@ public class Vector extends Matrix {
         return Math.sqrt(sum);
     }
 
+    public Vector normalize(){
+        return this.divideByScalar(this.getMagnitude()).toColumnVector();
+    }
+
     public double getDirection(){
-        if(rows > 2) throw new UnsupportedOperationException("Calculating direction in radians only works on vectors in 2-space.");
+        if(rows != 2) throw new UnsupportedOperationException("Calculating direction in radians only works on vectors in 2-space.");
         double magnitude = getMagnitude();
         double x = matrix[0][0];
         double y = matrix[1][0];
@@ -40,6 +46,26 @@ public class Vector extends Matrix {
         } else {
             return Math.PI - Math.asin(y/magnitude);
         }
+    }
+
+    public Vector add(Vector v){
+        return super.add(v).toColumnVector();
+    }
+
+    public Vector subtract(Vector v){
+        return super.subtract(v).toColumnVector();
+    }
+
+    public Vector multiplyByScalar(double scalar){
+        return super.multiplyByScalar(scalar).toColumnVector();
+    }
+
+    public Vector multiply(Vector v){
+        return super.multiply(v).toColumnVector();
+    }
+
+    public Vector divideByScalar(double scalar){
+        return super.divideByScalar(scalar).toColumnVector();
     }
 
     /**
@@ -67,5 +93,14 @@ public class Vector extends Matrix {
 
     public Vector crossProduct(Vector v){
         return null;
+    }
+
+    /**
+     * Casts the vector to a 2D position, using the first 2 rows of the vector.
+     * @return Result of the casting operation. Returns null if the vector had less than 2 rows.
+     */
+    public Position to2DPosition(){
+        if(rows < 2) return null;
+        return new Position(matrix[0][0], matrix[1][0]);
     }
 }

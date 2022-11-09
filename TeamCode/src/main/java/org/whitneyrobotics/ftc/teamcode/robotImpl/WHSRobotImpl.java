@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
+import org.whitneyrobotics.ftc.teamcode.lib.pathfollowers.purepursuit.PurePursuitFollower;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.OmniDrivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
@@ -32,6 +33,8 @@ public class WHSRobotImpl {
         //robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
         robotGrabber = new Grabber(hardwareMap);
         //robotIntake.resetEncoders();
+
+        drivetrain.setFollower(PurePursuitFollower::new);
     }
 
     public void autoGrabber(int waitTime){

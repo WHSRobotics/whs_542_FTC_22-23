@@ -1,5 +1,9 @@
 package org.whitneyrobotics.ftc.teamcode.lib.purepursuit;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.StrafeWaypoint;
@@ -12,6 +16,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 
 import java.util.ArrayList;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class PathGenerator {
 
     public static SwervePath generateSwervePath(ArrayList<Position> targetPositions, FollowerConstants lookaheadDistance, SwervePathGenerationConstants constants) {

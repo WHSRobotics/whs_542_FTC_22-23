@@ -58,7 +58,7 @@ public class CanisterTest extends OpMode {
         telemetry.addData("Heading", robot.getCoordinate().getHeading());
         telemetry.addData("Current Velocity", robot.outtake.flywheel.getVelocity());
         telemetry.addData("Power: ", robot.outtake.flywheel.getPower());
-        telemetry.addData("Loader Setting:", robot.canister.canisterState);
+        //telemetry.addData("Loader Setting:", robot.canister.canisterState);
         telemetry.addData("Error", robot.outtake.errorDebug);
         telemetry.addData("Target", robot.outtake.targetVelocityDebug);
         telemetry.addData("Current", robot.outtake.currentVelocityDebug);

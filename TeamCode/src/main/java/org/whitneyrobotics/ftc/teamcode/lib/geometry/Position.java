@@ -1,6 +1,16 @@
 package org.whitneyrobotics.ftc.teamcode.lib.geometry;
 
+import android.os.Build;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
+import org.whitneyrobotics.ftc.teamcode.framework.Vector;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Class for storing positions on the field
@@ -8,7 +18,8 @@ import java.util.Objects;
  * @see Coordinate - Alternative class, with heading
  */
 
-public class Position {
+@RequiresApi(api = Build.VERSION_CODES.N)
+public class Position implements Iterable<Double>{
     private double xPos;
     private double yPos;
 
@@ -54,6 +65,10 @@ public class Position {
         yPos = y;
     }
 
+    public Vector asVector(){
+        return new Vector(xPos,yPos);
+    }
+
     @Override
     public String toString(){
         return "(" + xPos + ", " + yPos + ")";
@@ -70,5 +85,59 @@ public class Position {
     @Override
     public int hashCode() {
         return Objects.hash(xPos, yPos);
+    }
+
+    /**
+     * Returns an iterator over elements of type {@code T}.
+     *
+     * @return an Iterator.
+     */
+    @NonNull
+    @Override
+    public Iterator<Double> iterator() {
+        return new Iterator<Double>() {
+            public int pointer;
+            @Override
+            public boolean hasNext() {
+                return pointer <= 1;
+            }
+
+            @Override
+            public Double next() {
+                switch (pointer) {
+                    case 0:
+                        pointer++;
+                        return xPos;
+                    case 1:
+                        pointer++;
+                        return yPos;
+                    default:
+                        throw new NoSuchElementException("Point does not have more than 2 dimensions");
+                }
+            }
+        };
+    }
+
+    /**
+     * Performs the given action for each element of the {@code Iterable}
+     * until all elements have been processed or the action throws an
+     * exception.  Unless otherwise specified by the implementing class,
+     * actions are performed in the order of iteration (if an iteration order
+     * is specified).  Exceptions thrown by the action are relayed to the
+     * caller.
+     *
+     * @param action The action to be performed for each element
+     * @throws NullPointerException if the specified action is null
+     * @implSpec <p>The default implementation behaves as if:
+     * <pre>{@code
+     *     for (T t : this)
+     *         action.accept(t);
+     * }</pre>
+     * @since 1.8
+     */
+    @Override
+    public void forEach(@NonNull Consumer<? super Double> action) {
+        action.accept(xPos);
+        action.accept(yPos);
     }
 }

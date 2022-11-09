@@ -63,6 +63,10 @@ public class Matrix {
         return new Matrix(result);
     }
 
+    public Matrix divideByScalar(double scalar){
+        return multiplyByScalar(1/scalar);
+    }
+
     public Matrix multiply(Matrix b){
         if(columns != b.rows) return null;
         double[][] result = new double[rows][b.columns];

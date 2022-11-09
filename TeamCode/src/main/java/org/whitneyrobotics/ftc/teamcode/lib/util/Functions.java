@@ -2,6 +2,10 @@ package org.whitneyrobotics.ftc.teamcode.lib.util;
 
 import static org.whitneyrobotics.ftc.teamcode.lib.purepursuit.PathGenerator.generateSwervePath;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.SwerveWaypoint;
@@ -15,6 +19,7 @@ import java.util.ArrayList;
 /**
  * General purpose functions class
  */
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class Functions {
 
     public static int randInt(int min, int max){

@@ -25,6 +25,7 @@ public final class RobotDataUtil {
 
     @JsonIgnored
     static AppUtil util = AppUtil.getInstance();
+    private static JSONObject json;
 
     @JsonIgnored
     public synchronized static Field[] getClassWriteableFields(Class<?> dataClass){
@@ -33,14 +34,35 @@ public final class RobotDataUtil {
         ).toArray(Field[]::new);
     }
 
-    @JsonIgnored
     public synchronized static void save(Class<?> dataClass){
-        save(dataClass, dataClass.getName());
+        save(dataClass, false);
     }
 
     @JsonIgnored
-    public synchronized static void save(final Class<?> dataClass, String filename){
+    public synchronized static void save(Class<?> dataClass, boolean merge){
+        save(dataClass, dataClass.getName(), merge);
+    }
+
+    @JsonIgnored
+    public synchronized static void save(final Class<?> dataClass, String filename, boolean merge){
         Map<String, Object> valueMap = new Hashtable<>();
+        if(merge){
+            File file = loadFile(filename, ".json"); //load json file
+            try {
+                JSONObject json = new JSONObject(ReadWriteFile.readFile(file));
+                json.keys().forEachRemaining(key -> {
+                    try {
+                        valueMap.put(key, json.get(key));
+                    } catch (JSONException e) {
+                        RobotLog.ee(String.format("Unable to fetch a value for json file %s", filename), e.getLocalizedMessage());
+                    }
+                });
+            } catch(Exception e){
+                RobotLog.ee(String.format("Unable to merge json variables for class %s", filename), e.getLocalizedMessage());
+            }
+
+        }
+
         Field[] fields = getClassWriteableFields(dataClass);
         for (Field f : fields){
             try {

@@ -10,10 +10,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.framework.Subsystem;
 import org.whitneyrobotics.ftc.teamcode.framework.Vector;
+import org.whitneyrobotics.ftc.teamcode.lib.pathfollowers.Follower;
 import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public abstract class Drivetrain implements Subsystem {
@@ -22,6 +24,8 @@ public abstract class Drivetrain implements Subsystem {
     protected boolean fieldCentric = true;
     public final IMU imu;
     protected boolean slowdown = false;
+
+    private Follower follower;
 
     /**
      * To construct an implementing class of Drivetrain, pass in the hardwareMap, and pass in as many motor names as you will need.
@@ -79,6 +83,10 @@ public abstract class Drivetrain implements Subsystem {
                 motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
         }
+    }
+
+    public void setFollower(Function<Drivetrain, Follower> followerConstructor){
+        followerConstructor.apply(this);
     }
 
     public boolean fieldCentricEnabled(){
