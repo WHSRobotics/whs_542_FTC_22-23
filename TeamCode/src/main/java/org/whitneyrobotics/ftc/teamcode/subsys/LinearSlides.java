@@ -133,7 +133,7 @@ public class LinearSlides {
     }
 
     public void operate() {
-        if (!isOnTarget()) {
+        if (!isOnTarget() && linearSlidesSTATE != LinearSlidesSTATE.DRIVER_CONTROLLED) {
             if (getSlidesVelocity() == 0.0) {
                 pidvaController.setDesiredPos(slidesPositionTarget, getSlidesPosition(), System.nanoTime());
             }
