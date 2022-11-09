@@ -21,7 +21,7 @@ public class Grabber implements Subsystem {
     private Servo[] servos = new Servo[2];
 
     public enum GrabberStates {
-        OPEN(0), CLOSE(1);
+        OPEN(0.4), CLOSE(1);
         private double position;
         GrabberStates(double position){
             this.position = position;
@@ -35,10 +35,10 @@ public class Grabber implements Subsystem {
 
     public Grabber(HardwareMap hardwareMap){
         gate = hardwareMap.get(Servo.class,"gate");
-        sensor = (RevColorSensorV3) hardwareMap.get(ColorSensor.class,"grabber_sensor");
+        /*sensor = (RevColorSensorV3) hardwareMap.get(ColorSensor.class,"grabber_sensor");
         if (sensor.getDistance(DistanceUnit.INCH) < initializationCutoff){ //if a cone is retained in autonomous
             currentState = GrabberStates.CLOSE;
-        }
+        }*/
     }
 
     public void toggleState(){

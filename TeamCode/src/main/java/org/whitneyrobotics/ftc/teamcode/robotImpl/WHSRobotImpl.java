@@ -4,7 +4,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
@@ -19,7 +18,7 @@ import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlides;
 public class WHSRobotImpl {
     public OmniDrivetrain drivetrain;
     public LinearSlides robotLinearSlides;
-    public Grabber robotIntake;
+    public Grabber robotGrabber;
     public IMU imu;
 
     GamepadEx gamePadOne;
@@ -31,24 +30,24 @@ public class WHSRobotImpl {
         imu = new IMU(hardwareMap);
         drivetrain = new OmniDrivetrain(hardwareMap, imu);
         //robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
-        //robotIntake = new Grabber(hardwareMap);
+        robotGrabber = new Grabber(hardwareMap);
         //robotIntake.resetEncoders();
     }
 
     public void autoGrabber(int waitTime){
-        if (robotIntake.currentState == Grabber.GrabberStates.CLOSE){
-            robotIntake.toggleState();
+        if (robotGrabber.currentState == Grabber.GrabberStates.CLOSE){
+            robotGrabber.toggleState();
             autoTimer.set(waitTime);
         }
-        if (autoTimer.isExpired() && (robotIntake.currentState == Grabber.GrabberStates.OPEN)){
-            robotIntake.toggleState();
+        if (autoTimer.isExpired() && (robotGrabber.currentState == Grabber.GrabberStates.OPEN)){
+            robotGrabber.toggleState();
         }
     }
 
     public void teleOpGrabber(GamepadEx gamepadOne) {
-        gamepadOne.BUMPER_LEFT.onButtonHold((GamepadInteractionEvent callback) -> robotIntake.forceOpen());
-        gamepadOne.A.onButtonHold((GamepadInteractionEvent callback) -> robotIntake.setState(true));
-        gamepadOne.A.onRelease((GamepadInteractionEvent callback) -> robotIntake.setState(false));
+        gamepadOne.BUMPER_LEFT.onButtonHold((GamepadInteractionEvent callback) -> robotGrabber.forceOpen());
+        gamepadOne.A.onButtonHold((GamepadInteractionEvent callback) -> robotGrabber.setState(true));
+        gamepadOne.A.onRelease((GamepadInteractionEvent callback) -> robotGrabber.setState(false));
     }
 
 
@@ -64,6 +63,10 @@ public class WHSRobotImpl {
         if (autoTimer.isExpired() && (robotLinearSlides.isSlidingInProgress() == false)){
             robotLinearSlides.reset();
         }
+    }
+
+    public void tick(){
+        robotGrabber.tick();
     }
 
 }

@@ -14,6 +14,7 @@ import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.SliderDisplayLine;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.TextLine;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
 import org.whitneyrobotics.ftc.teamcode.subsys.Robot;
 
 @TeleOp(name="PowerPlay TeleOp", group="A")
@@ -25,6 +26,7 @@ public class WHSTeleOp extends OpModeEx {
         gamepad1.BUMPER_RIGHT.onPress(e -> robot.drivetrain.toggleFieldCentric());
         gamepad1.SQUARE.onPress(e -> robot.imu.zeroHeading());
         gamepad1.LEFT_TRIGGER.onInteraction(e -> robot.drivetrain.setPowerReduction(e.floatVal));
+        gamepad2.BUMPER_RIGHT.onPress(e -> robot.robotGrabber.toggleState());
     }
 
     void setupNotifications(){
@@ -66,6 +68,7 @@ public class WHSTeleOp extends OpModeEx {
 
     @Override
     protected void loopInternal() {
+        robot.tick();
         double xPower = Math.pow(gamepad1.LEFT_STICK_X.value(),3);
         double yPower = Math.pow(gamepad1.LEFT_STICK_Y.value(),3);
         double rotPower = Math.pow(gamepad1.RIGHT_STICK_X.value(),3);
