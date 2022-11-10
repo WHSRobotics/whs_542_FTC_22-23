@@ -71,14 +71,8 @@ public class LinearSlides {
         LSright.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         LSright.setDirection(DcMotorEx.Direction.REVERSE);
         linearSlidesSTATE = LinearSlidesSTATE.LEVELED;
-        inc.onPress((GamepadInteractionEvent callback) -> {if (((slidesPositionTarget+linearSlidesSTATE.interval) <= SLIDES_UPPER_BOUND) && linearSlidesSTATE == LinearSlidesSTATE.LEVELED)
-            slidesPositionTarget += linearSlidesSTATE.interval;
-            if (linearSlidesSTATE == LinearSlidesSTATE.LEVELED){
-                currentLevel = (int)(SLIDES_UPPER_BOUND/slidesPositionTarget);}});
-        dec.onPress((GamepadInteractionEvent callback) -> {if (((slidesPositionTarget-linearSlidesSTATE.interval) >= SLIDES_LOWER_BOUND) && linearSlidesSTATE == LinearSlidesSTATE.LEVELED)
-            slidesPositionTarget -= linearSlidesSTATE.interval;
-            if (linearSlidesSTATE == LinearSlidesSTATE.LEVELED) {
-                currentLevel = (int)(SLIDES_UPPER_BOUND/slidesPositionTarget);}});
+        inc.onPress((GamepadInteractionEvent callback) -> {incrementLevel();});
+        dec.onPress((GamepadInteractionEvent callback) -> {decrementLevel();});
         inc.onButtonHold((GamepadInteractionEvent callback) -> {if ((linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED) && ((slidesPositionTarget+linearSlidesSTATE.interval) <= SLIDES_UPPER_BOUND))
             setMotorPower(0.5);});
         dec.onButtonHold((GamepadInteractionEvent callback) -> {if ((linearSlidesSTATE == LinearSlidesSTATE.DRIVER_CONTROLLED) && ((slidesPositionTarget-linearSlidesSTATE.interval) >= SLIDES_LOWER_BOUND))
@@ -98,6 +92,18 @@ public class LinearSlides {
             slidesPositionTarget = levelTarget*linearSlidesSTATE.interval;
             currentLevel = levelTarget;
         }
+    }
+    public void incrementLevel(){
+        if (((slidesPositionTarget+linearSlidesSTATE.interval) <= SLIDES_UPPER_BOUND) && linearSlidesSTATE == LinearSlidesSTATE.LEVELED)
+            slidesPositionTarget += linearSlidesSTATE.interval;
+        if (linearSlidesSTATE == LinearSlidesSTATE.LEVELED){
+            currentLevel = (int)(SLIDES_UPPER_BOUND/slidesPositionTarget);}
+    }
+    public void decrementLevel(){
+        if (((slidesPositionTarget-linearSlidesSTATE.interval) >= SLIDES_LOWER_BOUND) && linearSlidesSTATE == LinearSlidesSTATE.LEVELED)
+            slidesPositionTarget -= linearSlidesSTATE.interval;
+        if (linearSlidesSTATE == LinearSlidesSTATE.LEVELED) {
+            currentLevel = (int)(SLIDES_UPPER_BOUND/slidesPositionTarget);}
     }
 
     public void reset() {
