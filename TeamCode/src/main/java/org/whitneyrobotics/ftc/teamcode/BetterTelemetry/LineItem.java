@@ -89,6 +89,10 @@ public abstract class LineItem {
         this.rtfFormats.addAll(Arrays.asList(rtfFormats));
     }
 
+    public void persistent(){
+        persistent = !persistent;
+    }
+
     public void setPersistent(boolean persistent){
         this.persistent = persistent;
     }

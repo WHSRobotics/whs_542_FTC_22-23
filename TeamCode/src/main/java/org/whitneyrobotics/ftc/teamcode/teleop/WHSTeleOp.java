@@ -27,6 +27,11 @@ public class WHSTeleOp extends OpModeEx {
         gamepad1.SQUARE.onPress(e -> robot.imu.zeroHeading());
         gamepad1.LEFT_TRIGGER.onInteraction(e -> robot.drivetrain.setPowerReduction(e.floatVal));
         gamepad2.BUMPER_RIGHT.onPress(e -> robot.robotGrabber.toggleState());
+        gamepad1.CIRCLE.onPress(e -> robot.robotGrabber.toggleState());
+        gamepad2.SHARE.onPress(e -> {
+            playSound("emergency", 100.00f);
+            requestOpModeStop();
+        });
     }
 
     void setupNotifications(){

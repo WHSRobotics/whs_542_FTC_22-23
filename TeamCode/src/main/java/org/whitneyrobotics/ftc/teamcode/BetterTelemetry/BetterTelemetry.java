@@ -117,36 +117,40 @@ public class BetterTelemetry  {
         return this;
     }
 
-    public BetterTelemetry addLine(){
-        items.add(new SeparatorLine("blank line", SeparatorLine.LineStyle.NEWLINE));
-        return this;
+    public LineItem addLine(){
+        SeparatorLine line = new SeparatorLine("blank line", SeparatorLine.LineStyle.NEWLINE);
+        items.add(line);
+        return line;
     }
 
-    public BetterTelemetry addLine(String line, LineItem.RichTextFormat... richTextFormats){
+    public LineItem addLine(String line, LineItem.RichTextFormat... richTextFormats){
         return addLine(line, LineItem.Color.WHITE, richTextFormats);
     }
 
-    public BetterTelemetry addLine(String line, LineItem.Color color, LineItem.RichTextFormat... richTextFormats){
-        items.add(new TextLine(line, false, color, richTextFormats));
-        return this;
+    public LineItem addLine(String line, LineItem.Color color, LineItem.RichTextFormat... richTextFormats){
+        TextLine lineItem = new TextLine(line, false, color, richTextFormats);
+        items.add(lineItem);
+        return lineItem;
     }
 
-    public BetterTelemetry addData(String key, Object value, LineItem.RichTextFormat... richTextFormats){
+    public LineItem addData(String key, Object value, LineItem.RichTextFormat... richTextFormats){
         return addData(key, value, LineItem.Color.WHITE, richTextFormats);
     }
 
-    public BetterTelemetry addData(String key, Object value, LineItem.Color color, LineItem.RichTextFormat... richTextFormats){
-        items.add(new KeyValueLine(key, false, value, color, richTextFormats));
-        return this;
+    public LineItem addData(String key, Object value, LineItem.Color color, LineItem.RichTextFormat... richTextFormats){
+        KeyValueLine line = new KeyValueLine(key, false, value, color, richTextFormats);
+        items.add(line);
+        return line;
     }
 
-    public <T> BetterTelemetry addData(String key, Func<T> valueProducer, LineItem.RichTextFormat... richTextFormats){
+    public <T> LineItem addData(String key, Func<T> valueProducer, LineItem.RichTextFormat... richTextFormats){
         return addData(key, valueProducer, LineItem.Color.WHITE, richTextFormats);
     }
 
-    public <T> BetterTelemetry addData(String key, Func<T> valueProducer, LineItem.Color color, LineItem.RichTextFormat... richTextFormats){
-        items.add(new KeyValueLine(key, false, valueProducer, color, richTextFormats));
-        return this;
+    public <T> LineItem addData(String key, Func<T> valueProducer, LineItem.Color color, LineItem.RichTextFormat... richTextFormats){
+        KeyValueLine line = new KeyValueLine(key, false, valueProducer, color, richTextFormats);
+        items.add(line);
+        return line;
     }
 
     public static String replaceNewLineWithLineBreaks(String s){

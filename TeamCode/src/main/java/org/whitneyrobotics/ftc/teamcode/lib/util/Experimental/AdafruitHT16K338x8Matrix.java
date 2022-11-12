@@ -2,6 +2,7 @@ package org.whitneyrobotics.ftc.teamcode.lib.util.Experimental;
 
 import android.animation.TypeConverter;
 
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
@@ -15,6 +16,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 @I2cDeviceType
 public class AdafruitHT16K338x8Matrix extends I2cDeviceSynchDevice<I2cDeviceSynch> {
 
+    DigitalChannelController c = null;
     public enum Register {
         FIRST(0),
         ENABLE(0x21),

@@ -38,6 +38,9 @@ public class GamepadEx {
     public final Button HOME = new Button();
     public final Button PSButton = HOME;
 
+    public final Button BACK = new Button();
+    public final Button SHARE = BACK;
+
     public final Button BUMPER_LEFT = new Button();
     public final Button BUMPER_RIGHT = new Button();
 
@@ -113,6 +116,7 @@ public class GamepadEx {
         RIGHT_STICK_Y.update(gamepad.right_stick_y);
         LEFT_TRIGGER.update(gamepad.left_trigger);
         RIGHT_TRIGGER.update(gamepad.right_trigger);
+        BACK.update(gamepad.back);
     }
 
 }
