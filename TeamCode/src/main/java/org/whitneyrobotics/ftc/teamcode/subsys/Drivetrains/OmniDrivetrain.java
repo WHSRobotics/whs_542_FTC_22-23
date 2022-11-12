@@ -99,3 +99,14 @@ public class OmniDrivetrain extends Drivetrain {
         applyPowersToMotors(0, drivePower, 0);
     }
 }
+
+/*
+sussy dwivetwain
+  ________
+/   ______\
+|   |________|
+|          /
+|   ____   |
+|___|  |___|
+(driveToTarget & rotateToTarget) created by Nairrit, Arun, and Sid - 11/11/2022
+ */
