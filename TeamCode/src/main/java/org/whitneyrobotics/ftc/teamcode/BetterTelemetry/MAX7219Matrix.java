@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
 
+import org.opencv.core.Mat;
+import org.whitneyrobotics.ftc.teamcode.framework.Matrix;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 
 
@@ -35,6 +37,56 @@ public class MAX7219Matrix extends OpModeEx {
         Addresses(int addr) { this.address = addr; }
         public int getAddress() { return address; }
     }
+
+    public enum MatrixNumerals {
+        SMILE(new int[]{ // Smiles :)
+                0b00000000,
+                0b00110000,
+                0b01000100,
+                0b01000000,
+                0b01000000,
+                0b01000100,
+                0b00110000,
+                0b00000000
+        }),
+
+        ONE(new int[]{
+                0b00000000,
+                0b00000000,
+                0b00000000,
+                0b00000000,
+                0b00000000,
+                0b11111111,
+                0b00000000,
+                0b00000000
+        }),
+
+        TWO(new int[]{
+                0b00000000,
+                0b00000000,
+                0b11111001,
+                0b10001001,
+                0b10001001,
+                0b10001111,
+                0b00000000,
+                0b00000000
+        }),
+        THREE(new int[]{
+                0b00000000,
+                0b00000000,
+                0b10001001,
+                0b10001001,
+                0b10001001,
+                0b11111111,
+                0b00000000,
+                0b00000000
+        });
+
+        public final int[] data;
+        MatrixNumerals(int[] data){
+            this.data = data;
+        }
+    }
     @Override
     public void initInternal() {
         SPI_MOSI = hardwareMap.get(DigitalChannelImpl.class, "matrixMOSI");
@@ -53,21 +105,33 @@ public class MAX7219Matrix extends OpModeEx {
         startDisplay();
         setIntensity(0); // About medium brightness
         clearDisplay();
-        setDisplay(new int[]{ // Smiles :)
+        setDisplay(MatrixNumerals.THREE.data);
+    }
+
+    public static int[] generateErrorStatus(int statusCode){
+        return new int[] {
+                0b00100100,
+                0b00100100,
+                0b00100100,
                 0b00000000,
-                0b00110000,
-                0b01000100,
-                0b01000000,
-                0b01000000,
-                0b01000100,
-                0b00110000,
-                0b00000000
-        });
+                0b00100100,
+                0b00000000,
+                statusCode,
+                0b00000000,
+        };
     }
 
     @Override
     public void loopInternal() {
-
+        if (getRuntime() % 4 < 1) {
+            setDisplay(MatrixNumerals.ONE.data);
+        } else if (getRuntime() % 4 < 2) {
+            setDisplay(MatrixNumerals.TWO.data);
+        } else if (getRuntime() % 4 < 3) {
+            setDisplay(MatrixNumerals.THREE.data);
+        } else {
+            setDisplay(generateErrorStatus(69));
+        }
     }
 
     // Column data format
