@@ -12,10 +12,6 @@ import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 
 @TeleOp(name = "LEDOp")
 public class MAX7219Matrix extends OpModeEx {
-
-    int maxDevices;
-    byte[] spiData;
-
     DigitalChannelImpl SPI_MOSI;
     DigitalChannelImpl SPI_CLK;
     DigitalChannelImpl SPI_CS;
@@ -85,7 +81,6 @@ public class MAX7219Matrix extends OpModeEx {
     public void setDisplay(int[] columns) {
         clearDisplay();
         for (int i=0; i<8; i++) {
-            Log.println(Log.DEBUG, "Data", Integer.toBinaryString(columns[i]));
             spiMAX7219Write(i+1, columns[i]);
         }
 
