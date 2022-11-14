@@ -80,6 +80,26 @@ public class MAX7219Matrix extends OpModeEx {
                 0b11111111,
                 0b00000000,
                 0b00000000
+        }),
+        FOUR(new int[] {
+                0b00000000,
+                0b00000000,
+                0b00001111,
+                0b00001000,
+                0b00001000,
+                0b11111111,
+                0b00000000,
+                0b00000000
+        }),
+        FIVE(new int[] {
+                0b00000000,
+                0b00000000,
+                0b10001111,
+                0b10001001,
+                0b10001001,
+                0b11111001,
+                0b00000000,
+                0b00000000
         });
 
         public final int[] data;
@@ -105,7 +125,7 @@ public class MAX7219Matrix extends OpModeEx {
         startDisplay();
         setIntensity(0); // About medium brightness
         clearDisplay();
-        setDisplay(MatrixNumerals.THREE.data);
+        setDisplay(MatrixNumerals.THREE.data, false);
     }
 
     public static int[] generateErrorStatus(int statusCode){
@@ -123,14 +143,19 @@ public class MAX7219Matrix extends OpModeEx {
 
     @Override
     public void loopInternal() {
-        if (getRuntime() % 4 < 1) {
-            setDisplay(MatrixNumerals.ONE.data);
-        } else if (getRuntime() % 4 < 2) {
-            setDisplay(MatrixNumerals.TWO.data);
-        } else if (getRuntime() % 4 < 3) {
-            setDisplay(MatrixNumerals.THREE.data);
+        if (getRuntime() % 6 < 1) {
+            setDisplay(MatrixNumerals.ONE.data, false);
+        } else if (getRuntime() % 6 < 2) {
+            setDisplay(MatrixNumerals.TWO.data, false);
+        } else if (getRuntime() % 6 < 3) {
+            setDisplay(MatrixNumerals.THREE.data, false);
+        } else if (getRuntime() % 6 < 4) {
+//            setDisplay(generateErrorStatus(69), false);
+            setDisplay(MatrixNumerals.FOUR.data, false);
+        } else if (getRuntime() % 6 < 5) {
+            setDisplay(MatrixNumerals.FIVE.data, false);
         } else {
-            setDisplay(generateErrorStatus(69));
+            setDisplay(MatrixNumerals.SMILE.data, false);
         }
     }
 
@@ -142,8 +167,8 @@ public class MAX7219Matrix extends OpModeEx {
     // The Most Significant Bit (left-most) will correspond to the bottom-most
     // led in the column (Only when MOSI is connected to chip-side pins)
     // Ex. For column 1, 11110000 will light the bottom 4 LEDs of the 1st column
-    public void setDisplay(int[] columns) {
-        clearDisplay();
+    public void setDisplay(int[] columns, boolean clear) {
+        if (clear) clearDisplay();
         for (int i=0; i<8; i++) {
             spiMAX7219Write(i+1, columns[i]);
         }
