@@ -1,4 +1,4 @@
-package org.whitneyrobotics.ftc.teamcode.tests;
+package org.whitneyrobotics.ftc.teamcode.tests.SoftwareTests;
 
 import android.os.Build;
 

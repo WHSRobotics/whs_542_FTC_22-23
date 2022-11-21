@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+import org.whitneyrobotics.ftc.teamcode.tests.Test;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -75,6 +76,12 @@ public abstract class OpModeEx extends OpMode {
 
     @Override
     public final void init(){
+        Test testingAnnotation = this.getClass().getDeclaredAnnotation(Test.class);
+        if(testingAnnotation != null){
+            if(testingAnnotation.autoTerminateAfterSeconds() > 0){
+                addTemporalCallback(resolve -> requestOpModeStop(), testingAnnotation.autoTerminateAfterSeconds());
+            }
+        }
         gamepad1 = new GamepadEx(super.gamepad1);
         gamepad2 = new GamepadEx(super.gamepad2);
         initInternal();

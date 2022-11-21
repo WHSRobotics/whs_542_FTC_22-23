@@ -4,22 +4,34 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.function.Supplier;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class Folder extends LineItem.Interactable {
+public class Folder extends Interactable {
 
     private ArrayList<LineItem> nested;
 
-    private Supplier<Boolean> stateProvider = () -> true;
+    private GamepadEx gamepad;
 
-    public Folder(String caption, Supplier<Boolean> stateProvider, LineItem... nestedLines) {
+    private boolean focused = false;
+
+    @Override
+    public void connectGamepad(GamepadEx gamepad) {
+        this.gamepad = gamepad;
+        gamepad.A.onPress(e -> open = !open);
+    }
+
+    private boolean open = true;
+
+    public Folder(String caption, LineItem... nestedLines) {
         super(caption);
         this.setPersistent(true);
         nested = new ArrayList<>(Arrays.asList(nestedLines));
-        this.stateProvider = stateProvider;
     }
 
     public void addChild(LineItem child){
@@ -41,13 +53,13 @@ public class Folder extends LineItem.Interactable {
 
     @Override
     public void reset() {
-
+        open = false;
     }
 
     @Override
     protected String format(boolean blink) {
-        if(stateProvider.get()){
-            String result = "↓ " + this.caption;
+        if(open){
+            String result = (focused ? "<span style=\"background-color: #FFFFFF\"><strong><font color=\"#000000\" style=\"background-color: #FFFFFF\">" : "") +  "↓ " + this.caption + (focused ? "</font></strong></span>" : "");
             for(LineItem item : nested) {
                 item.isVisible = true;
                 result += String.format("<br> |  %s", item.render(blink));
@@ -57,11 +69,22 @@ public class Folder extends LineItem.Interactable {
         for(LineItem item : nested) {
             item.isVisible = false;
         }
-        return "> " + this.caption;
+        return (focused ? "<span style=\"background-color: #FFFFFF\"><strong><font color=\"#000000\" style=\"background-color: #FFFFFF\">" : "") + "> " + this.caption  + (focused ? "</font></strong></span>" : "");
+    }
+
+    @Override
+    public String render(boolean blink) {
+        return this.format(blink);
     }
 
     @Override
     public void focus() {
+        focused = true;
+    }
 
+    @Override
+    public void disconnect() {
+        focused = false;
+        gamepad.A.removePressHandler();
     }
 }

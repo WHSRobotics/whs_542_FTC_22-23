@@ -1,4 +1,4 @@
-package org.whitneyrobotics.ftc.teamcode.tests;
+package org.whitneyrobotics.ftc.teamcode.tests.SubsystemTests;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

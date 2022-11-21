@@ -38,34 +38,14 @@ public abstract class LineItem {
     protected boolean isVisible = false;
 
     public enum RichTextFormat {
-        BOLD, ITALICS, UNDERLINE
+        BOLD, ITALICS, UNDERLINE, HIGHLIGHT
     }
 
     private boolean persistent = false;
 
     public boolean isPersistent() {return persistent;}
 
-    private Set<RichTextFormat> rtfFormats = new HashSet<RichTextFormat>();
-
-    public static abstract class Interactable extends LineItem {
-        private GamepadEx gamepad;
-
-        public Interactable(String caption) {
-            super(caption);
-        }
-
-        public Interactable(String caption, Color color, RichTextFormat... richTextFormats){
-            super(caption, true, color, richTextFormats);
-        }
-        public void connectGamepad(GamepadEx gamepad){
-
-        }
-        public abstract void focus();
-
-        public void disconnect(){
-
-        }
-    }
+    protected Set<RichTextFormat> rtfFormats = new HashSet<RichTextFormat>();
 
     protected String caption;
 
@@ -90,7 +70,7 @@ public abstract class LineItem {
     }
 
     public void persistent(){
-        persistent = !persistent;
+        persistent = true;
     }
 
     public void setPersistent(boolean persistent){
@@ -108,15 +88,27 @@ public abstract class LineItem {
         return this;
     }
 
+    public void resetRichTextFormats(){
+        this.rtfFormats = new HashSet<>();
+    }
+
     public abstract void reset();
 
     protected abstract String format(boolean blink);
 
     public String render(boolean blink){
         return String.format(
-                ((rtfFormats.contains(RichTextFormat.BOLD) ? "<strong>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "<em>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "<u>" : "") +
+                ((rtfFormats.contains(RichTextFormat.BOLD) ? "<strong>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "<em>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "<u>" : "") + (rtfFormats.contains(RichTextFormat.HIGHLIGHT) ? "<span style=\"background-color: #FFFFFF\">" : "") +
                         "<font color=\"%s\">%s</font>" +
-                        (rtfFormats.contains(RichTextFormat.BOLD) ? "</strong>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "</em>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "</u>" : "")),
-                this.color.getHexCode(), format(blink));
+                        (rtfFormats.contains(RichTextFormat.HIGHLIGHT) ? "</span>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "</u>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "</em>" : "") + (rtfFormats.contains(RichTextFormat.BOLD) ? "</strong>" : "")),
+                rtfFormats.contains(RichTextFormat.HIGHLIGHT) ? "#000000" : this.color.getHexCode(), format(blink));
+    }
+
+    public String renderPartial(String content){
+        return String.format(
+                    ((rtfFormats.contains(RichTextFormat.BOLD) ? "<strong>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "<em>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "<u>" : "") + (rtfFormats.contains(RichTextFormat.HIGHLIGHT) ? "<span style=\"background-color: #FFFFFF\">" : "") +
+                            "<font color=\"%s\">%s</font>" +
+                            (rtfFormats.contains(RichTextFormat.HIGHLIGHT) ? "</span>" : "") + (rtfFormats.contains(RichTextFormat.UNDERLINE) ? "</u>" : "") + (rtfFormats.contains(RichTextFormat.ITALICS) ? "</em>" : "") + (rtfFormats.contains(RichTextFormat.BOLD) ? "</strong>" : "")),
+                    rtfFormats.contains(RichTextFormat.HIGHLIGHT) ? "#000000" : this.color.getHexCode(), content);
     }
 }

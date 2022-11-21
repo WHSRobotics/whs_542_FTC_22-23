@@ -1,4 +1,4 @@
-package org.whitneyrobotics.ftc.teamcode.tests;
+package org.whitneyrobotics.ftc.teamcode.tests.HardwareTests;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.framework.DashboardOpMode;

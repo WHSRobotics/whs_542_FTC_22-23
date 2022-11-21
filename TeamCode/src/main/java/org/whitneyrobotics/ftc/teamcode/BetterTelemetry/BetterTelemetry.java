@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
+import org.whitneyrobotics.ftc.teamcode.tests.Test;
 
 import java.util.ArrayList;
 
@@ -20,7 +22,7 @@ public class BetterTelemetry  {
     private Telemetry opModeTelemetry;
 
     private final ArrayList<LineItem> items;
-    private final ArrayList<LineItem.Interactable> interactables = new ArrayList<>();
+    private final ArrayList<Interactable> interactables = new ArrayList<>();
     private boolean lineNumbers = false;
 
     private BetterTelemetry(OpMode o){
@@ -35,9 +37,19 @@ public class BetterTelemetry  {
         this.addItem(new KeyValueLine("Runtime", true, (() ->
             String.format("%s:%s",(int)Math.floor(currentOpMode.getRuntime()/60), (int)Math.floor(currentOpMode.getRuntime()%60))
         ), LineItem.Color.WHITE));
+
+        Test testingAnnotation = o.getClass().getDeclaredAnnotation(Test.class);
+        if(testingAnnotation != null){
+            this.addItem(new TextLine(String.format("Running Test %s of [%s]\n%s%s",
+                    testingAnnotation.name(),o.getClass().getPackage().getName(),
+                    testingAnnotation.description(),
+                    (testingAnnotation.autoTerminateAfterSeconds() > 0 && o instanceof OpModeEx) ?
+                            "This test will terminate after " + testingAnnotation.autoTerminateAfterSeconds() + " seconds." :
+                            "\n"),
+                    true,LineItem.Color.LIME, LineItem.RichTextFormat.ITALICS));
+        }
         opModeTelemetry = currentOpMode.telemetry;
         opModeTelemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
-        //opModeTelemetry.speak("BetterTelemetry connected on " + name);
     }
 
     private static BetterTelemetry instance;
@@ -53,7 +65,8 @@ public class BetterTelemetry  {
 
     public void update(){
         //blink every second
-        boolean blink = currentOpMode.getRuntime() % 2 > 1;
+        interact();
+        boolean blink = currentOpMode.getRuntime() % 0.5 > 0.25;
         for (LineItem item : items) {
             opModeTelemetry.addLine(
                     (lineNumbers ? "   " + (items.size() < 10 ? "    " : "") + items.indexOf(item) + "| " : "") +
@@ -69,17 +82,28 @@ public class BetterTelemetry  {
     }
 
     public void purge(){
-        items.removeIf(item -> !item.isPersistent());
+        items.removeIf(item -> {
+            boolean persistent = item.isPersistent();
+            if(!persistent){
+                if (item instanceof Interactable){
+                    ((Interactable) item).disconnect();
+                    interactables.remove(item);
+                }
+            }
+            return !persistent;
+        });
     }
 
-    private LineItem.Interactable focused = null;
+    private Interactable focused = null;
 
-    private LineItem.Interactable getNextInteractable(LineItem current, boolean dec){
+    private Interactable getNextInteractable(boolean dec){
         if(interactables.size() < 1) return null;
-        if(current == null){
+        if(focused == null){
             return interactables.get(0);
         } else {
-            return interactables.get((interactables.indexOf(current) + (dec ? -1 : 1) ) % interactables.size());
+            int focusIndex = interactables.indexOf(focused);
+            if(dec && focusIndex == 0) return interactables.get(interactables.size()-1);//modulo wrapping fix
+            return interactables.get((focusIndex + (dec ? -1 : 1) ) % interactables.size());
         }
     }
 
@@ -95,12 +119,31 @@ public class BetterTelemetry  {
      * TODO: Make GamepadEx with button hold signal ignore methods
      * @param gamepad
      */
-    public void interact(GamepadEx gamepad){
-        if(gamepad != null){
-            focused = getNextInteractable(focused,false);
+    private GamepadEx interactingGamepad;
+
+    /**
+     * Creates a ghost {@link GamepadEx} instance in the telemetry to process gamepad interactions.
+     */
+    public void setInteractingGamepad(GamepadEx gamepad){
+        interactingGamepad = new GamepadEx(gamepad.getEncapsulatedGamepad());
+        interactingGamepad.DPAD_UP.onPress(e -> {
+            if(focused != null) focused.disconnect();
+            focused = getNextInteractable(true);
+        });
+        interactingGamepad.DPAD_DOWN.onPress(e -> {
+            if(focused != null) focused.disconnect();
+            focused = getNextInteractable(false);
+        });
+    }
+
+    public void interact(){
+        if(interactingGamepad != null){
+            interactingGamepad.update();
             if(focused != null) {
-                focused.connectGamepad(gamepad);
+                focused.connectGamepad(interactingGamepad);
                 focused.focus();
+            } else if (interactables.size() > 0){
+                focused = getNextInteractable(false);
             }
         }
     }
@@ -108,12 +151,16 @@ public class BetterTelemetry  {
     public BetterTelemetry removeLineByCaption(String caption){
         items.removeIf(item -> item.caption == caption);
         interactables.removeIf(item -> item.caption == caption);
+        if(!interactables.contains(focused)){
+            focused.disconnect();
+            focused = getNextInteractable(false);
+        }
         return this;
     }
 
     public BetterTelemetry addItem(LineItem item){
         items.add(item);
-        if(item instanceof LineItem.Interactable) interactables.add((LineItem.Interactable) item);
+        if(item instanceof Interactable) interactables.add((Interactable) item);
         return this;
     }
 

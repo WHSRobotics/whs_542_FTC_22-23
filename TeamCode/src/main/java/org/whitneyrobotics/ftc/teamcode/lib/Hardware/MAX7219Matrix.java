@@ -1,4 +1,4 @@
-package org.whitneyrobotics.ftc.teamcode.BetterTelemetry;
+package org.whitneyrobotics.ftc.teamcode.lib.Hardware;
 
 import android.util.Log;
 
