@@ -1,5 +1,10 @@
 package org.whitneyrobotics.ftc.teamcode.lib.util;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class PIDVAcontroller {
     double maxVelocity;
     double maxAcceleration;
