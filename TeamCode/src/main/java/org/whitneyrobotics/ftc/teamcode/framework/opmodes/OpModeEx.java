@@ -16,10 +16,7 @@ import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.tests.Test;
 
-import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.function.Consumer;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -31,12 +28,12 @@ public abstract class OpModeEx extends OpMode {
     protected BetterTelemetry betterTelemetry = BetterTelemetry.setOpMode(this);
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
-    private Telemetry dashboardTelemetry;
+    protected Telemetry telemetry;
     protected TelemetryPacket packet = new TelemetryPacket();
 
     protected void initializeDashboardTelemetry(int msTransmissionInterval) {
-        dashboardTelemetry = dashboard.getTelemetry();
-        telemetry = new MultipleTelemetry(dashboardTelemetry,telemetry);
+        telemetry = dashboard.getTelemetry();
+        telemetry = new MultipleTelemetry(telemetry,telemetry);
         telemetry.setMsTransmissionInterval(msTransmissionInterval);
     }
 /*    public OpModeEx(boolean useFTCDashboard){
@@ -79,7 +76,7 @@ public abstract class OpModeEx extends OpMode {
         Test testingAnnotation = this.getClass().getDeclaredAnnotation(Test.class);
         if(testingAnnotation != null){
             if(testingAnnotation.autoTerminateAfterSeconds() > 0){
-                addTemporalCallback(resolve -> requestOpModeStop(), testingAnnotation.autoTerminateAfterSeconds());
+                addTemporalCallback(resolve -> requestOpModeStop(), testingAnnotation.autoTerminateAfterSeconds()*1000);
             }
         }
         gamepad1 = new GamepadEx(super.gamepad1);

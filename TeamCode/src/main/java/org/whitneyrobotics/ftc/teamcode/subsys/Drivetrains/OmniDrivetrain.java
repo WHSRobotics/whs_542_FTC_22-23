@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.whitneyrobotics.ftc.teamcode.framework.Subsystem;
 import org.whitneyrobotics.ftc.teamcode.framework.Vector;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDController;
@@ -55,6 +56,10 @@ public class OmniDrivetrain extends Drivetrain {
         driveBL = motorMap.get("driveBL");
         driveBR = motorMap.get("driveBR");
         resetEncoders();
+    }
+
+    public double getVelocity(){
+        return driveFL.getVelocity(AngleUnit.RADIANS);
     }
 
     @Override

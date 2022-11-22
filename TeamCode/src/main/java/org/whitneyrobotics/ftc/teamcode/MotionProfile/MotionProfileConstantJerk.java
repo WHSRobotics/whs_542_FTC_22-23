@@ -21,7 +21,7 @@ public class MotionProfileConstantJerk extends MotionProfile {
     }
 
     @Override
-    public double calculate() {
+    public double calculate(double currentPos, double targetPos) {
         double valChange = Math.abs(finalValue - initialValue);
         boolean cruiseNecessary = ((valChange / 2) - (CONSTANT_JERK * Math.pow(accelBasedMaxVelTime, 3)) - (CONSTANT_JERK * Math.pow(velBasedMaxVelTime, 3)) > valChange);
         if (cruiseNecessary){

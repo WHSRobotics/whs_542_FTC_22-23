@@ -24,5 +24,5 @@ public abstract class MotionProfile {
         this.maxVelocity = maxVelocity;
     }
 
-    public abstract double calculate();
+    public abstract double calculate(double currentPos, double targetPos);
 }

@@ -1,5 +1,9 @@
 package org.whitneyrobotics.ftc.teamcode.lib.control;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -13,7 +17,7 @@ public class PIDControlledMotor {
     private final DcMotorEx motor;
 
     private double lastPower = 0.0d;
-    private double brakePower = 0.0d;
+    private double brakePower = 1.0d;
     private double targetVelocity = 0.0d;
     public PIDControllerNew controller;
 
@@ -51,11 +55,13 @@ public class PIDControlledMotor {
         return motor;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setTargetVelocity(double targetVelocity){
         this.targetVelocity = Functions.clamp(targetVelocity, -MAX_VELOCITY, MAX_VELOCITY);
         controller.setTarget(targetVelocity);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void update(){
         controller.calculate(motor.getVelocity(AngleUnit.RADIANS));
         double output = controller.getOutput();
