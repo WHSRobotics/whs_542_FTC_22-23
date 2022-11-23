@@ -73,14 +73,15 @@ public class OmniDrivetrain extends Drivetrain {
 
     public void rotateToTarget(double theta, boolean backwards){
         if (backwards) {
-            if (Math.min(Math.abs(theta - Math.PI), theta + Math.PI) == Math.abs(theta - Math.PI)) {
+            double optimalAngle = Math.min(Math.abs(theta - Math.PI), theta + Math.PI);
+            if (optimalAngle == Math.abs(theta - Math.PI)) {
                 rotateDirection = Math.signum(theta - Math.PI);
-            } else if (Math.min(Math.abs(theta - Math.PI), theta + Math.PI) == Math.abs(theta + Math.PI)) {
+            } else if (optimalAngle == Math.abs(theta + Math.PI)) {
                 rotateDirection = Math.signum(theta + Math.PI);
             }
         }
 
-        rotateController.calculate(Math.min(Math.abs(rotateTheta - Math.PI), rotateTheta + Math.PI) * rotateDirection);
+        rotateController.calculate(Math.min(Math.abs(rotateTheta - 2 *Math.PI), rotateTheta + 2 * Math.PI) * rotateDirection);
         rotatePower = Functions.map(rotateController.getOutput(), 0, 360, rotate_min, rotate_max);
 
         applyPowersToMotors(0, 0, Math.max(rotatePower, 0.001));
