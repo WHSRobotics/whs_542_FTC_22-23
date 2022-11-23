@@ -23,6 +23,13 @@ public class KeyValueLine<T> extends LineItem {
         this.valueProducer = valueProducer;
     }
 
+    public T value(){
+        if(valueProducer != null){
+            return (T) valueProducer.value();
+        }
+        return (T) value;
+    }
+
     public String getCaption(){
         return this.caption;
     }

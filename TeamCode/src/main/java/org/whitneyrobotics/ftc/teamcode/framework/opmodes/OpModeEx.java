@@ -28,6 +28,7 @@ public abstract class OpModeEx extends OpMode {
     protected BetterTelemetry betterTelemetry = BetterTelemetry.setOpMode(this);
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
+    protected Telemetry dashboardTelemetry = dashboard.getTelemetry();
     protected Telemetry telemetry;
     protected TelemetryPacket packet = new TelemetryPacket();
 
