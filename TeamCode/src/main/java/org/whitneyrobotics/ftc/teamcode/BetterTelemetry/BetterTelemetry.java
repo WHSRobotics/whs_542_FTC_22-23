@@ -4,6 +4,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -52,11 +53,24 @@ public class BetterTelemetry  {
         opModeTelemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
     }
 
+    private TelemetryPacket packet;
+    private Telemetry dashbboardTelemetry;
+
     private static BetterTelemetry instance;
 
     public static BetterTelemetry setOpMode(OpMode o){
         instance = new BetterTelemetry(o);
         return instance;
+    }
+
+    public void useTelemetryPacket(TelemetryPacket packet){
+        this.packet = packet;
+        //opModeTelemetry.addLine("Packet connected");
+        //addLine("Packet connected", LineItem.Color.GREEN, LineItem.RichTextFormat.BOLD).persistent();
+    }
+
+    public void useDashboardTelemetry(Telemetry dashbboardTelemetry){
+        this.dashbboardTelemetry = dashbboardTelemetry;
     }
 
     public static BetterTelemetry getCurrentInstance(){
@@ -71,6 +85,11 @@ public class BetterTelemetry  {
             opModeTelemetry.addLine(
                     (lineNumbers ? "   " + (items.size() < 10 ? "    " : "") + items.indexOf(item) + "| " : "") +
                             item.render(blink));
+            if (dashbboardTelemetry != null && item instanceof KeyValueLine){
+                KeyValueLine keyValueItem = (KeyValueLine) item;
+                dashbboardTelemetry.addData(keyValueItem.caption, keyValueItem.value());
+                dashbboardTelemetry.update();
+            }
         }
         purge();
         //opModeTelemetry.clear();

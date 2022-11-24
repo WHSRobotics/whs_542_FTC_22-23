@@ -80,7 +80,11 @@ public class PIDControllerNew {
 
     public void setTarget(double target) {
         this.target = target;
-        reset();
+        //reset();
+    }
+
+    public void setTargetWithoutReset(double target){
+        this.target = target;
     }
 
     public double getTarget(){
@@ -139,6 +143,7 @@ public class PIDControllerNew {
         double deltaError = error - lastKnownError;
         derivative = deltaError / deltaTime;
         lastKnownError = error;
+        lastKnownInput = current;
     }
 
     /**

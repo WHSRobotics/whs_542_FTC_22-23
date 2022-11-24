@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDCoefficientsNew;
@@ -16,7 +17,7 @@ public class PIDControlledMotor {
     public final double MAX_VELOCITY;
     private final DcMotorEx motor;
 
-    private double lastPower = 0.0d;
+    public double lastPower = 0.0d;
     private double brakePower = 1.0d;
     private double targetVelocity = 0.0d;
     public PIDControllerNew controller;
@@ -33,6 +34,10 @@ public class PIDControlledMotor {
         controller = new PIDControllerNew(pidCoefficients);
         controller.reset();
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void setDirection(DcMotorSimple.Direction direction){
+        motor.setDirection(direction);
     }
 
     public void reset() {
@@ -58,7 +63,7 @@ public class PIDControlledMotor {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setTargetVelocity(double targetVelocity){
         this.targetVelocity = Functions.clamp(targetVelocity, -MAX_VELOCITY, MAX_VELOCITY);
-        controller.setTarget(targetVelocity);
+        controller.setTargetWithoutReset(targetVelocity);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -66,6 +71,7 @@ public class PIDControlledMotor {
         controller.calculate(motor.getVelocity(AngleUnit.RADIANS));
         double output = controller.getOutput();
         lastPower += Math.signum(output) * Functions.map(Math.abs(output), 0,MAX_VELOCITY,0,1);
+        lastPower = Functions.clamp(lastPower, -1, 1);
         motor.setPower(lastPower * brakePower);
     }
 }
