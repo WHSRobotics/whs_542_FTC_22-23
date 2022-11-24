@@ -5,18 +5,24 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.opencv.core.Mat;
 import org.whitneyrobotics.ftc.teamcode.framework.Matrix;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 
+import java.lang.Thread;
 
 
-@TeleOp(name = "LEDOp")
-public class MAX7219Matrix extends OpModeEx {
-    DigitalChannelImpl SPI_MOSI;
-    DigitalChannelImpl SPI_CLK;
-    DigitalChannelImpl SPI_CS;
+
+
+
+public class MAX7219Matrix {
+    volatile DigitalChannelImpl SPI_MOSI;
+    volatile DigitalChannelImpl SPI_CLK;
+    volatile DigitalChannelImpl SPI_CS;
+
+    boolean writingToDevice = false;
 
     public enum Addresses {
         NOOP(0),
@@ -107,25 +113,27 @@ public class MAX7219Matrix extends OpModeEx {
             this.data = data;
         }
     }
-    @Override
-    public void initInternal() {
-        SPI_MOSI = hardwareMap.get(DigitalChannelImpl.class, "matrixMOSI");
-        SPI_CLK = hardwareMap.get(DigitalChannelImpl.class, "matrixCLK");
-        SPI_CS = hardwareMap.get(DigitalChannelImpl.class, "matrixCS");
 
-        SPI_MOSI.setMode(DigitalChannel.Mode.OUTPUT);
-        SPI_CLK.setMode(DigitalChannel.Mode.OUTPUT);
-        SPI_CS.setMode(DigitalChannel.Mode.OUTPUT);
+    public MAX7219Matrix(HardwareMap hardwareMap, String mosi, String clk, String cs) {
+        new Thread(() -> {
+            SPI_MOSI = hardwareMap.get(DigitalChannelImpl.class, mosi);
+            SPI_CLK = hardwareMap.get(DigitalChannelImpl.class, clk);
+            SPI_CS = hardwareMap.get(DigitalChannelImpl.class, cs);
 
-        SPI_CS.setState(true);
-        SPI_CLK.setState(false);
-        SPI_MOSI.setState(true);
+            SPI_MOSI.setMode(DigitalChannel.Mode.OUTPUT);
+            SPI_CLK.setMode(DigitalChannel.Mode.OUTPUT);
+            SPI_CS.setMode(DigitalChannel.Mode.OUTPUT);
 
-        setScanLimitRegister(7);
-        startDisplay();
-        setIntensity(0); // About medium brightness
-        clearDisplay();
-        setDisplay(MatrixNumerals.THREE.data, false);
+            SPI_CS.setState(true);
+            SPI_CLK.setState(false);
+            SPI_MOSI.setState(true);
+
+            setScanLimitRegister(7);
+            startDisplay();
+            setIntensity(0); // About medium brightness
+            clearDisplay();
+            setDisplay(MatrixNumerals.THREE.data, false);
+        }).start();
     }
 
     public static int[] generateErrorStatus(int statusCode){
@@ -141,23 +149,23 @@ public class MAX7219Matrix extends OpModeEx {
         };
     }
 
-    @Override
-    public void loopInternal() {
-        if (getRuntime() % 6 < 1) {
-            setDisplay(MatrixNumerals.ONE.data, false);
-        } else if (getRuntime() % 6 < 2) {
-            setDisplay(MatrixNumerals.TWO.data, false);
-        } else if (getRuntime() % 6 < 3) {
-            setDisplay(MatrixNumerals.THREE.data, false);
-        } else if (getRuntime() % 6 < 4) {
-//            setDisplay(generateErrorStatus(69), false);
-            setDisplay(MatrixNumerals.FOUR.data, false);
-        } else if (getRuntime() % 6 < 5) {
-            setDisplay(MatrixNumerals.FIVE.data, false);
-        } else {
-            setDisplay(MatrixNumerals.SMILE.data, false);
-        }
-    }
+//    @Override
+//    public void loopInternal() {
+//        if (getRuntime() % 6 < 1) {
+//            setDisplay(MatrixNumerals.ONE.data, false);
+//        } else if (getRuntime() % 6 < 2) {
+//            setDisplay(MatrixNumerals.TWO.data, false);
+//        } else if (getRuntime() % 6 < 3) {
+//            setDisplay(MatrixNumerals.THREE.data, false);
+//        } else if (getRuntime() % 6 < 4) {
+////            setDisplay(generateErrorStatus(69), false);
+//            setDisplay(MatrixNumerals.FOUR.data, false);
+//        } else if (getRuntime() % 6 < 5) {
+//            setDisplay(MatrixNumerals.FIVE.data, false);
+//        } else {
+//            setDisplay(MatrixNumerals.SMILE.data, false);
+//        }
+//    }
 
     // Column data format
     // ---------------------------------------------------
@@ -231,21 +239,26 @@ public class MAX7219Matrix extends OpModeEx {
     // contains the data to be put into the register. When we pull chip select back up to high, the
     // data is latched onto the MAX7219 for it to then read.
 
-    private void spiMAX7219Write(Addresses address, int data) {
-        SPI_CS.setState(false);
+    private synchronized void spiMAX7219Write(Addresses address, int data) {
+        new Thread(() -> {
+            SPI_CS.setState(false);
 
-        shiftOut(address.getAddress());
-        shiftOut(data);
+            shiftOut(address.getAddress());
+            shiftOut(data);
 
-        SPI_CS.setState(true);
+            SPI_CS.setState(true);
+        }).start();
     }
 
-    private void spiMAX7219Write(int address, int data) {
-        SPI_CS.setState(false);
+    private synchronized void spiMAX7219Write(int address, int data) {
+        new Thread(() -> {
+            SPI_CS.setState(false);
 
-        shiftOut(address);
-        shiftOut(data);
+            shiftOut(address);
+            shiftOut(data);
 
-        SPI_CS.setState(true);
+            SPI_CS.setState(true);
+        }).start();
+
     }
 }
