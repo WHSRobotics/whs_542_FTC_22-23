@@ -6,6 +6,8 @@ import androidx.annotation.RequiresApi;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
 import org.whitneyrobotics.ftc.teamcode.lib.pathfollowers.purepursuit.PurePursuitFollower;
@@ -14,6 +16,8 @@ import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.OmniDrivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
 import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
 import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlides;
+import org.whitneyrobotics.ftc.teamcode.visionImpl.BarcodeScanner;
+import org.whitneyrobotics.ftc.teamcode.visionImpl.AprilTagDetectionPipeline;
 
 @RequiresApi(Build.VERSION_CODES.N)
 public class WHSRobotImpl {
@@ -21,16 +25,15 @@ public class WHSRobotImpl {
     public LinearSlides robotLinearSlides;
     public Grabber robotGrabber;
     public IMU imu;
-
-    GamepadEx gamePadOne;
-    GamepadEx gamePadTwo;
+    public OpenCvCamera camera;
+    public AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     SimpleTimer autoTimer;
 
-    public WHSRobotImpl (HardwareMap hardwareMap, GamepadEx gamepadOne){
+    public WHSRobotImpl (HardwareMap hardwareMap){
         imu = new IMU(hardwareMap);
         drivetrain = new OmniDrivetrain(hardwareMap, imu);
-        //robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
+        robotLinearSlides = new LinearSlides(hardwareMap);
         robotGrabber = new Grabber(hardwareMap);
         //robotIntake.resetEncoders();
 
