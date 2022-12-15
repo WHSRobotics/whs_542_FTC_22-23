@@ -11,6 +11,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+
 import java.util.ArrayList;
 
 
@@ -34,8 +35,12 @@ public class AprilTagScanner2022 {
     final int LEFT = 1;
     final int MIDDLE = 2;
     final int RIGHT = 3;
+
     // UNITS ARE METERS
     double tagsize = 0.166;
+
+    private AprilTagDetection latestTag = null;
+    public int getLatestTag() {return latestTag.id;}
 
     public AprilTagScanner2022(HardwareMap hardwareMap) {
         // Find camera, and make a pipeline
@@ -67,7 +72,7 @@ public class AprilTagScanner2022 {
         AprilTagDetection tagOfInterest = null;
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
-        if(currentDetections.size() != 0) {
+        if (currentDetections.size() != 0) {
             boolean tagFound = false;
 
             for (AprilTagDetection tag : currentDetections) {
@@ -77,12 +82,22 @@ public class AprilTagScanner2022 {
                     break;
                 }
             }
-            if(tagFound) {
+            if (tagFound) {
+                latestTag = tagOfInterest;
                 return tagOfInterest.id;
-            }
-            else return -1;
-        }
-        else return -1;
+            } else return -1;
+        } else return -1;
+    }
+
+    public void latestTagToTelemetry()
+    {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", latestTag.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", latestTag.pose.x*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", latestTag.pose.y*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", latestTag.pose.z*FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(latestTag.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(latestTag.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(latestTag.pose.roll)));
     }
 
 }
