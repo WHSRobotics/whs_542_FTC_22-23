@@ -43,6 +43,7 @@ public class Grabber implements Subsystem {
 
     public void toggleState(){
         currentState = (currentState == GrabberStates.OPEN ? GrabberStates.CLOSE : GrabberStates.OPEN);
+        gate.setPosition(currentState.getPosition());
     }
 
     public void setState(boolean opened){
@@ -57,6 +58,9 @@ public class Grabber implements Subsystem {
         override = state;
     }
 
+    public void testSetPosition(double position) {
+        gate.setPosition(position);
+    }
     public void forceOpen(){ override = true; }
 
     public void tick() {
@@ -67,7 +71,6 @@ public class Grabber implements Subsystem {
         } else {
             gate.setPosition(currentState.getPosition());
         }
-
     }
 
     public double getPosition(){

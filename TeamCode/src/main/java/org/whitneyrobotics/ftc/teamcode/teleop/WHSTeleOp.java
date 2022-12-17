@@ -93,6 +93,8 @@ public class WHSTeleOp extends OpModeEx {
             robot.robotGrabber.forceOpen();
             Log.println(Log.DEBUG, "Debug", "Y pressed");
         }
+//        robot.robotGrabber.testSetPosition(0.35);
+//        robot.robotGrabber.forceOpen();
         robot.tick();
         double xPower = Math.pow(gamepad1.LEFT_STICK_X.value(),3);
         double yPower = Math.pow(gamepad1.LEFT_STICK_Y.value(),3);

@@ -28,7 +28,7 @@ public class WHSRobotImpl {
     public Grabber robotGrabber;
     public IMU imu;
     public OpenCvCamera camera;
-    public AprilTagDetectionPipeline aprilTagDetectionPipeline;
+//    public AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     SimpleTimer autoTimer;
 
