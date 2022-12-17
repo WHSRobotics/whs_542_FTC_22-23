@@ -10,33 +10,59 @@ import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.file.RobotDataUtil;
 import org.whitneyrobotics.ftc.teamcode.lib.file.WHSRobotData;
 import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.visionImpl.AprilTagScanner2022;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-@Autonomous(name="PowerPlay Auto BLUE", group="A", preselectTeleOp = "PowerPlay TeleOp")
+@Autonomous(name="PowerPlay Auto BLUE Right", group="A", preselectTeleOp = "PowerPlay TeleOp")
 public class PowerPlayAutoBLUE extends OpModeEx{
-    boolean finished = false;
+    String state = "Junction Placement";
     WHSRobotImpl robot;
+    AprilTagScanner2022 aprilTagScanner = new AprilTagScanner2022(hardwareMap);
 
     @Override
     public void initInternal() {
+        // auto step/timing management
         addTemporalCallback(resolve -> {
-            this.finished = true;
-            resolve.accept(true);
+            this.state = "Moving to InitPosition";
         }, 1500);
+        addTemporalCallback(resolve -> {
+            this.state = "Moving to parking position";
+        }, 3000);
+        addTemporalCallback(resolve -> {
+            this.state = "Parking";
+        }, 6500);
+        addTemporalCallback(resolve -> {
+            this.state = "Idle";
+        }, 9500);
+
         addTemporalCallback(e -> {
             RobotDataUtil.save(WHSRobotData.class,true);
         },29000);
         addTemporalCallback(e -> requestOpModeStop(),31000);
-        robot = new WHSRobotImpl(hardwareMap, gamepad1);
+        robot = new WHSRobotImpl(hardwareMap, gamepad2);
+    }
+
+    @Override
+    public void init_loop(){
+        if (aprilTagScanner.scan() != -1) {
+            aprilTagScanner.latestTagToTelemetry();
+            return; //loop until scan
+        }
     }
 
     @Override
     protected void loopInternal() {
-        if (!finished){
-            robot.drivetrain.operateByCommand(0.4,0,0);
-        } else {
-            robot.drivetrain.operateByCommand(0,0,0);
+        switch (state) {
+            case "Junction Placement":
+                robot.drivetrain.operateByCommand(0.4, 0, 0);
+            case "Moving to InitPosition":
+                robot.drivetrain.operateByCommand(-0.4, 0, 0);
+            case "Moving to Parking Position":
+                robot.drivetrain.operateByCommand(0, 0.2, 0);
+            case "Parking" :
+                robot.drivetrain.operateByCommand(0.2 * (aprilTagScanner.getLatestTag()-2),0,0);
         }
+
         WHSRobotData.heading = robot.imu.getHeading();
     }
 }

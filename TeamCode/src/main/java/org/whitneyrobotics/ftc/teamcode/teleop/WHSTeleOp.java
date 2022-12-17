@@ -4,6 +4,7 @@ import static org.whitneyrobotics.ftc.teamcode.lib.util.RumbleEffects.endgame;
 import static org.whitneyrobotics.ftc.teamcode.lib.util.RumbleEffects.matchEnd;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -77,7 +78,7 @@ public class WHSTeleOp extends OpModeEx {
     @Override
     public void initInternal() {
         RobotDataUtil.load(WHSRobotData.class);
-        robot = new WHSRobotImpl(hardwareMap, gamepad1);
+        robot = new WHSRobotImpl(hardwareMap, gamepad2);
         robot.imu.zeroHeading(WHSRobotData.heading);
         setupGamepads();
         setupNotifications();
@@ -90,6 +91,7 @@ public class WHSTeleOp extends OpModeEx {
     protected void loopInternal() {
         if(gamepad2.DPAD_UP.value()){
             robot.robotGrabber.forceOpen();
+            Log.println(Log.DEBUG, "Debug", "Y pressed");
         }
         robot.tick();
         double xPower = Math.pow(gamepad1.LEFT_STICK_X.value(),3);
