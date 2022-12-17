@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDCoefficientsNew;
-import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDControllerNew;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 
 public class PIDControlledMotor {

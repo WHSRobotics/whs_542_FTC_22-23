@@ -10,8 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.Button;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
-import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDControllerNew;
-import org.whitneyrobotics.ftc.teamcode.lib.util.PIDVAcontroller;
+import org.whitneyrobotics.ftc.teamcode.lib.control.PIDVAController;
 
 //To do: Find level positions, find lower and upper bounds
 //Make motor PID controller
@@ -29,7 +28,7 @@ public class LinearSlides {
         return ((LSleft.getCurrentPosition()+LSright.getCurrentPosition())/2.0);
     }
     private double slidesPositionTarget = 0.0;
-    public boolean isOnTarget(){return slidesPositionTarget == ((LSleft.getCurrentPosition()+LSright.getCurrentPosition())/2.0);}
+    public boolean isOnTarget(){return Math.abs(slidesPositionTarget-getSlidesPosition())<=ACCEPTABLE_ERROR;}
     public double getSlidesVelocity(){return (LSleft.getVelocity()+LSright.getVelocity())/2.0;}
 
     public boolean isSlidingInProgress(){return getSlidesVelocity() != 0;}
@@ -41,6 +40,8 @@ public class LinearSlides {
     private static final double SLIDES_INIT = 5.0; // inches
     private static final double MAX_ACCELERATION = 5; // inches/sec^2
     private static final double MAX_VELOCITY = 50; // inches/s
+
+    private static final double ACCEPTABLE_ERROR = 5; //ticks
     private static final double SHAFT_DIAMETER = 2; //inches
     private static final int CYCLES_PER_REVOLUTION = 7;
     private static final double GEAR_RATIO = 1.0/2.0;
@@ -56,7 +57,7 @@ public class LinearSlides {
     private int currentLevel = 0;
     public int getCurrentLevel() {return currentLevel;}
     public LinearSlidesSTATE linearSlidesSTATE;
-    private final PIDVAcontroller pidvaController = new PIDVAcontroller(MAX_VELOCITY,MAX_ACCELERATION);
+    private final PIDVAController pidvaController = new PIDVAController(MAX_VELOCITY,MAX_ACCELERATION,1,0,0);
 
     //Button inc, Button dec, Button switchState, Button reset
     public LinearSlides(HardwareMap hardwareMap, GamepadEx gamepad1) {

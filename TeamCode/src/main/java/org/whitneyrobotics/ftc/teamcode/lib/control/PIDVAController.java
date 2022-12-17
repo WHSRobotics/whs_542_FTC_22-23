@@ -1,23 +1,29 @@
-package org.whitneyrobotics.ftc.teamcode.lib.util;
+package org.whitneyrobotics.ftc.teamcode.lib.control;
 
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
+
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class PIDVAcontroller {
+public class PIDVAController extends PIDControllerNew {
     double maxVelocity;
     double maxAcceleration;
     double desiredPos;
-    double expectedPosChange;
+    double expectedPosRampDown;
     double lastPos = 0;
     double lastVel = 0;
     double lastTime = 0;
 
-    public PIDVAcontroller(double mV, double mA)  {
+    public PIDVAController(double mV, double mA, double kP, double kI, double kD)  {
+        this.setKP(kP);
+        this.setKI(kI);
+        this.setKD(kD);
+        this.setF((target, current, elapsedTime) -> (target > current) ? 15 : 0); //additional power when going up to reduce gravity
         maxVelocity = mV;
         maxAcceleration = mA;
-        expectedPosChange = (maxVelocity*maxVelocity)/(2*maxAcceleration);
+        expectedPosRampDown = (maxVelocity*maxVelocity)/(2*maxAcceleration);
     }
 
     /**
@@ -65,6 +71,7 @@ public class PIDVAcontroller {
         lastTime = currentTime;
         lastPos = currentPos;
         lastVel = currentVelocity;
+
         return 0.0;
     }
 }

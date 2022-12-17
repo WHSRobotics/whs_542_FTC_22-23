@@ -168,9 +168,11 @@ public class BetterTelemetry  {
     }
 
     public BetterTelemetry removeLineByCaption(String caption){
-        items.removeIf(item -> item.caption == caption);
+        for (LineItem item : items){
+            if(item.caption == caption) item.setPersistent(false);
+        }
         interactables.removeIf(item -> item.caption == caption);
-        if(!interactables.contains(focused)){
+        if(!interactables.contains(focused) && focused != null){
             focused.disconnect();
             focused = getNextInteractable(false);
         }

@@ -11,11 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.SliderDisplayLine;
-import org.whitneyrobotics.ftc.teamcode.framework.DashboardOpMode;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDControlledMotor;
-import org.whitneyrobotics.ftc.teamcode.lib.libraryProto.PIDControllerNew;
-import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 
 @TeleOp(
         name="MotorPIDTest",

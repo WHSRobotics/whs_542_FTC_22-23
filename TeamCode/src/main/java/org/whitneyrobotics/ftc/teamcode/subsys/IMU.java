@@ -1,5 +1,9 @@
 package org.whitneyrobotics.ftc.teamcode.subsys;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -52,11 +56,13 @@ public class IMU {
         return threeHeading; // -180 to 180 deg
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public double getHeading(){
-        double heading = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.XYZ).thirdAngle - calibration;
+        double heading = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).firstAngle/*toAxesOrder(AxesOrder.XYZ).thirdAngle*/ - calibration;
         heading = Functions.normalizeAngle(heading); // -180 to 180 deg
         return heading;
     }
+
 
     public double getHeadingRadians(){
         return getHeading()*(Math.PI/180);

@@ -14,11 +14,13 @@ import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.OmniDrivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
 import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
 import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlides;
+import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet1;
 
 @RequiresApi(Build.VERSION_CODES.N)
 public class WHSRobotImpl {
     public OmniDrivetrain drivetrain;
     public LinearSlides robotLinearSlides;
+    public LinearSlidesMeet1 robotLinearSlidesMeet1;
     public Grabber robotGrabber;
     public IMU imu;
 
@@ -31,6 +33,7 @@ public class WHSRobotImpl {
         imu = new IMU(hardwareMap);
         drivetrain = new OmniDrivetrain(hardwareMap, imu);
         //robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
+        robotLinearSlidesMeet1 = new LinearSlidesMeet1(hardwareMap);
         robotGrabber = new Grabber(hardwareMap);
         //robotIntake.resetEncoders();
 

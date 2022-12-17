@@ -1,4 +1,4 @@
-package org.whitneyrobotics.ftc.teamcode.lib.libraryProto;
+package org.whitneyrobotics.ftc.teamcode.lib.control;
 
 public class PIDControllerNew {
     private double kP = 1;

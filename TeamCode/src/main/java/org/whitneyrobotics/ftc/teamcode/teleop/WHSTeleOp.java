@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.SliderDisplayLine;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.TextLine;
@@ -17,6 +18,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.file.RobotDataUtil;
 import org.whitneyrobotics.ftc.teamcode.lib.file.WHSRobotData;
 import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
+import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet1;
 import org.whitneyrobotics.ftc.teamcode.subsys.Robot;
 
 @TeleOp(name="PowerPlay TeleOp", group="A")
@@ -34,6 +36,12 @@ public class WHSTeleOp extends OpModeEx {
             playSound("emergency", 100.00f);
             requestOpModeStop();
         });
+
+        gamepad2.SQUARE.onPress(e -> robot.robotLinearSlidesMeet1.setTarget(LinearSlidesMeet1.Target.LOW));
+        gamepad2.TRIANGLE.onPress(e -> robot.robotLinearSlidesMeet1.setTarget(LinearSlidesMeet1.Target.MEDIUM));
+        gamepad2.CIRCLE.onPress(e -> robot.robotLinearSlidesMeet1.setTarget(LinearSlidesMeet1.Target.HIGH));
+        gamepad2.CROSS.onPress(e -> robot.robotLinearSlidesMeet1.setTarget(LinearSlidesMeet1.Target.LOWERED));
+        gamepad2.START.onPress(e-> robot.robotLinearSlidesMeet1.reloadPIDCoefficients());
     }
 
     void setupNotifications(){
@@ -41,7 +49,7 @@ public class WHSTeleOp extends OpModeEx {
             playSound("endgame",100f);
             gamepad1.getEncapsulatedGamepad().runRumbleEffect(endgame);
             gamepad2.getEncapsulatedGamepad().runRumbleEffect(endgame);
-            betterTelemetry.addItem(new TextLine("Endgame approaching soon!",true, LineItem.Color.ROBOTICS, LineItem.RichTextFormat.BOLD));
+            betterTelemetry.addLine("Endgame approaching soon!", LineItem.Color.ROBOTICS, LineItem.RichTextFormat.BOLD).persistent();
             resolve.accept(!gamepad1.getEncapsulatedGamepad().isRumbling() && gamepad2.getEncapsulatedGamepad().isRumbling());
         }, 85000);
 
@@ -54,14 +62,14 @@ public class WHSTeleOp extends OpModeEx {
             playSound("matchend",100f);
             gamepad1.getEncapsulatedGamepad().runRumbleEffect(matchEnd);
             gamepad2.getEncapsulatedGamepad().runRumbleEffect(matchEnd);
-            betterTelemetry.addItem(new TextLine("Match ends in 5 seconds!",true, LineItem.Color.FUCHSIA, LineItem.RichTextFormat.BOLD));
+            betterTelemetry.addLine("Match ends in 5 seconds!", LineItem.Color.FUCHSIA, LineItem.RichTextFormat.BOLD).persistent();
             resolve.accept(!gamepad1.getEncapsulatedGamepad().isRumbling() && gamepad2.getEncapsulatedGamepad().isRumbling());
         }, 113000);
 
         addTemporalCallback(resolve -> {
             playSound("slay",100f);
             betterTelemetry.removeLineByCaption("Match ends in 5 seconds!");
-            betterTelemetry.addItem(new TextLine("Match has ended.", true, LineItem.Color.LIME, LineItem.RichTextFormat.ITALICS));
+            betterTelemetry.addLine("Match has ended.", LineItem.Color.LIME, LineItem.RichTextFormat.ITALICS).persistent();
             resolve.accept(true);
         },120000);
     }
@@ -73,11 +81,14 @@ public class WHSTeleOp extends OpModeEx {
         robot.imu.zeroHeading(WHSRobotData.heading);
         setupGamepads();
         setupNotifications();
+        betterTelemetry.addItem(new SliderDisplayLine("Slides position", robot.robotLinearSlidesMeet1::getPosition, LineItem.Color.AQUA)
+                .setScale(36));
+        betterTelemetry.useDashboardTelemetry(dashboardTelemetry);
     }
 
     @Override
     protected void loopInternal() {
-        if(gamepad2.Y.value()){
+        if(gamepad2.DPAD_UP.value()){
             robot.robotGrabber.forceOpen();
         }
         robot.tick();
@@ -89,8 +100,16 @@ public class WHSTeleOp extends OpModeEx {
             yPower = gamepad1.LEFT_STICK_Y.value()/3;
             rotPower = gamepad1.RIGHT_STICK_X.value()/3;
         }
+        robot.robotLinearSlidesMeet1.operate(gamepad2.LEFT_STICK_Y.value(),gamepad2.BUMPER_LEFT.value());
 
         robot.drivetrain.operateByCommand(xPower, yPower, rotPower);
         betterTelemetry.addData("Field centric",robot.drivetrain.fieldCentricEnabled());
+        betterTelemetry.addData("Slides phase",robot.robotLinearSlidesMeet1.getPhase());
+        betterTelemetry.addData("is sliding",robot.robotLinearSlidesMeet1.isSliding());
+        betterTelemetry.addData("is raised",robot.robotLinearSlidesMeet1.isRaised());
+        betterTelemetry.addLine("");
+
+        betterTelemetry.addData("current target slides vel",robot.robotLinearSlidesMeet1.velocity);
+        betterTelemetry.addData("current slides vel",robot.robotLinearSlidesMeet1.getPIDL().getMotor().getVelocity(AngleUnit.RADIANS));
     }
 }
