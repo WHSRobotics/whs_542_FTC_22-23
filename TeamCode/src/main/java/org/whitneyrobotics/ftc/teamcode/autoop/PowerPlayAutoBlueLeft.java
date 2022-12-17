@@ -33,7 +33,7 @@ public class PowerPlayAutoBlueLeft extends OpModeEx{
             RobotDataUtil.save(WHSRobotData.class,true);
         },29000);
         addTemporalCallback(e -> requestOpModeStop(),31000);
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImpl(hardwareMap, gamepad1);
     }
 
     @Override

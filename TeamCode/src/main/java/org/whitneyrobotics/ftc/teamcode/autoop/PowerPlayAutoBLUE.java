@@ -13,7 +13,7 @@ import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 import org.whitneyrobotics.ftc.teamcode.visionImpl.AprilTagScanner2022;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-@Autonomous(name="PowerPlay Auto BLUE", group="A", preselectTeleOp = "PowerPlay TeleOp")
+@Autonomous(name="PowerPlay Auto BLUE Right", group="A", preselectTeleOp = "PowerPlay TeleOp")
 public class PowerPlayAutoBLUE extends OpModeEx{
     String state = "Junction Placement";
     WHSRobotImpl robot;
@@ -39,7 +39,7 @@ public class PowerPlayAutoBLUE extends OpModeEx{
             RobotDataUtil.save(WHSRobotData.class,true);
         },29000);
         addTemporalCallback(e -> requestOpModeStop(),31000);
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImpl(hardwareMap, gamepad2);
     }
 
     @Override

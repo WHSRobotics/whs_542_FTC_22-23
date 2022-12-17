@@ -4,12 +4,14 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
+import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.pathfollowers.purepursuit.PurePursuitFollower;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.OmniDrivetrain;
@@ -30,10 +32,12 @@ public class WHSRobotImpl {
 
     SimpleTimer autoTimer;
 
-    public WHSRobotImpl (HardwareMap hardwareMap){
+    GamepadEx gamepad;
+    public WHSRobotImpl (HardwareMap hardwareMap, GamepadEx gamepad){
+        gamepad = gamepad;
         imu = new IMU(hardwareMap);
         drivetrain = new OmniDrivetrain(hardwareMap, imu);
-        robotLinearSlides = new LinearSlides(hardwareMap);
+        robotLinearSlides = new LinearSlides(hardwareMap, gamepad);
         robotGrabber = new Grabber(hardwareMap);
         //robotIntake.resetEncoders();
 

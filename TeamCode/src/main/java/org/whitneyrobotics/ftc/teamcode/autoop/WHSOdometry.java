@@ -33,7 +33,7 @@ public class WHSOdometry {
         return (leftWheel.getCurrentPosition()+rightWheel.getCurrentPosition())/2;
     }
     private double getDeltaX () {
-        return centerWheel.getCurrentPosition()-TRACK_LENGTH*((leftWheel.getCurrentPosition()-rightWheel.getCurrentPosition())/2)
+        return centerWheel.getCurrentPosition()-TRACK_LENGTH*((leftWheel.getCurrentPosition()-rightWheel.getCurrentPosition())/2);
     }
     public double getCurrentRotation() {
         return (rightWheel.getCurrentPosition()-leftWheel.getCurrentPosition())/2;
