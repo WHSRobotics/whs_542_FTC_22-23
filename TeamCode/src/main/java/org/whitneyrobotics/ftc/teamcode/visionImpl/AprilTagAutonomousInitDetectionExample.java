@@ -21,6 +21,8 @@
 
 package org.whitneyrobotics.ftc.teamcode.visionImpl;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -67,6 +69,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     {
         // Find camera, and make a pipeline
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        Log.println(Log.DEBUG, "Test", String.valueOf(cameraMonitorViewId));
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
@@ -96,6 +99,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
          */
         while (!isStarted() && !isStopRequested())
         {
+            Log.println(Log.DEBUG, "Test", String.valueOf(cameraMonitorViewId));
             // get a list of all detected AprilTags
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 

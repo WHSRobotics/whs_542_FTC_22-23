@@ -21,7 +21,7 @@ public class Grabber implements Subsystem {
     private Servo[] servos = new Servo[2];
 
     public enum GrabberStates {
-        OPEN(0.28), CLOSE(-0.05);
+        OPEN(0.28), CLOSE(-0.15);
         private double position;
         GrabberStates(double position){
             this.position = position;

@@ -10,16 +10,17 @@ import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 
 import java.util.ArrayList;
 
 
 public class AprilTagScanner2022 {
-    OpenCvCamera camera;
+//    OpenCvCamera camera;
+    OpenCvWebcam camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     static final double FEET_PER_METER = 3.28084;
-    int cameraMonitorViewId;
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -42,10 +43,16 @@ public class AprilTagScanner2022 {
     private AprilTagDetection latestTag = null;
     public int getLatestTag() {return latestTag.id;}
 
+    int cameraMonitorViewId = 0;
     public AprilTagScanner2022(HardwareMap hardwareMap) {
         // Find camera, and make a pipeline
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        try {
+            cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        } catch (Exception e) {
+
+        }
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), 2131230820);
+//        camera = hardwareMap.get()
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         // Set pipeline to the AprilTag detection
@@ -56,7 +63,7 @@ public class AprilTagScanner2022 {
             @Override
             public void onOpened()
             {
-                camera.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
