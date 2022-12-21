@@ -30,10 +30,10 @@ public class PowerPlayAutoRED extends OpModeEx {
             }, 3000);
         addTemporalCallback(resolve -> {
             this.state = "Parking";
-        }, 6500);
+        }, 6000);
         addTemporalCallback(resolve -> {
             this.state = "Idle";
-        }, 9500);
+        }, 9000);
 
         addTemporalCallback(e -> {
             RobotDataUtil.save(WHSRobotData.class,true);

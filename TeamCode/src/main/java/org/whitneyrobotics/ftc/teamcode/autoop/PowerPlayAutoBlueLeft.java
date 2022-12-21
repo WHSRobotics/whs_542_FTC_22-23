@@ -24,10 +24,10 @@ public class PowerPlayAutoBlueLeft extends OpModeEx{
     public void initInternal() {
         addTemporalCallback(resolve -> {
             this.state = "Parking";
-        }, 3500);
+        }, 3000);
         addTemporalCallback(resolve -> {
             this.state = "Idle";
-        }, 6500);
+        }, 6000);
 
         addTemporalCallback(e -> {
             RobotDataUtil.save(WHSRobotData.class,true);

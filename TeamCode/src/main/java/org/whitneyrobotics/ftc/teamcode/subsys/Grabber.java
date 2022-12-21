@@ -20,6 +20,7 @@ public class Grabber implements Subsystem {
 
     private Servo[] servos = new Servo[2];
 
+    //For closing the grabber, issues with going all the way down. Should decrease Close position
     public enum GrabberStates {
         OPEN(0.28), CLOSE(-0.15);
         private double position;
