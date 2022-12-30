@@ -24,11 +24,14 @@ public class CircularIntersection {
         this.radius = radius;
     }
 
-    public boolean checkForIntersection(Position point){
-        return Functions.distanceFormula(point.getX(),point.getY(),center.getX(),center.getY()) <= radius;
+    public Intersection checkForIntersection(Position point){
+        double distance = Functions.distanceFormula(point.getX(),point.getY(),center.getX(),center.getY());
+        Intersection i = new Intersection(distance <= radius, distance);
+        return i;
     }
 
-    public boolean checkForIntersection(double centerX, double centerY){
+
+    public Intersection checkForIntersection(double centerX, double centerY){
         return checkForIntersection(new Position(centerX,centerY));
     }
 

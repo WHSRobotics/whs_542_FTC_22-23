@@ -30,6 +30,10 @@ public class WHSRobotImpl {
     public OpenCvCamera camera;
 //    public AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
+
+    public enum TeleOpState {
+            ANGULAR_FREEDOM, SNAP_TO_TARGET
+    }
     SimpleTimer autoTimer;
 
     GamepadEx gamepad;
@@ -75,6 +79,8 @@ public class WHSRobotImpl {
             robotLinearSlides.reset();
         }
     }
+
+
 
     public void tick(){
         robotGrabber.tick();
