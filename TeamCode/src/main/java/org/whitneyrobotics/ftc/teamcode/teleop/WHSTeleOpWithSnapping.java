@@ -4,7 +4,6 @@ import static org.whitneyrobotics.ftc.teamcode.lib.util.RumbleEffects.endgame;
 import static org.whitneyrobotics.ftc.teamcode.lib.util.RumbleEffects.matchEnd;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -13,18 +12,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.SliderDisplayLine;
-import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.TextLine;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.file.RobotDataUtil;
 import org.whitneyrobotics.ftc.teamcode.lib.file.WHSRobotData;
+import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
-import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
 import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet1;
-import org.whitneyrobotics.ftc.teamcode.subsys.Robot;
 
-@TeleOp(name="PowerPlay TeleOp", group="A")
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class WHSTeleOp extends OpModeEx {
+@TeleOp(name="PowerPlay TeleOp Beta",group="A")
+public class WHSTeleOpWithSnapping extends OpModeEx {
     WHSRobotImpl robot;
 
     void setupGamepads(){
@@ -32,6 +29,8 @@ public class WHSTeleOp extends OpModeEx {
         gamepad1.SQUARE.onPress(e -> robot.imu.zeroHeading());
         gamepad1.LEFT_TRIGGER.onInteraction(e -> robot.drivetrain.setPowerReduction(e.floatVal));
         gamepad1.BUMPER_RIGHT.onPress(e -> robot.robotGrabber.toggleState());
+        gamepad1.Y.onPress(robot::resetConstants);
+        gamepad1.A.onPress(robot::switchDriveMode);
         gamepad2.BUMPER_RIGHT.onPress(e -> robot.robotGrabber.toggleState());
         gamepad2.SHARE.onPress(e -> {
             playSound("emergency", 100.00f);
@@ -85,10 +84,12 @@ public class WHSTeleOp extends OpModeEx {
         betterTelemetry.addItem(new SliderDisplayLine("Slides position", robot.robotLinearSlidesMeet1::getPosition, LineItem.Color.AQUA)
                 .setScale(36));
         betterTelemetry.useDashboardTelemetry(dashboardTelemetry);
+        robot.setInitialCoordinate(new Coordinate(35.5,-62,0));
     }
 
     @Override
     protected void loopInternal() {
+        robot.estimateCoordinate();
         if(gamepad2.DPAD_UP.value()){
             robot.robotGrabber.forceOpen();
         }
@@ -103,7 +104,9 @@ public class WHSTeleOp extends OpModeEx {
         }
         robot.robotLinearSlidesMeet1.operate(gamepad2.LEFT_STICK_Y.value(),gamepad2.BUMPER_LEFT.value());
 
-        robot.drivetrain.operateByCommand(xPower, yPower, rotPower);
+
+        robot.operateDrivetrain(xPower, yPower, rotPower);
+        robot.drawOverlay(packet.fieldOverlay());
         betterTelemetry.addData("Field centric",robot.drivetrain.fieldCentricEnabled());
         betterTelemetry.addData("Slides phase",robot.robotLinearSlidesMeet1.getPhase());
         betterTelemetry.addData("is sliding",robot.robotLinearSlidesMeet1.isSliding());

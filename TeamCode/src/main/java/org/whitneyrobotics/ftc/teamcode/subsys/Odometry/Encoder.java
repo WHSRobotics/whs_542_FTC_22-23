@@ -1,11 +1,12 @@
 package org.whitneyrobotics.ftc.teamcode.subsys.Odometry;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
  * Wraps a motor instance to provide corrected velocity counts and allow reversing independently of the corresponding
- * slot's motor direction
+ * slot's motor direction. Copied from Roadrunner documentation.
  */
 public class Encoder {
     private final static int CPS_STEP = 0x10000;
@@ -37,6 +38,12 @@ public class Encoder {
     }
 
     private DcMotorEx motor;
+    public void resetEncoder(){
+        this.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public DcMotorEx getMotor() { return this.motor; }
 
     private Direction direction;
 
@@ -53,6 +60,7 @@ public class Encoder {
         this.lastPosition = 0;
         this.velocityEstimates = new double[3];
         this.lastUpdateTime = System.nanoTime() / 1E9;
+        resetEncoder();
     }
 
     public Direction getDirection() {
@@ -68,8 +76,9 @@ public class Encoder {
      *
      * @param direction either reverse or forward depending on if encoder counts should be negated
      */
-    public void setDirection(Direction direction) {
+    public Encoder setDirection(Direction direction) {
         this.direction = direction;
+        return this;
     }
 
     /**

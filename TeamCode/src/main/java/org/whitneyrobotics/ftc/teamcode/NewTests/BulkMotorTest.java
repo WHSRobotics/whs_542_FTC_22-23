@@ -42,13 +42,13 @@ public class BulkMotorTest extends OpModeEx {
 
     void setupHandlers(){
         gamepad1.DPAD_RIGHT.onPress(e -> {
-            motor = motor + 1 % 8;
+            motor = (motor + 1) % 8;
             power = 100;
             enabled = false;
         }
         );
         gamepad1.DPAD_LEFT.onPress(e -> {
-            motor = motor - 1 % 8;
+            motor = (motor - 1) % 8;
             power = 100;
             enabled = false;
         });
@@ -63,6 +63,7 @@ public class BulkMotorTest extends OpModeEx {
 
     void setupTelemetry(){
         betterTelemetry.addItem(new TextLine("Enable/disable motor with y. Use dpad up/down to change motor powers. Use  x to change direction. Left bumper to run without encoder, right bumper to run with encoder, and right trigger to reset encoder.", true, LineItem.Color.OLIVE, LineItem.RichTextFormat.ITALICS));
+        betterTelemetry.addData("Port", motor).persistent();
         betterTelemetry.addItem(new KeyValueLine("Current port number",true,motors[motor]::getPortNumber, LineItem.Color.WHITE));
         betterTelemetry.addItem(new KeyValueLine("Current motor power",true,() -> (double)(power-100)/100, LineItem.Color.TEAL));
         betterTelemetry.addItem(new KeyValueLine("Current motor direction",true,() -> motors[motor].getDirection().toString(), LineItem.Color.PURPLE));

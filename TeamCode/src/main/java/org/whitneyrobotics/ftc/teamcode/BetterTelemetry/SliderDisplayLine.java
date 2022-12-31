@@ -1,5 +1,9 @@
 package org.whitneyrobotics.ftc.teamcode.BetterTelemetry;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 
@@ -27,6 +31,7 @@ public class SliderDisplayLine extends ProgressBarLine{
         return this;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected String format(boolean blink) {
         if(valueProvider != null) progress=valueProvider.value();

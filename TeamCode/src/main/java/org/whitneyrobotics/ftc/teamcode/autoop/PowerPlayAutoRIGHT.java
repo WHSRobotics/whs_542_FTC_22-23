@@ -18,7 +18,7 @@ public class PowerPlayAutoRIGHT extends OpModeEx {
 
     @Override
     public void initInternal() {
-        robot = new WHSRobotImpl(hardwareMap, gamepad2);
+        robot = new WHSRobotImpl(hardwareMap);
         addTemporalCallback(resolve -> {
             this.state = "Moving";
         }, 1500);

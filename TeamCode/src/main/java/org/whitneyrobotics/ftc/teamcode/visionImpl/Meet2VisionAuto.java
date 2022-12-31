@@ -211,7 +211,7 @@ public class Meet2VisionAuto extends OpMode {
 
     @Override
     public void init() {
-        robot = new WHSRobotImpl(hardwareMap, new GamepadEx(gamepad2));
+        robot = new WHSRobotImpl(hardwareMap);
         // Find camera, and make a pipeline
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         Log.println(Log.DEBUG, "Test", String.valueOf(cameraMonitorViewId));

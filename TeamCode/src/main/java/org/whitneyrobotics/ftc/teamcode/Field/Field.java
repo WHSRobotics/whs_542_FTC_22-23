@@ -29,6 +29,6 @@ public class Field {
     public static Junction southwestGround = new Junction(-TILE * 2, -TILE * 2, GROUND);
     public static Junction southGround = new Junction(0, -TILE * 2, GROUND);
     public static Junction southeastGround = new Junction(TILE * 2, -TILE * 2, GROUND);
-
+    public static Junction[] junctions = {ground, northTall, southTall, westTall, eastTall, northeastMedium, northwestMedium, southwestMedium, southeastMedium, northnortheastLow, northeasteastLow, northnorthwestLow, northwestwestLow, southwestwestLow, southsouthwestLow, southsoutheastLow, southeasteastLow, eastGround, northeastGround, northGround, northwestGround, westGround, southwestGround, southGround, southGround};
 
 }

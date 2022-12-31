@@ -10,25 +10,44 @@ import java.util.MissingFormatArgumentException;
 import java.util.function.Supplier;
 
 public class EncoderConverter {
-    private DcMotorEx encoderMotor;
+    private Encoder encoder;
     private Double wheelDiameter, ticksPerRev;
     private DistanceUnit unit = DistanceUnit.MM;
     private boolean isREVEncoder = false;
-    private EncoderConverter(DcMotorEx encoder, double wheelDiameter, double ticksPerRev, DistanceUnit unit, boolean isREVThroughBoreEncoder){
-        encoderMotor = encoder;
+    private EncoderConverter(DcMotorEx encoderMotor, double wheelDiameter, double ticksPerRev, DistanceUnit unit, boolean isREVThroughBoreEncoder){
+        encoder = new Encoder(encoderMotor);
         isREVEncoder = isREVThroughBoreEncoder;
+        this.wheelDiameter = wheelDiameter;
+        this.ticksPerRev = ticksPerRev;
+        this.unit = unit;
+    }
+
+    public double getCurrentPosition(){
+        return this.getCurrentRawPosition()*((wheelDiameter*Math.PI)/(ticksPerRev));
+    }
+
+    public double getTangentialVelocity(){
+        return wheelDiameter/2 * getCurrentVelocity(AngleUnit.RADIANS);
     }
 
     public double getCurrentRawPosition(){
-        return encoderMotor.getCurrentPosition();
+        return encoder.getCurrentPosition();
     }
 
-    public double getCurrentRawVelocity(){
-        return encoderMotor.getVelocity();
+    public double getCurrentVelocity(){
+        return isREVEncoder ? encoder.getCorrectedVelocity() : encoder.getRawVelocity();
     }
 
     public double getCurrentVelocity(AngleUnit angleUnit){
-        return encoderMotor.getVelocity(angleUnit);
+        return encoder.getMotor().getVelocity(angleUnit);
+    }
+
+    public void setDirection(Encoder.Direction d){
+        this.encoder.setDirection(d);
+    }
+
+    public void resetEncoder(){
+        this.encoder.resetEncoder();
     }
 
     public static class EncoderConverterBuilder {

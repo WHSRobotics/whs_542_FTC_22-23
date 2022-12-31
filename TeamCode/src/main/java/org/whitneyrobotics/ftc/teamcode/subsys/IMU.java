@@ -64,6 +64,7 @@ public class IMU {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public double getHeadingRadians(){
         return getHeading()*(Math.PI/180);
     }

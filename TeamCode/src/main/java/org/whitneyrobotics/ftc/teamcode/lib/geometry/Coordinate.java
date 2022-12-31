@@ -42,4 +42,13 @@ public class Coordinate extends Position {
         setX(pos.getX());
         setY(pos.getY());
     }
+
+    public static Coordinate copy(Coordinate c){
+        return new Coordinate(c.xPos,c.yPos, c.orientation);
+    }
+
+    @Override
+    public String toString(){
+        return "(" + xPos + ", " + yPos + " θ=" + orientation + ")";
+    }
 }
