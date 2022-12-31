@@ -44,12 +44,31 @@ public class PathPlanner {
         double d;
         double curvature;
 
+        // distance between "center" and 3 points
+        double d1;
+        double d2;
+
         for (int i = 0; i < finalPath.size() - 3; i++){
             x = finalPath.get(i + 2).getX() - finalPath.get(i).getX();
             y = finalPath.get(i + 2).getY() - finalPath.get(i).getY();
             l = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
             r = (Math.pow(l, 2))/(2 * x);
-            
+            d1 = r;
+
+            if (finalPath.get(i + 2).getX() > finalPath.get(i).getX()){
+                if (finalPath.get(i + 2).getY() > finalPath.get(i).getY()){
+                    d2 = Math.sqrt(Math.pow((finalPath.get(i + 2).getX() - finalPath.get(i + 1).getX() + r), 2) + (Math.pow((finalPath.get(i + 2).getY() - finalPath.get(i + 1).getY() + r), 2)));
+                } else if (finalPath.get(i + 2).getY() <= finalPath.get(i).getY()){
+                    d2 = Math.sqrt(Math.pow((finalPath.get(i + 2).getX() - finalPath.get(i + 1).getX() + r), 2) + (Math.pow((finalPath.get(i).getY() - finalPath.get(i + 1).getY() + r), 2)));
+                }
+            } else if (finalPath.get(i + 2).getX() <= finalPath.get(i).getX()){
+                if (finalPath.get(i + 2).getY() > finalPath.get(i).getY()){
+                    d2 = Math.sqrt(Math.pow((finalPath.get(i).getX() - finalPath.get(i + 1).getX() + r), 2) + (Math.pow((finalPath.get(i + 2).getY() - finalPath.get(i + 1).getY() + r), 2)));
+                } else if (finalPath.get(i + 2).getY() <= finalPath.get(i).getY()){
+                    d2 = Math.sqrt(Math.pow((finalPath.get(i).getX() - finalPath.get(i + 1).getX() + r), 2) + (Math.pow((finalPath.get(i).getY() - finalPath.get(i + 1).getY() + r), 2)));
+                }
+            }
+            d2 = Math.pow((finalPath.get(i + 1).getX() - finalPath.get(i).getX() + r), 2) + Math.pow((finalPath.get(i + 1).getY() - ))
         }
     }
 }
