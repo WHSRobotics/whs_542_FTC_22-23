@@ -68,7 +68,6 @@ public class PathPlanner {
                     d2 = Math.sqrt(Math.pow((finalPath.get(i).getX() - finalPath.get(i + 1).getX() + r), 2) + (Math.pow((finalPath.get(i).getY() - finalPath.get(i + 1).getY() + r), 2)));
                 }
             }
-            d2 = Math.pow((finalPath.get(i + 1).getX() - finalPath.get(i).getX() + r), 2) + Math.pow((finalPath.get(i + 1).getY() - ))
         }
     }
 }

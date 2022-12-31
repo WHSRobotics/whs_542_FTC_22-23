@@ -64,6 +64,17 @@ public class Functions {
         return angle;
     }
 
+    public static double noramlizeAngleRadians (double angle) {
+        while (angle > Math.PI || angle < -Math.PI) {
+            if (angle > Math.PI) {
+                angle = angle - (2 * Math.PI);
+            } else if (angle < -Math.PI) {
+                angle = angle + (2 * Math.PI);
+            }
+        }
+        return angle;
+    }
+
     public static Position transformCoordinates(double[][] dcm, Position vector) {
         Position transformedVector;
 
