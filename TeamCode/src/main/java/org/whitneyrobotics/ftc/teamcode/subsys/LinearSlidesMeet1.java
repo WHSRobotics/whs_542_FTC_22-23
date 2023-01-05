@@ -17,7 +17,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.control.PIDControlledMotor;
 @RequiresApi(api = Build.VERSION_CODES.N)
 @Config
 public class LinearSlidesMeet1  {
-    public static double DEADBAND_ERROR = 2;
+    public static double DEADBAND_ERROR = 1.5;
     public static double acceleration = 5;
     public static final double TICKS_PER_INCH = 100;
 
@@ -26,7 +26,7 @@ public class LinearSlidesMeet1  {
     public static double kI = 0.00;
 
     public enum Target {
-        LOWERED(0), CONES(2),LOW(12.5), MEDIUM(22.5), HIGH(32.5);
+        LOWERED(0), CONES(2),LOW(12.5), MEDIUM(22.5), HIGH(38.5);
 
         Target(double position){
             this.position = position;

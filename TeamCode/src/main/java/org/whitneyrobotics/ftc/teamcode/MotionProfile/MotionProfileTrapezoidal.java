@@ -49,7 +49,7 @@ public class MotionProfileTrapezoidal extends MotionProfile{
         }
 
         if((Math.pow(currentVelocity, 2)/(2*usedAcceleration)) >= Math.abs(targetPos-currentPos)){
-            output = currentVelocity  - (direction * usedAcceleration * deltaTime);
+            output = currentVelocity - (direction * usedAcceleration * deltaTime);
             currentAcceleration = -usedAcceleration * direction;
             phase = "Ramp down";
         }

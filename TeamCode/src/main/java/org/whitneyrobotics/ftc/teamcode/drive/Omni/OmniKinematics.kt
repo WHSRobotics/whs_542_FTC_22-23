@@ -1,10 +1,12 @@
 package org.whitneyrobotics.ftc.teamcode.drive.Omni
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.acmerobotics.roadrunner.kinematics.Kinematics
-import com.acmerobotics.roadrunner.kinematics.MecanumKinematics
+import kotlin.math.sqrt
 
 object OmniKinematics {
+    @JvmStatic
+    val RAD_2_OVER_2 = sqrt(2.0) /2
+
     @JvmStatic
     @JvmOverloads
     fun robotToWheelVelocities(
@@ -15,8 +17,8 @@ object OmniKinematics {
     ): List<Double> {
         val k = (trackWidth + wheelBase)/2
         return listOf(
-                robotVel.x - lateralMultiplier * robotVel.y - k * robotVel.heading, //fr
-                robotVel.x + lateralMultiplier * robotVel.y - k * robotVel.heading, //fl
+                robotVel.x + lateralMultiplier * robotVel.y + k * robotVel.heading, //fr
+                robotVel.x - lateralMultiplier * robotVel.y + k * robotVel.heading, //fl
                 robotVel.x - lateralMultiplier * robotVel.y + k * robotVel.heading, //bl
                 robotVel.x + lateralMultiplier * robotVel.y + k * robotVel.heading //br
         )
@@ -28,7 +30,7 @@ object OmniKinematics {
             robotAccel: Pose2d,
             trackWidth: Double,
             wheelBase: Double = trackWidth,
-            lateralMultiplier: Double = 1
+            lateralMultiplier: Double = 1.0
     ) = robotToWheelVelocities(
             robotAccel,
             trackWidth,
@@ -46,8 +48,8 @@ object OmniKinematics {
         val k = (trackWidth + wheelBase) / 2.0
         val (frontLeft, rearLeft, rearRight, frontRight) = wheelVelocities
         return Pose2d(
-                (rearLeft + frontRight - frontLeft - rearRight) / lateralMultiplier,
-                (rearRight + frontRight - frontLeft - rearLeft) / k,
+                (rearLeft + rearRight - frontLeft - frontRight) / lateralMultiplier * RAD_2_OVER_2,
+                (rearRight + frontRight - frontLeft - rearLeft) / k * RAD_2_OVER_2,
                 wheelVelocities.sum()/k
         ) * 0.25
     }
