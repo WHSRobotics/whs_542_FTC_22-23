@@ -1,16 +1,12 @@
 package org.whitneyrobotics.ftc.teamcode.subsys;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.whitneyrobotics.ftc.teamcode.framework.Subsystem;
-import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Grabber implements Subsystem {
     private final Servo gate;
@@ -36,11 +32,18 @@ public class Grabber implements Subsystem {
 
     public Grabber(HardwareMap hardwareMap){
         gate = hardwareMap.get(Servo.class,"gate");
-        /*sensor = (RevColorSensorV3) hardwareMap.get(ColorSensor.class,"grabber_sensor");
+        sensor = (RevColorSensorV3) hardwareMap.get(ColorSensor.class,"grabber_sensor");
         if (sensor.getDistance(DistanceUnit.INCH) < initializationCutoff){ //if a cone is retained in autonomous
             currentState = GrabberStates.CLOSE;
-        }*/
+            sensor.red();
+            sensor.green();
+            sensor.blue();
+            sensor.alpha();
+            sensor.argb();
+            sensor.enableLed(true);
+        }
     }
+
 
     public void toggleState(){
         currentState = (currentState == GrabberStates.OPEN ? GrabberStates.CLOSE : GrabberStates.OPEN);
