@@ -17,10 +17,15 @@ object OmniKinematics {
     ): List<Double> {
         val k = (trackWidth + wheelBase)/2
         return listOf(
+<<<<<<< Updated upstream
                 robotVel.x + lateralMultiplier * robotVel.y + k * robotVel.heading, //fr
                 robotVel.x - lateralMultiplier * robotVel.y + k * robotVel.heading, //fl
+=======
+                robotVel.x - lateralMultiplier * robotVel.y - k * robotVel.heading, //fr
+                robotVel.x + lateralMultiplier * robotVel.y + k * robotVel.heading, //fl
+>>>>>>> Stashed changes
                 robotVel.x - lateralMultiplier * robotVel.y + k * robotVel.heading, //bl
-                robotVel.x + lateralMultiplier * robotVel.y + k * robotVel.heading //br
+                robotVel.x + lateralMultiplier * robotVel.y - k * robotVel.heading //br
         )
     }
 

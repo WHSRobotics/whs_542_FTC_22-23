@@ -22,7 +22,7 @@ public class Grabber implements Subsystem {
 
     //For closing the grabber, issues with going all the way down. Should decrease Close position
     public enum GrabberStates {
-        OPEN(0.28), CLOSE(-0.15);
+        OPEN(1), CLOSE(-1);
         private double position;
         GrabberStates(double position){
             this.position = position;
