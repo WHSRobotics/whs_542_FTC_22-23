@@ -34,6 +34,8 @@ public class Folder extends Interactable {
         nested = new ArrayList<>(Arrays.asList(nestedLines));
     }
 
+    public void purge(){nested.clear();}
+
     public void addChild(LineItem child){
         nested.add(child);
     }

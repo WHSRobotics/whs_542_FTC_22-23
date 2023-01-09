@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.whitneyrobotics.ftc.teamcode.drive.SampleMecanumDrive;
+import org.whitneyrobotics.ftc.teamcode.drive.RoadrunnerOmniDrive;
 
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -15,14 +15,14 @@ import org.whitneyrobotics.ftc.teamcode.drive.SampleMecanumDrive;
 public class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        RoadrunnerOmniDrive drive = new RoadrunnerOmniDrive(hardwareMap);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(30, 30), 0)
+                .splineToConstantHeading(new Vector2d(45, 30), 0)
                 .build();
 
         drive.followTrajectory(traj);

@@ -4,8 +4,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
-
 import java.util.function.*;
 
 @RequiresApi(api = Build.VERSION_CODES.N)

@@ -20,7 +20,7 @@ import org.whitneyrobotics.ftc.teamcode.trajectorysequence.sequencesegment.Seque
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
-import org.whitneyrobotics.ftc.teamcode.util.util.DashboardUtil;
+import org.whitneyrobotics.ftc.teamcode.util.RoadrunnerUtil.DashboardUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;

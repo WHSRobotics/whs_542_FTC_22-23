@@ -14,15 +14,15 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Grabber implements Subsystem {
     private final Servo gate;
-    private RevColorSensorV3 sensor;
-    private double initializationCutoff = 3.5;
+    public final RevColorSensorV3 sensor;
+    private double initializationCutoff = 2;
     private boolean override = false;
 
     private Servo[] servos = new Servo[2];
 
-    //For closing the grabber, issues with going all the way down. Should decrease Close position
+    //For closing the grabber, issues with going all the w ay down. Should decrease Close position
     public enum GrabberStates {
-        OPEN(0.28), CLOSE(-0.15);
+        OPEN(1), CLOSE(-1);
         private double position;
         GrabberStates(double position){
             this.position = position;
@@ -36,10 +36,19 @@ public class Grabber implements Subsystem {
 
     public Grabber(HardwareMap hardwareMap){
         gate = hardwareMap.get(Servo.class,"gate");
-        /*sensor = (RevColorSensorV3) hardwareMap.get(ColorSensor.class,"grabber_sensor");
-        if (sensor.getDistance(DistanceUnit.INCH) < initializationCutoff){ //if a cone is retained in autonomous
+        sensor = (RevColorSensorV3) hardwareMap.get(ColorSensor.class,"grabber_sensor");
+        testForCone();
+        this.tick();
+    }
+
+    public boolean testForCone(){
+        boolean coneDetected = sensor.getDistance(DistanceUnit.CM) < initializationCutoff; //if a cone is retained in autonomous
+        if (coneDetected){
             currentState = GrabberStates.CLOSE;
-        }*/
+        } else {
+            currentState = GrabberStates.OPEN;
+        }
+        return coneDetected;
     }
 
     public void toggleState(){

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class PowerPlayAutoBLUE extends OpModeEx{
     String state = "Junction Placement";
     WHSRobotImpl robot;
-    AprilTagScanner2022 aprilTagScanner = new AprilTagScanner2022(hardwareMap);
+    AprilTagScanner2022 aprilTagScanner = new AprilTagScanner2022(hardwareMap, betterTelemetry);
 
     @Override
     public void initInternal() {

@@ -6,7 +6,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.geometry.SwerveWaypoint;
 import org.whitneyrobotics.ftc.teamcode.lib.motion.RateLimiter;
 import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.PurePursuitRobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
-import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
+//import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
 
 public class SwerveFollower {
 
@@ -27,7 +27,7 @@ public class SwerveFollower {
     private final double KV = PurePursuitRobotConstants.SWERVE_KV;
     private final double KA = PurePursuitRobotConstants.SWERVE_KA;
 
-    private double trackWidth = Drivetrain.getTrackWidth();
+    private double trackWidth = 18;
 
     private boolean inProgress = false;
     public double indexOfClosest = 0;

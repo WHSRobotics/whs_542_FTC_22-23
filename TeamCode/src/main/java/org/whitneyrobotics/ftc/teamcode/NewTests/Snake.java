@@ -15,7 +15,6 @@ import org.whitneyrobotics.ftc.teamcode.framework.DashboardOpMode;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions.*;
-import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -169,7 +168,6 @@ public class Snake extends LinearOpMode {
     }
 
     private boolean gameOver;
-    Drivetrain drivetrain;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

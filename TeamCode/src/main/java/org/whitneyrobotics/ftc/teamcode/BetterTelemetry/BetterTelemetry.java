@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+import org.whitneyrobotics.ftc.teamcode.autoop.AutoSetupTesting.TestManager;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.tests.Test;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 public class BetterTelemetry  {
     private OpMode currentOpMode;
     private Telemetry opModeTelemetry;
+    private TestManager testManager;
 
     private final ArrayList<LineItem> items;
     private final ArrayList<Interactable> interactables = new ArrayList<>();
@@ -51,6 +53,11 @@ public class BetterTelemetry  {
         }
         opModeTelemetry = currentOpMode.telemetry;
         opModeTelemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
+    }
+
+    public TestManager useTestManager(){
+        TestManager testManager = new TestManager(this);
+        return testManager;
     }
 
     private TelemetryPacket packet;
@@ -165,6 +172,18 @@ public class BetterTelemetry  {
                 focused = getNextInteractable(false);
             }
         }
+    }
+
+    public BetterTelemetry removeLineByReference(LineItem item){
+        for (LineItem i : items){
+            if(i == item) item.setPersistent(false);
+        }
+        interactables.removeIf(i -> i == item);
+        if(!interactables.contains(focused) && focused != null){
+            focused.disconnect();
+            focused = getNextInteractable(false);
+        }
+        return this;
     }
 
     public BetterTelemetry removeLineByCaption(String caption){

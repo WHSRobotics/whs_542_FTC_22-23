@@ -9,7 +9,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.geometry.SwerveWaypoint;
 import org.whitneyrobotics.ftc.teamcode.lib.motion.RateLimiter;
 import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.PurePursuitRobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
-import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
+//import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
 
 import java.util.ArrayList;
 
@@ -34,8 +34,8 @@ public class StrafeFollower {
     private double kV = PurePursuitRobotConstants.STRAFE_KV;
     private double kA = PurePursuitRobotConstants.STRAFE_KA;
 
-    private double trackWidth = Drivetrain.getTrackWidth();
-    private double wheelBase = Drivetrain.getWheelBase();
+    private double trackWidth = 18;
+    private double wheelBase = 18;
 
     PIDController headingController = new PIDController(PurePursuitRobotConstants.STRAFE_HEADING_CONSTANTS);
 

@@ -1,8 +1,6 @@
 package org.whitneyrobotics.ftc.teamcode.visionImpl;
 
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,6 +9,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ public class AprilTagScanner2022 {
     OpenCvWebcam camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     static final double FEET_PER_METER = 3.28084;
+    BetterTelemetry telemetry;
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -44,7 +44,8 @@ public class AprilTagScanner2022 {
     public int getLatestTag() {return latestTag.id;}
 
     int cameraMonitorViewId = 0;
-    public AprilTagScanner2022(HardwareMap hardwareMap) {
+    public AprilTagScanner2022(HardwareMap hardwareMap, BetterTelemetry telemetry) {
+        this.telemetry = telemetry;
         // Find camera, and make a pipeline
         try {
             cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());

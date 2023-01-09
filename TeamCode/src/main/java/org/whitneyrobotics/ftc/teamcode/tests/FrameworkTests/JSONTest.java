@@ -15,7 +15,6 @@ import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.file.RobotDataUtil;
 import org.whitneyrobotics.ftc.teamcode.lib.file.WHSRobotData;
 import org.whitneyrobotics.ftc.teamcode.subsys.IMU;
-import org.whitneyrobotics.ftc.teamcode.subsys.Robot;
 
 import java.util.Arrays;
 

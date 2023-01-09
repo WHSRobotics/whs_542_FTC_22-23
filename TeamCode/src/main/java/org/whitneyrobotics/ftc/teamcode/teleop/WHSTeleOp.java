@@ -20,7 +20,6 @@ import org.whitneyrobotics.ftc.teamcode.lib.file.WHSRobotData;
 import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 import org.whitneyrobotics.ftc.teamcode.subsys.Grabber;
 import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet1;
-import org.whitneyrobotics.ftc.teamcode.subsys.Robot;
 
 @TeleOp(name="PowerPlay TeleOp", group="A")
 @RequiresApi(api = Build.VERSION_CODES.N)

@@ -5,7 +5,8 @@ import kotlin.math.sqrt
 
 object OmniKinematics {
     @JvmStatic
-    val RAD_2_OVER_2 = sqrt(2.0) /2
+    val RAD_2 = sqrt(2.0)
+
 
     @JvmStatic
     @JvmOverloads
@@ -17,11 +18,19 @@ object OmniKinematics {
     ): List<Double> {
         val k = (trackWidth + wheelBase)/2
         return listOf(
-                robotVel.x + lateralMultiplier * robotVel.y + k * robotVel.heading, //fr
-                robotVel.x - lateralMultiplier * robotVel.y + k * robotVel.heading, //fl
-                robotVel.x - lateralMultiplier * robotVel.y + k * robotVel.heading, //bl
-                robotVel.x + lateralMultiplier * robotVel.y + k * robotVel.heading //br
+                RAD_2/2 * robotVel.x - RAD_2/2 * lateralMultiplier * robotVel.y - k * RAD_2 * robotVel.heading, //fl
+                RAD_2/2 * robotVel.x + RAD_2/2 * lateralMultiplier * robotVel.y - k * RAD_2 * robotVel.heading, //fr
+                RAD_2/2 * robotVel.x - RAD_2/2 * lateralMultiplier * robotVel.y + k * RAD_2 * robotVel.heading, //br
+                RAD_2/2 * robotVel.x + RAD_2/2 * lateralMultiplier * robotVel.y + k * RAD_2 * robotVel.heading, //bl
         )
+        /*
+        return listOf(
+            RAD_2/2 * robotVel.x + RAD_2/2 * lateralMultiplier * robotVel.y - , //fr
+            RAD_2/2 * robotVel.x - RAD_2/2 * lateralMultiplier * robotVel.y + k * RAD_2 * robotVel.heading, //fl
+            RAD_2/2 * robotVel.x - RAD_2/2 * lateralMultiplier * robotVel.y + k * RAD_2 * robotVel.heading, //bl
+            RAD_2/2 * robotVel.x + RAD_2/2 * lateralMultiplier * robotVel.y - k * RAD_2 * robotVel.heading //br
+        )
+         */
     }
 
     @JvmStatic
@@ -48,8 +57,8 @@ object OmniKinematics {
         val k = (trackWidth + wheelBase) / 2.0
         val (frontLeft, rearLeft, rearRight, frontRight) = wheelVelocities
         return Pose2d(
-                (rearLeft + rearRight - frontLeft - frontRight) / lateralMultiplier * RAD_2_OVER_2,
-                (rearRight + frontRight - frontLeft - rearLeft) / k * RAD_2_OVER_2,
+                (frontLeft + frontRight - rearLeft - rearRight) / lateralMultiplier * RAD_2,
+                (frontLeft + rearLeft - frontRight - rearRight) / k * RAD_2,
                 wheelVelocities.sum()/k
         ) * 0.25
     }

@@ -5,6 +5,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -54,9 +55,8 @@ public class WHSRobotImpl {
     public Grabber robotGrabber;
     public IMU imu;
     public OpenCvCamera camera;
+    public Rev2mDistanceSensor leftDist, rightDist;
 //    public AprilTagDetectionPipeline aprilTagDetectionPipeline;
-
-
 
     public static double odometryWeight = 0.7;
     public static double imuWeight = 0.3;

@@ -60,9 +60,12 @@ public class GamepadEx {
 
     private Gamepad gamepad;
 
+    public final boolean hasError;
+
     public GamepadEx(Gamepad gamepad){
         this.gamepad = gamepad;
         if(this.gamepad != null) this.gamepad.rumble(250);
+        hasError = this.gamepad == null;
     }
 
     public void addGenericEventListener(GamepadHardware hardware, Consumer<GamepadInteractionEvent> handler){

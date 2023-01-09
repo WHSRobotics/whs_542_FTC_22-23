@@ -17,7 +17,7 @@ import org.whitneyrobotics.ftc.teamcode.visionImpl.AprilTagScanner2022;
 public class PowerPlayAutoRED extends OpModeEx {
     String state = "Junction Placement";
     WHSRobotImpl robot;
-    AprilTagScanner2022 aprilTagScanner = new AprilTagScanner2022(hardwareMap);
+    AprilTagScanner2022 aprilTagScanner = new AprilTagScanner2022(hardwareMap, betterTelemetry);
 
     @Override
     public void initInternal() {
