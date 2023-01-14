@@ -5,23 +5,20 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.whitneyrobotics.ftc.teamcode.Field.Field;
 import org.whitneyrobotics.ftc.teamcode.Field.Junction;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadInteractionEvent;
-import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDCoefficientsNew;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDControllerNew;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
-import org.whitneyrobotics.ftc.teamcode.lib.pathfollowers.purepursuit.PurePursuitFollower;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.OmniDrivetrain;
@@ -31,19 +28,26 @@ import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlides;
 import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet1;
 import org.whitneyrobotics.ftc.teamcode.subsys.Odometry.EncoderConverter;
 import org.whitneyrobotics.ftc.teamcode.subsys.Odometry.HWheelOdometry;
-import org.whitneyrobotics.ftc.teamcode.visionImpl.AprilTagDetectionPipeline;
 
-import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.function.Supplier;
 
 @RequiresApi(Build.VERSION_CODES.N)
 public class WHSRobotImpl {
+
+    public LynxModule controlHub;
     public enum Alliance {
         RED, BLUE
     }
     public enum TeleOpState {
         ANGULAR_FREEDOM, SNAP_TO_TARGET
     }
+
+    public enum Mode {
+        AUTONOMOUS, TELEOP
+    }
+
+    public Supplier<Integer> colorSensorMethod;
 
     private Alliance currentAliiance = Alliance.RED;
 
@@ -73,8 +77,8 @@ public class WHSRobotImpl {
         imu = new IMU(hardwareMap);
         drivetrain = new OmniDrivetrain(hardwareMap, imu);
         //robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
-        robotLinearSlidesMeet1 = new LinearSlidesMeet1(hardwareMap);
         robotGrabber = new Grabber(hardwareMap);
+        robotLinearSlidesMeet1 = new LinearSlidesMeet1(hardwareMap, robotGrabber);
         //robotIntake.resetEncoders();
         odometry = new HWheelOdometry(
                 new EncoderConverter.EncoderConverterBuilder()
@@ -101,12 +105,19 @@ public class WHSRobotImpl {
                 12.23,
                 6.04
         );
-
-        drivetrain.setFollower(PurePursuitFollower::new);
+        controlHub = hardwareMap.get(LynxModule.class,"Control Hub");
+        //leftDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceLeft");
+        //rightDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceRight");
+        //drivetrain.setFollower(PurePursuitFollower::new);
     }
 
-    public void setCurrentAliiance(Alliance a){
+    public void setCurrentAlliance(Alliance a){
         this.currentAliiance = a;
+        colorSensorMethod = a == Alliance.RED ? robotGrabber.sensor::red : robotGrabber.sensor::blue;
+    }
+
+    public boolean isSensingCone(){
+        return this.colorSensorMethod.get() > 200;
     }
 
     public void setInitialCoordinate(Coordinate c){
@@ -195,6 +206,53 @@ public class WHSRobotImpl {
         if(oldNearestJunction != nearestJunction){
             snapToTargetInitialized = false;
         }
+    }
+
+    private enum AutoGrabberState {
+        SEARCHING_FOR_CONE,WAIT_UNTIL_READY, GRAB_CONE, LIFTING, WAIT_UNTIL_LIFTED
+    }
+
+    public AutoGrabberState grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
+
+    public boolean autoGrab(boolean shouldGrab){
+        LinearSlidesMeet1.DEADBAND_ERROR = 0.5;
+        double power = -0.3;
+        if(shouldGrab){
+            switch (grabberState){
+                case SEARCHING_FOR_CONE:
+                    if(isSensingCone()){
+                        robotGrabber.setState(true);
+                        grabberState = AutoGrabberState.WAIT_UNTIL_READY;
+                        robotLinearSlidesMeet1.down(-1.5);
+                    }
+                    break;
+                case WAIT_UNTIL_READY:
+                    if (!robotLinearSlidesMeet1.isSliding()){
+                        grabberState = AutoGrabberState.GRAB_CONE;
+                    }
+                case GRAB_CONE:
+                    robotGrabber.setState(false);
+                    grabberState = AutoGrabberState.LIFTING;
+                    break;
+                case LIFTING:
+                    robotLinearSlidesMeet1.up(5);
+                    grabberState = AutoGrabberState.WAIT_UNTIL_LIFTED;
+                    if(!isSensingCone()){
+                        grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
+                    }
+                    break;
+                case WAIT_UNTIL_LIFTED:
+                    if(!robotLinearSlidesMeet1.isSliding()){
+                        grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
+                        robotGrabber.tick();
+                        robotLinearSlidesMeet1.tick();
+                        return true;
+                    }
+            }
+        }
+        robotGrabber.tick();
+        robotLinearSlidesMeet1.operate(grabberState == AutoGrabberState.SEARCHING_FOR_CONE ? power : 0, false);
+        return shouldGrab;
     }
 
 

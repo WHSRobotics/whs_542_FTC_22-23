@@ -82,10 +82,19 @@ public abstract class OpModeEx extends OpMode {
         }
         gamepad1 = new GamepadEx(super.gamepad1);
         gamepad2 = new GamepadEx(super.gamepad2);
+        betterTelemetry.setInteractingGamepad(gamepad1);
         initInternal();
     }
 
     public abstract void initInternal();
+
+    @Override
+    public void init_loop(){
+        betterTelemetry.update();
+        initInternalLoop();
+    }
+
+    public void initInternalLoop(){};
 
     @Override
     public final void start() {

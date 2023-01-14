@@ -44,6 +44,7 @@ public class Grabber implements Subsystem {
         } else {
             currentState = GrabberStates.OPEN;
         }
+        this.tick();
         return coneDetected;
     }
 

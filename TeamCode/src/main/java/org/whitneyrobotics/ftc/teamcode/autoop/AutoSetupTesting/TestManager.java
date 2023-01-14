@@ -17,6 +17,7 @@ public class TestManager {
         String label;
         Runnable func;
 
+        boolean warning = false;
         boolean failed = false;
         String reason = "";
 
@@ -29,10 +30,17 @@ public class TestManager {
             try {
                 func.run();
                 failed = false;
+                warning = false;
                 reason = "✓ Test passed";
             } catch(AssertionError e) {
-                failed = true;
-                reason = e.getLocalizedMessage();
+                if(e instanceof Tests.Warning){
+                    failed = false;
+                    warning = true;
+                } else {
+                    warning = false;
+                    failed = true;
+                }
+                reason = e.getMessage();
             }
         }
     }
@@ -41,12 +49,12 @@ public class TestManager {
     Folder folder;
     public TestManager(BetterTelemetry bt){
         folder = new Folder("Test Manager");
-        telemetry.addItem(folder);
         this.telemetry = bt;
+        telemetry.addItem(folder);
     }
 
     public TestManager addTest(String label, Runnable func){
-        tests.push(new Test(label, func));
+        tests.add(0,new Test(label, func));
         return this;
     }
 
@@ -58,9 +66,9 @@ public class TestManager {
         for (Test t: tests) {
             t.evaluate();
             folder.addChild(new TextLine(
-                    t.label + (t.failed ? " FAILED" : " Passed") + "\n" + t.reason,
+                    t.label + " " +(t.failed ? " FAILED" : t.warning ? " Passed with warning" : "Passed") + "\n" + t.reason,
                     true,
-                    t.failed ? LineItem.Color.RED : LineItem.Color.LIME,
+                    t.failed ? LineItem.Color.RED : t.warning ? LineItem.Color.ROBOTICS : LineItem.Color.LIME,
                     LineItem.RichTextFormat.BOLD)
             );
         }

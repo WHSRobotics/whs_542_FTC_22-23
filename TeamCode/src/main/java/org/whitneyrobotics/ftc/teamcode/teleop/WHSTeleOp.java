@@ -109,7 +109,7 @@ public class WHSTeleOp extends OpModeEx {
         betterTelemetry.addData("is raised",robot.robotLinearSlidesMeet1.isRaised());
         betterTelemetry.addLine("");
 
-        betterTelemetry.addData("current target slides vel",robot.robotLinearSlidesMeet1.velocity);
+        betterTelemetry.addData("current target slides vel",robot.robotLinearSlidesMeet1.getVelocity());
         betterTelemetry.addData("current slides vel",robot.robotLinearSlidesMeet1.getPIDL().getMotor().getVelocity(AngleUnit.RADIANS));
     }
 }

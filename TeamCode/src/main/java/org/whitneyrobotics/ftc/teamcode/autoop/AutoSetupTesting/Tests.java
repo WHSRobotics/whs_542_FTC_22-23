@@ -1,11 +1,17 @@
 package org.whitneyrobotics.ftc.teamcode.autoop.AutoSetupTesting;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
 
 public class Tests {
+
+    public static class Warning extends AssertionError {
+        public Warning(String msg) { super(msg); }
+    }
 
     public static void assertTrue(Boolean b) throws AssertionError {if (!b) throw new AssertionError("Assertion failed"); }
     public static void assertFalse(Boolean b) throws AssertionError {if (b) throw new AssertionError("Assertion failed"); }
@@ -59,6 +65,17 @@ public class Tests {
         assertNotNull(sensor);
         double measurement = sensor.getDistance(unit);
         if(measurement < Math.abs(min) || measurement > Math.abs(max)) throw new AssertionError(String.format("%d was not in expected range of %d-%d. Actual: %d", sensor.getDeviceName(), Math.abs(min), Math.abs(max),measurement));
+    }
+
+    public static void assertBatteryCharged(LynxModule hub) {
+        assertNotNull(hub);
+        double voltage = hub.getInputVoltage(VoltageUnit.VOLTS);
+        if(voltage < 12){
+            throw new AssertionError(String.format("Battery is in poor-condition. Charge as soon as possible. Voltage: %d", voltage));
+        }
+        if (voltage < 12.5){
+            throw new Warning(String.format("Battery is sub-optimal. Charge as soon as possible. Voltage :%d", voltage));
+        }
     }
 
 }
