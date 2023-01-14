@@ -9,13 +9,17 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+import org.whitneyrobotics.ftc.teamcode.tests.TelemetryData;
 import org.whitneyrobotics.ftc.teamcode.tests.Test;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.function.Consumer;
 
@@ -31,6 +35,8 @@ public abstract class OpModeEx extends OpMode {
     protected Telemetry dashboardTelemetry = dashboard.getTelemetry();
     protected Telemetry telemetry;
     protected TelemetryPacket packet = new TelemetryPacket();
+
+    ArrayList<Field> annotatedFields = new ArrayList<>();
 
     protected void initializeDashboardTelemetry(int msTransmissionInterval) {
         telemetry = dashboard.getTelemetry();
@@ -79,6 +85,12 @@ public abstract class OpModeEx extends OpMode {
             if(testingAnnotation.autoTerminateAfterSeconds() > 0){
                 addTemporalCallback(resolve -> requestOpModeStop(), testingAnnotation.autoTerminateAfterSeconds()*1000);
             }
+
+            for (Field f : this.getClass().getDeclaredFields()) {
+                RobotLog.vv("OpModeField ",f.getName());
+                boolean hasTelemetryAnnotation = f.getAnnotation(TelemetryData.class) != null;
+                if(hasTelemetryAnnotation && f.isAccessible()) annotatedFields.add(f);
+            }
         }
         gamepad1 = new GamepadEx(super.gamepad1);
         gamepad2 = new GamepadEx(super.gamepad2);
@@ -109,11 +121,18 @@ public abstract class OpModeEx extends OpMode {
     @Override
     public final void loop(){
         packet = new TelemetryPacket();
+        annotatedFields.forEach(f -> {
+            try {
+                betterTelemetry.addData(f.getName(), f.get(this));
+            } catch (IllegalAccessException e) {
+                RobotLog.e("L Bozo + Ratio");
+            }
+        });
         loopInternal();
         processQueue();
-        betterTelemetry.update();
         gamepad1.update();
         gamepad2.update();
+        betterTelemetry.update();
         dashboard.sendTelemetryPacket(packet);
     }
 

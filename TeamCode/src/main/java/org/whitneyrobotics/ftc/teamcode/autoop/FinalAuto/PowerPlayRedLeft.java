@@ -27,6 +27,9 @@ public class PowerPlayRedLeft extends OpModeEx {
     TestManager testManager;
     boolean firstCall = true;
     boolean grabberEngage = false;
+    double currentConePrediction = 11;
+
+    public void setCurrentConePrediction(double pred){currentConePrediction=pred;}
 
     void setupTrajectories(RoadrunnerOmniDrive drive) {
         Pose2d startPose = new Pose2d(-36, -65, Math.toRadians(90));
@@ -108,6 +111,6 @@ public class PowerPlayRedLeft extends OpModeEx {
         if(drivetrain.isBusy()){
             drivetrain.update();
         }
-        //grabberEngage = robot.autoGrab(grabberEngage);
+        grabberEngage = robot.autoGrab(grabberEngage, currentConePrediction, this::setCurrentConePrediction);
     }
 }

@@ -74,7 +74,7 @@ public class Tests {
             throw new AssertionError(String.format("Battery is in poor-condition. Charge as soon as possible. Voltage: %d", voltage));
         }
         if (voltage < 12.5){
-            throw new Warning(String.format("Battery is sub-optimal. Charge as soon as possible. Voltage :%d", voltage));
+            throw new Warning(String.format("Battery is sub-optimal. Charge as soon as possible. Voltage :%s", voltage));
         }
     }
 

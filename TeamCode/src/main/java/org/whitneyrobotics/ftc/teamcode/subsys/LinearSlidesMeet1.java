@@ -20,6 +20,7 @@ import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl.Alliance;
 @Config
 public class LinearSlidesMeet1  {
     public static double DEADBAND_ERROR = 1.5;
+    public static double maxVelocity = 5;
     public static double acceleration = 5;
     public static final double TICKS_PER_INCH = 100;
 
@@ -27,13 +28,13 @@ public class LinearSlidesMeet1  {
     public static double kD = 0.0025;
     public static double kI = 0.00;
 
-    public static double kStatic = 0.05;
+    public static double kStatic = 0;
 
     private double staticCompensation;
 
 
     public enum Target {
-        LOWERED(0), CONES(2),LOW(12.5), MEDIUM(22.5), HIGH(38.5);
+        LOWERED(0), GROUND(2),LOW(12.5), MEDIUM(22.5), HIGH(34.5);
 
         Target(double position){
             this.position = position;
@@ -92,7 +93,7 @@ public class LinearSlidesMeet1  {
     public void setTarget(double t){
         this.currentTarget = t;
         currentState = State.PID_CONTROLLED;
-        currentMotionProfile = new MotionProfileTrapezoidal((getRawPosition()*2*Math.PI)/TICKS_PER_INCH, acceleration,5,DEADBAND_ERROR);
+        currentMotionProfile = new MotionProfileTrapezoidal((getRawPosition()*2*Math.PI)/TICKS_PER_INCH, acceleration,maxVelocity,DEADBAND_ERROR);
     }
 
     public void up(double inches){
@@ -114,10 +115,12 @@ public class LinearSlidesMeet1  {
         slidesR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public static int scaleDegree = 4;
+
     public void calculateStaticCompensation(){
         double pos = this.getPosition();
         if(pos < 0) return;
-        staticCompensation = Math.pow(pos,2)/Target.HIGH.getPosition() * kStatic;
+        staticCompensation = Math.min(Math.pow(pos,scaleDegree)/Target.HIGH.getPosition() * kStatic,kStatic);
     }
 
     public void tick(){

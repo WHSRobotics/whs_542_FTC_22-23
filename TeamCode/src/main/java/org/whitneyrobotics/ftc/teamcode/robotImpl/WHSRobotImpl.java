@@ -30,6 +30,7 @@ import org.whitneyrobotics.ftc.teamcode.subsys.Odometry.EncoderConverter;
 import org.whitneyrobotics.ftc.teamcode.subsys.Odometry.HWheelOdometry;
 
 import java.util.PriorityQueue;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -51,7 +52,6 @@ public class WHSRobotImpl {
 
     private Alliance currentAliiance = Alliance.RED;
 
-    public void setAlliance(Alliance a){this.currentAliiance = a;}
     public TeleOpState teleOpState = TeleOpState.ANGULAR_FREEDOM;
     public OmniDrivetrain drivetrain;
     public LinearSlides robotLinearSlides;
@@ -106,6 +106,7 @@ public class WHSRobotImpl {
                 6.04
         );
         controlHub = hardwareMap.get(LynxModule.class,"Control Hub");
+        colorSensorMethod = robotGrabber.sensor::red;
         //leftDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceLeft");
         //rightDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceRight");
         //drivetrain.setFollower(PurePursuitFollower::new);
@@ -209,19 +210,34 @@ public class WHSRobotImpl {
     }
 
     private enum AutoGrabberState {
-        SEARCHING_FOR_CONE,WAIT_UNTIL_READY, GRAB_CONE, LIFTING, WAIT_UNTIL_LIFTED
+        LIFTING_TO_ESTIMATE, WAITING_UNTIL_ESTIMATE, SEARCHING_FOR_CONE,WAIT_UNTIL_READY, GRAB_CONE, LIFTING, WAIT_UNTIL_LIFTED
     }
 
-    public AutoGrabberState grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
+    public AutoGrabberState grabberState = AutoGrabberState.values()[0];
 
-    public boolean autoGrab(boolean shouldGrab){
+    public boolean autoGrab(boolean shouldGrab, double currentConePrediction, Consumer<Double> conePredictionSetter){
         LinearSlidesMeet1.DEADBAND_ERROR = 0.5;
-        double power = -0.3;
+        double power = -0.15;
+        boolean gateOpen = true;
+
+        if(currentConePrediction < 0){
+            shouldGrab = false;
+        }
+
         if(shouldGrab){
             switch (grabberState){
+                case LIFTING_TO_ESTIMATE:
+                    robotLinearSlidesMeet1.setTarget(currentConePrediction);
+                    grabberState = AutoGrabberState.WAITING_UNTIL_ESTIMATE;
+                    break;
+                case WAITING_UNTIL_ESTIMATE:
+                    if(!robotLinearSlidesMeet1.isSliding()){
+                        grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
+                    }
+                    break;
                 case SEARCHING_FOR_CONE:
                     if(isSensingCone()){
-                        robotGrabber.setState(true);
+                        gateOpen = true;
                         grabberState = AutoGrabberState.WAIT_UNTIL_READY;
                         robotLinearSlidesMeet1.down(-1.5);
                     }
@@ -231,25 +247,29 @@ public class WHSRobotImpl {
                         grabberState = AutoGrabberState.GRAB_CONE;
                     }
                 case GRAB_CONE:
-                    robotGrabber.setState(false);
+                    gateOpen = false;
                     grabberState = AutoGrabberState.LIFTING;
                     break;
                 case LIFTING:
                     robotLinearSlidesMeet1.up(5);
                     grabberState = AutoGrabberState.WAIT_UNTIL_LIFTED;
-                    if(!isSensingCone()){
-                        grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
-                    }
+                    //if(!isSensingCone()){
+                        //grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
+                    //}
                     break;
                 case WAIT_UNTIL_LIFTED:
                     if(!robotLinearSlidesMeet1.isSliding()){
                         grabberState = AutoGrabberState.SEARCHING_FOR_CONE;
+                        robotLinearSlidesMeet1.setMode(Mode.AUTONOMOUS);
                         robotGrabber.tick();
                         robotLinearSlidesMeet1.tick();
-                        return true;
+                        conePredictionSetter.accept(currentConePrediction-2);
+                        shouldGrab = false;
+                        return false;
                     }
             }
         }
+        robotGrabber.setState(!gateOpen);
         robotGrabber.tick();
         robotLinearSlidesMeet1.operate(grabberState == AutoGrabberState.SEARCHING_FOR_CONE ? power : 0, false);
         return shouldGrab;
