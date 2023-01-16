@@ -20,7 +20,7 @@ public class PIDControlledMotor {
     private double targetVelocity = 0.0d;
     public PIDControllerNew controller;
 
-    private static PIDCoefficientsNew defaultCoefficients = new PIDCoefficientsNew(1,0,0);
+    public static PIDCoefficientsNew defaultCoefficients = new PIDCoefficientsNew(1,0,0);
 
     public PIDControlledMotor(DcMotorEx motor, double maxVelocity){
         this(motor, maxVelocity, defaultCoefficients);

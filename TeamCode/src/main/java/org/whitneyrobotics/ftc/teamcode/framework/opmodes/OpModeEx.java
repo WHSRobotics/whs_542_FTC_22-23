@@ -1,6 +1,7 @@
 package org.whitneyrobotics.ftc.teamcode.framework.opmodes;
 
 import android.os.Build;
+import android.util.Pair;
 
 import androidx.annotation.RequiresApi;
 
@@ -15,11 +16,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+import org.whitneyrobotics.ftc.teamcode.framework.Alias;
 import org.whitneyrobotics.ftc.teamcode.tests.TelemetryData;
 import org.whitneyrobotics.ftc.teamcode.tests.Test;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.function.Consumer;
 
@@ -36,7 +41,7 @@ public abstract class OpModeEx extends OpMode {
     protected Telemetry telemetry;
     protected TelemetryPacket packet = new TelemetryPacket();
 
-    ArrayList<Field> annotatedFields = new ArrayList<>();
+    Map<Object, Pair<Field, String>> annotatedFields = new Hashtable();
 
     protected void initializeDashboardTelemetry(int msTransmissionInterval) {
         telemetry = dashboard.getTelemetry();
@@ -85,18 +90,35 @@ public abstract class OpModeEx extends OpMode {
             if(testingAnnotation.autoTerminateAfterSeconds() > 0){
                 addTemporalCallback(resolve -> requestOpModeStop(), testingAnnotation.autoTerminateAfterSeconds()*1000);
             }
-
-            for (Field f : this.getClass().getDeclaredFields()) {
-                RobotLog.vv("OpModeField ",f.getName());
-                boolean hasTelemetryAnnotation = f.getAnnotation(TelemetryData.class) != null;
-                if(hasTelemetryAnnotation && f.isAccessible()) annotatedFields.add(f);
-            }
+        }
+        for (Field f : this.getClass().getDeclaredFields()) {
+            RobotLog.vv("OpModeField ",f.getName());
+            boolean hasTelemetryAnnotation = f.getAnnotation(TelemetryData.class) != null;
+            Alias alias = f.getAnnotation(Alias.class);
+            if(hasTelemetryAnnotation && f.isAccessible()) annotatedFields.put(this,new Pair(f, alias != null ? alias.value() : null));
         }
         gamepad1 = new GamepadEx(super.gamepad1);
         gamepad2 = new GamepadEx(super.gamepad2);
         betterTelemetry.setInteractingGamepad(gamepad1);
         initInternal();
     }
+
+    //TODO: Convert annotatedFields to a map containing the parent object and the fields to track
+
+    public final void addTelemetryFields(Object o, String... fields){
+        List<String> fieldsList = Arrays.asList(fields);
+        for (Field f : o.getClass().getDeclaredFields()){
+            fieldsList.stream().forEach(field -> {
+
+                if(field.equals(f.getName()) && f.isAccessible()) {
+                    Alias alias = f.getAnnotation(Alias.class);
+                    RobotLog.vv(String.format("Class field <%s> ", o.getClass().getSimpleName()), f.getName());
+                    annotatedFields.put(o, new Pair(f, alias != null ? alias.value() : null));
+                }
+            });
+        }
+    }
+
 
     public abstract void initInternal();
 
@@ -121,9 +143,9 @@ public abstract class OpModeEx extends OpMode {
     @Override
     public final void loop(){
         packet = new TelemetryPacket();
-        annotatedFields.forEach(f -> {
+        annotatedFields.forEach((o,fieldPair)-> {
             try {
-                betterTelemetry.addData(f.getName(), f.get(this));
+                betterTelemetry.addData(fieldPair.second != null ? fieldPair.second : fieldPair.first.getName(), fieldPair.first.get(o));
             } catch (IllegalAccessException e) {
                 RobotLog.e("L Bozo + Ratio");
             }

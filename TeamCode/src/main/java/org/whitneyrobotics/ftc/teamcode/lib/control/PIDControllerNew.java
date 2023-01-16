@@ -1,15 +1,15 @@
 package org.whitneyrobotics.ftc.teamcode.lib.control;
 
 public class PIDControllerNew {
-    private double kP = 1;
+    public double kP = 1;
     public double getKP() { return kP; }
     public void setKP(double kP) { this.kP = kP; }
 
-    private double kI = 0;
+    public double kI = 0;
     public double getKI() { return kI; }
     public void setKI(double kI) { this.kI = kI; }
 
-    private double kD = 0;
+    public double kD = 0;
     public double getKD() { return kD; }
     public void setKD(double kD) { this.kD = kD; }
 
