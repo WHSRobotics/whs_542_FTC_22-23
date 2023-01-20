@@ -47,7 +47,7 @@ public class LinearSlidesMeet3  {
 
 
     public enum Target {
-        LOWERED(0), GROUND(2), RAISED(4),LOW(12.5), MEDIUM(22.5), HIGH(35.5), LOWMED(8);
+        LOWERED(0), GROUND(2), RAISED(4),LOW(12.5), MEDIUM(22.5), HIGH(35.75), LOWMED(8);
 
         Target(double position){
             this.position = position;
