@@ -15,7 +15,9 @@ import org.whitneyrobotics.ftc.teamcode.drive.RoadrunnerOmniDrive;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.Drivetrain;
+import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet3;
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.whitneyrobotics.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.whitneyrobotics.ftc.teamcode.visionImpl.AprilTagScanner2022;
 
 @Autonomous(name="Bottom left", group="A")
@@ -23,57 +25,79 @@ public class PowerPlayRedLeft extends OpModeEx {
     WHSRobotImpl robot;
     RoadrunnerOmniDrive drivetrain;
     AprilTagScanner2022 aprilTagScanner;
+    TrajectorySequenceBuilder baseTrajectoryBuilder;
     TrajectorySequence trajectory;
     TestManager testManager;
     boolean firstCall = true;
     boolean grabberEngage = false;
     double currentConePrediction = 11;
+    int pos = 1;
 
     public void setCurrentConePrediction(double pred){currentConePrediction=pred;}
 
     void setupTrajectories(RoadrunnerOmniDrive drive) {
         Pose2d startPose = new Pose2d(-36, -65, Math.toRadians(90));
         drive.getLocalizer().setPoseEstimate(startPose);
-        Vector2d approachWestHigh = new Vector2d(-24 - (7 * Math.sin(Math.toRadians(30))), 0 - (7 * Math.cos(Math.toRadians(30))));
-        trajectory = drive.trajectorySequenceBuilder(startPose)
+        Vector2d westHigh = new Vector2d(-24 - (7 * Math.sin(Math.toRadians(30))), 0 - (7 * Math.cos(Math.toRadians(30))));
+        Pose2d approachWestHigh = new Pose2d(-29,-5*Math.sqrt(3), Math.toRadians(60));
+        baseTrajectoryBuilder = drive.trajectorySequenceBuilder(startPose)
                 .forward(16)
-                .splineTo(approachWestHigh, Math.toRadians(60))
-                .waitSeconds(1)
+                .splineTo(westHigh, Math.toRadians(60))
+                .waitSeconds(0.5)
 
-                .back(2)
-                .splineToConstantHeading(new Vector2d(-36,-12),Math.toRadians(180))
-                .lineToLinearHeading(new Pose2d(-61,-12, Math.toRadians(180)))
+                .back(3)
+                .lineToLinearHeading(new Pose2d(-36,-16,Math.toRadians(160)))
+                .splineTo(new Vector2d(-60,-12),Math.toRadians(180))
+                .addTemporalMarker(0.2, () -> {
+                    grabberEngage = true;
+                })
+                .forward(1)
                 .waitSeconds(1)
-                .lineToSplineHeading(new Pose2d(-40, -12, Math.toRadians(360)))
-                .splineTo(approachWestHigh, Math.toRadians(60))
-                //.splineToLinearHeading(new Pose2d(-24-(7*Math.sin(Math.toRadians(30))),0-(7*Math.cos(Math.toRadians(30))), Math.toRadians(60)), Math.toRadians(60))
-                .waitSeconds(1)
+                .setReversed(true)
+                .back(1)
+                .splineTo(new Vector2d(-36,-16),Math.toRadians(-15))
+                .setReversed(false)
+                .lineToLinearHeading(approachWestHigh)
+                .addDisplacementMarker(() -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH))
+                .splineTo(westHigh, Math.toRadians(60))
+                .waitSeconds(0.5)
 
-                .back(2)
-                .splineToConstantHeading(new Vector2d(-36,-12),Math.toRadians(180))
-                .lineToLinearHeading(new Pose2d(-61,-12, Math.toRadians(180)))
-                //.addDisplacementMarker(() -> grabberEngage=true)
+                .back(3)
+                .lineToLinearHeading(new Pose2d(-36,-16,Math.toRadians(160)))
+                .splineTo(new Vector2d(-60,-12),Math.toRadians(180))
+                .addTemporalMarker(0.2, () -> {
+                    grabberEngage = true;
+                })
+                .forward(1)
                 .waitSeconds(1)
-                .lineToSplineHeading(new Pose2d(-40, -12, Math.toRadians(360)))
-                .splineTo(approachWestHigh, Math.toRadians(60))
-                //.splineToLinearHeading(new Pose2d(-24-(7*Math.sin(Math.toRadians(30))),0-(7*Math.cos(Math.toRadians(30))), Math.toRadians(60)), Math.toRadians(60))
+                .setReversed(true)
+                .back(1)
+                .splineTo(new Vector2d(-36,-16),Math.toRadians(-15))
+                .setReversed(false)
+                .lineToLinearHeading(approachWestHigh)
+                .addDisplacementMarker(() -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH))
+                .splineTo(westHigh, Math.toRadians(60))
+                .waitSeconds(0.5)
 
+                .back(3)
+                .lineToLinearHeading(new Pose2d(-36,-16,Math.toRadians(160)))
+                .splineTo(new Vector2d(-60,-12),Math.toRadians(180))
+                .addTemporalMarker(0.2, () -> {
+                    grabberEngage = true;
+                })
+                .forward(1)
                 .waitSeconds(1)
-
-                .back(2)
-                .splineToConstantHeading(new Vector2d(-36,-12),Math.toRadians(180))
-                .lineToLinearHeading(new Pose2d(-61,-12, Math.toRadians(180)))
-                .waitSeconds(1)
-                .lineToSplineHeading(new Pose2d(-40, -12, Math.toRadians(360)))
-                .splineTo(approachWestHigh, Math.toRadians(60))
-                //.lineToLinearHeading(new Pose2d(-40, -12, Math.toRadians(60)))
-                //.splineToLinearHeading(new Pose2d(-24-(7*Math.sin(Math.toRadians(30))),0-(7*Math.cos(Math.toRadians(30))), Math.toRadians(60)), Math.toRadians(60))
-                .waitSeconds(1)
-
-                .back(2)
-                .splineToConstantHeading(new Vector2d(-36,-12),Math.toRadians(180))
-                .lineToLinearHeading(new Pose2d(-60, -12, Math.toRadians(180)))
-                .build();
+                .setReversed(true)
+                .back(1)
+                .splineTo(new Vector2d(-36,-16),Math.toRadians(-15))
+                .setReversed(false)
+                .lineToLinearHeading(approachWestHigh)
+                .addDisplacementMarker(() -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH))
+                .splineTo(westHigh, Math.toRadians(60))
+                .waitSeconds(0.5)
+                
+                .back(1)
+                .splineToConstantHeading(new Vector2d(-36,-13),Math.toRadians(-90));
     }
 
     @Override
@@ -94,12 +118,24 @@ public class PowerPlayRedLeft extends OpModeEx {
     public void initInternalLoop() {
        testManager.run();
                 //.addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.INCH,28.5, 29.5));
-        aprilTagScanner.scan();
+        pos = aprilTagScanner.scan();
     }
 
     @Override
     public void startInternal(){
-        //drivetrain.followTrajectorySequence(trajectory);
+        switch(pos){
+            case 1:
+                trajectory = baseTrajectoryBuilder
+                        .lineToLinearHeading(new Pose2d(-60,-12, Math.toRadians(180))).build();
+                break;
+            case 3:
+                trajectory = baseTrajectoryBuilder
+                        .lineToLinearHeading(new Pose2d(-12,-12, Math.toRadians(-90))).build();
+                break;
+            default:
+                trajectory = baseTrajectoryBuilder.build();
+
+        }
     }
 
     @Override
@@ -112,5 +148,6 @@ public class PowerPlayRedLeft extends OpModeEx {
             drivetrain.update();
         }
         grabberEngage = robot.autoGrab(grabberEngage, currentConePrediction, this::setCurrentConePrediction);
+        robot.linearSlides.tick();
     }
 }

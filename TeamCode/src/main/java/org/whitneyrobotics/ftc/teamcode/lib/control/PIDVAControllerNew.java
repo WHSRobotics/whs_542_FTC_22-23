@@ -5,27 +5,27 @@ import org.whitneyrobotics.ftc.teamcode.MotionProfile.MotionProfileTrapezoidal;
 import java.util.function.Supplier;
 
 public class PIDVAControllerNew {
-    public double kP = 1;
+    public static double kP = 1;
     public double getKP() { return kP; }
     public void setKP(double kP) { this.kP = kP; }
 
-    public double kI = 0;
+    public static double kI = 0;
     public double getKI() { return kI; }
     public void setKI(double kI) { this.kI = kI; }
 
-    public double kD = 0;
+    public static double kD = 0;
     public double getKD() { return kD; }
     public void setKD(double kD) { this.kD = kD; }
 
-    public double kA = 0;
+    public static double kA = 0;
     public double getKA() { return kA; }
     public void setKA(double kA) { this.kA = kA; }
 
-    public double kV = 0;
+    public static double kV = 0;
     public double getKV() { return kV; }
     public void setKV(double kV) { this.kV = kV; }
 
-    public double kStatic = 0;
+    public static double kStatic = 0;
     public double getkStatic() {return kStatic; }
     public void setkStatic(double kStatic) { this.kStatic = kStatic; }
 
@@ -33,6 +33,7 @@ public class PIDVAControllerNew {
     public double maxAcceleration;
 
     public String phase = "IDLE";
+    public String FTCDashboardTest = "hi";
 
     //private PIDCoefficientsNew.FeedForwardProvider FeedforwardCalculation = (double t, double c, long time) -> 0;
     /*public void setFeedforwardCalculation(PIDCoefficientsNew.FeedForwardProvider f) {
@@ -91,8 +92,10 @@ public class PIDVAControllerNew {
      * Resets the last known time, input, error, and integral of the PID controller. This method is internally called when setting a new static target.
      */
     public void reset() {
-        lastKnownTime = System.nanoTime() / (long)1E9;
+        lastKnownTime = System.nanoTime() / 1E9;
         lastKnownError = target - lastKnownInput;
+        velocity = 0;
+        outputAcceleration = 0;
         integral = 0;
     }
 
@@ -147,9 +150,9 @@ public class PIDVAControllerNew {
         if (error < 0){
             direction = -1;
         }
-        double outputVelocity = velocity;
+        double outputVelocity;
 
-        if (maxVelocity > Math.abs(velocity)){
+        if (Math.abs(velocity) < maxVelocity){
             outputVelocity = velocity + direction * maxAcceleration * deltaTime;
             outputAcceleration = direction * maxAcceleration;
             phase = "RAMP UP";
@@ -159,7 +162,7 @@ public class PIDVAControllerNew {
             phase = "CRUISE";
         }
 
-        if(error <= Math.pow(velocity,2)/(2*maxAcceleration)){
+        if(Math.abs(error) <= Math.pow(velocity,2)/(2*maxAcceleration)){
             outputVelocity = velocity - direction * maxAcceleration * deltaTime;
             outputAcceleration = -direction * maxAcceleration;
             phase = "RAMP DOWN";
@@ -172,6 +175,6 @@ public class PIDVAControllerNew {
      * @return Value of the PID controller. It's recommended to pass this to a scaling or clamping function before applying it to the system.
      */
     public double getOutput(){
-        return kP * lastKnownError + kI * integral + kD * derivative + kV + velocity + kA + outputAcceleration + kStatic;
+        return (kP * lastKnownError) + (kI * integral) + (kD * derivative) + (kV * velocity) +(kA * outputAcceleration) + kStatic;
     }
 }

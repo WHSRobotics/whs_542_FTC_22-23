@@ -24,7 +24,7 @@ public class Tests {
      * @throws AssertionError if the two values are not equal
      */
     public static void assertEquals(double d1, double d2) throws AssertionError{
-        if (d1 != d2) throw new AssertionError(String.format("%d is not equal to %d",d1,d2));
+        if (d1 != d2) throw new AssertionError(String.format("%s is not equal to %s",d1,d2));
     }
 
     /**
@@ -34,7 +34,7 @@ public class Tests {
      * @throws AssertionError if the two values are not almost equal
      */
     public static void assertAlmostEquals(double d1, double d2) throws AssertionError{
-        if (Math.abs(d1-d2) > 1e-7) throw new AssertionError(String.format("%d is not almost equal to %d",d1,d2));
+        if (Math.abs(d1-d2) > 1e-7) throw new AssertionError(String.format("%s is not almost equal to %s",d1,d2));
     }
 
     /**
@@ -44,7 +44,7 @@ public class Tests {
      * @throws AssertionError if the two values are not weakly equal
      */
     public static void assertWeakEquality(double d1, double d2) throws AssertionError{
-        if (Math.abs(d1-d2) > 1e-3) throw new AssertionError(String.format("%d is not weakly equal to %d",d1,d2));
+        if (Math.abs(d1-d2) > 1e-3) throw new AssertionError(String.format("%s is not weakly equal to %s",d1,d2));
     }
 
     /**
@@ -54,7 +54,7 @@ public class Tests {
      * @throws AssertionError if the two values are not almost equal
      */
     public static void assertVariableEquality(double d1, double d2, int significantFigures) throws AssertionError{
-        if (Math.abs(d1 - d2) > Math.pow(1,-significantFigures)) throw new AssertionError(String.format("%d is not equal to %d by %d sig figs",d1,d2, significantFigures));
+        if (Math.abs(d1 - d2) > Math.pow(1,-significantFigures)) throw new AssertionError(String.format("%s is not equal to %s by %s sig figs",d1,d2, significantFigures));
     }
 
     public static void assertGamepadSetup(GamepadEx gamepad, String label) throws AssertionError {
@@ -64,14 +64,14 @@ public class Tests {
     public static void assertDistanceInRange(Rev2mDistanceSensor sensor, DistanceUnit unit, double min, double max) throws AssertionError{
         assertNotNull(sensor);
         double measurement = sensor.getDistance(unit);
-        if(measurement < Math.abs(min) || measurement > Math.abs(max)) throw new AssertionError(String.format("%d was not in expected range of %d-%d. Actual: %d", sensor.getDeviceName(), Math.abs(min), Math.abs(max),measurement));
+        if(measurement < Math.abs(min) || measurement > Math.abs(max)) throw new AssertionError(String.format("%s was not in expected range of %s-%s. Actual: %s", sensor.getDeviceName(), Math.abs(min), Math.abs(max),measurement));
     }
 
     public static void assertBatteryCharged(LynxModule hub) {
         assertNotNull(hub);
         double voltage = hub.getInputVoltage(VoltageUnit.VOLTS);
         if(voltage < 12){
-            throw new AssertionError(String.format("Battery is in poor-condition. Charge as soon as possible. Voltage: %d", voltage));
+            throw new AssertionError(String.format("Battery is in poor-condition. Charge as soon as possible. Voltage: %s", voltage));
         }
         if (voltage < 12.5){
             throw new Warning(String.format("Battery is sub-optimal. Charge as soon as possible. Voltage :%s", voltage));

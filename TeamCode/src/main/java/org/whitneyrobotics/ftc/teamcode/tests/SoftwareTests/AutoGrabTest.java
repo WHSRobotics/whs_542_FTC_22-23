@@ -30,9 +30,9 @@ public class AutoGrabTest extends OpModeEx {
     @Override
     protected void loopInternal() {
         shouldGrab = robot.autoGrab(shouldGrab, conePrediction, this::setConePrediction);
-        betterTelemetry.addData("Grabber height", robot.robotLinearSlidesMeet1.getPosition());
-        betterTelemetry.addData("Grabber phase", robot.robotLinearSlidesMeet1.getPhase());
-        betterTelemetry.addData("Grabber velocity", robot.robotLinearSlidesMeet1.getVelocity());
+        betterTelemetry.addData("Grabber height", robot.linearSlides.getPosition());
+        betterTelemetry.addData("Grabber phase", robot.linearSlides.getPhase());
+        betterTelemetry.addData("Grabber velocity", robot.linearSlides.getVelocity());
         betterTelemetry.addData("Grabber State", robot.grabberState);
         betterTelemetry.addData("Cone detected",robot.isSensingCone());
     }

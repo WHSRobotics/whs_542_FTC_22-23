@@ -108,8 +108,8 @@ public abstract class OpModeEx extends OpMode {
     public final void addTelemetryFields(Object o, String... fields){
         List<String> fieldsList = Arrays.asList(fields);
         for (Field f : o.getClass().getDeclaredFields()){
+            RobotLog.vv("Field",f.getName());
             fieldsList.stream().forEach(field -> {
-
                 if(field.equals(f.getName()) && f.isAccessible()) {
                     Alias alias = f.getAnnotation(Alias.class);
                     RobotLog.vv(String.format("Class field <%s> ", o.getClass().getSimpleName()), f.getName());
