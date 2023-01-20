@@ -20,8 +20,8 @@ import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 @Config
 public class LinearSlidesMeet3  {
     public static double DEADBAND_ERROR = 0.5;
-    public static double maxVelocity = 5;
-    public static double acceleration = 5;
+    public static double maxVelocity = 4.2;
+    public static double acceleration = 9;
     public static double TICKS_PER_INCH = 100;
     public static double SPOOL_RADIUS = 0.75;
 
