@@ -73,13 +73,16 @@ public class WHSRobotImpl {
     public HWheelOdometry odometry;
     SimpleTimer autoTimer;
     GamepadEx gamepad;
-    public WHSRobotImpl (HardwareMap hardwareMap){
+    public WHSRobotImpl(HardwareMap hardwareMap){
+        this(hardwareMap, false);
+    }
+    public WHSRobotImpl (HardwareMap hardwareMap, boolean autonomous){
         gamepad = gamepad;
         imu = new IMU(hardwareMap);
         drivetrain = new OmniDrivetrain(hardwareMap, imu);
         //robotLinearSlides = new LinearSlides(hardwareMap, gamepadOne);
         robotGrabber = new Grabber(hardwareMap);
-        linearSlides = new LinearSlidesMeet3(hardwareMap);
+        linearSlides = new LinearSlidesMeet3(hardwareMap,autonomous);
         //robotIntake.resetEncoders();
         odometry = new HWheelOdometry(
                 new EncoderConverter.EncoderConverterBuilder()

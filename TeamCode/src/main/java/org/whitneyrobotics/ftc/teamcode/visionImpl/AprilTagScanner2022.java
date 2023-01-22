@@ -73,9 +73,8 @@ public class AprilTagScanner2022 {
                 telemetry.addData("The Camera has errored with error code", errorCode);
             }
         });
-
-
     }
+
     public int scan() {
         AprilTagDetection tagOfInterest = null;
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();

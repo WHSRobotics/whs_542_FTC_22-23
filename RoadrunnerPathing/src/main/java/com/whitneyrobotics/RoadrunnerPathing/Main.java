@@ -20,7 +20,7 @@ public class Main {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setColorScheme(new ColorSchemeRedLight())
                 .setDimensions(14,14)
-                .setConstraints(40, 50, Math.toRadians(120), Math.toRadians(150), 5.77)
+                .setConstraints(40, 30, Math.toRadians(120), Math.toRadians(150), 5.77)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, -65, Math.toRadians(90)))
                                 .forward(16)

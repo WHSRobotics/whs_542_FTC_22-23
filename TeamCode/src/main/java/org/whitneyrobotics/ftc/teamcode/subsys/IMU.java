@@ -44,6 +44,8 @@ public class IMU {
         imu.initialize(parameters);
     }
 
+    double heading;
+
 
 
     public double[] getThreeHeading()
@@ -58,8 +60,8 @@ public class IMU {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public double getHeading(){
-        double heading = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).firstAngle/*toAxesOrder(AxesOrder.XYZ).thirdAngle*/ - calibration;
-        heading = Functions.normalizeAngle(heading); // -180 to 180 deg
+        heading = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).firstAngle - calibration;
+        //heading = Functions.normalizeAngle(heading); // -180 to 180 deg
         return heading;
     }
 
@@ -74,7 +76,7 @@ public class IMU {
     }
 
     public void zeroHeading(double offset){
-        calibration = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.XYZ).thirdAngle - offset;
+        calibration = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).firstAngle - offset;
     }
 
     // Returns the magnitude of the acceleration, not the direction.

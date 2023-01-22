@@ -20,7 +20,7 @@ public class PowerPlayAutoBlueLeft extends OpModeEx{
     WHSRobotImpl robot;
     AprilTagScanner2022 aprilTagScanner = new AprilTagScanner2022(hardwareMap, betterTelemetry);
 
-    @Overrideq
+    @Override
     public void initInternal() {
         addTemporalCallback(resolve -> {
             this.state = "Parking";

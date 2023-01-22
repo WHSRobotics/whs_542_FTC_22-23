@@ -25,6 +25,8 @@ public class LinearSlidesMeet3  {
     public static double acceleration = 9;
     public static double TICKS_PER_INCH = 100;
     public static double SPOOL_RADIUS = 0.75;
+    boolean fullyAutonomousMode;
+    double initial = 0.0d;
 
 
     //coefficients to control slidesVelocity
@@ -36,7 +38,7 @@ public class LinearSlidesMeet3  {
     public static double kP = 0.02;
     public static double kD = 0.0012;
     public static double kI = 0.00;
-    public static double kV = 0.65;
+    public static double kV = 1.08;
     public static double kA = 0.012;
     public static double kStatic = 0.5;
 
@@ -47,7 +49,7 @@ public class LinearSlidesMeet3  {
 
 
     public enum Target {
-        LOWERED(0), GROUND(2), RAISED(4),LOW(12.5), MEDIUM(22.5), HIGH(35.5);
+        LOWERED(0), GROUND(3), RAISED(6),LOW(15.5), MEDIUM(25.5), HIGH(35.75), LOWMED(8), FOURWALL(10.5);
 
         Target(double position){
             this.position = position;
@@ -87,14 +89,27 @@ public class LinearSlidesMeet3  {
         return velocity;
     }
 
+    public void setInitialPosition(double pos){
+        initial = pos;
+    }
+
+    public void zeroSlides(){
+        resetEncoders();
+        initial = 0;
+    }
+
     public double currentVelocity = 0.0d;
     public LinearSlidesMeet3(HardwareMap hardwareMap){
+        this(hardwareMap, false);
+    }
+    public LinearSlidesMeet3(HardwareMap hardwareMap, boolean auto){
         slidesL = hardwareMap.get(DcMotorEx.class, "slidesL");
         slidesR = hardwareMap.get(DcMotorEx.class,"slidesR");
         slidesR.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slidesR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         resetEncoders();
+        fullyAutonomousMode = auto;
         //pidL = new PIDControlledMotor(slidesL,5, new PIDCoefficientsNew(kP,kI,kD));
         //pidR = new PIDControlledMotor(slidesR,5,new PIDCoefficientsNew(kP,kI,kD));
     }
@@ -161,7 +176,7 @@ public class LinearSlidesMeet3  {
             case PID_CONTROLLED:
                 error = currentTarget - getPosition();
                 if(Math.abs(error)<DEADBAND_ERROR){
-                    cancelMovement();
+                    if(!fullyAutonomousMode) cancelMovement();
                     break;
                 }
                 slidingController.calculate(getPosition());
@@ -187,7 +202,7 @@ public class LinearSlidesMeet3  {
     }
 
     public double getPosition(){
-        return getRawPosition()/TICKS_PER_INCH;
+        return getRawPosition()/TICKS_PER_INCH + initial;
     }
 
     private void cancelMovement(){
