@@ -58,7 +58,7 @@ public class PowerPlayLeft extends OpModeEx {
                 .forward(72)
                 .back(26)
                 .setReversed(false)
-                .addTemporalMarker(2.5,()-> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1.5))
+                .addTemporalMarker(3.5,()-> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1.5))
                 .splineTo(westHigh, Math.toRadians(60))
                 .waitSeconds(0.25)
                 .addDisplacementMarker(()->grabberMode = GrabberMode.RELEASE)
@@ -116,7 +116,7 @@ public class PowerPlayLeft extends OpModeEx {
         aprilTagScanner = new AprilTagScanner2022(hardwareMap, betterTelemetry);
         testManager = betterTelemetry.useTestManager()
                 .addTest("Gamepad 1 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 1"))
-                .addTest("Gamepad 2 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 1"))
+                .addTest("Gamepad 2 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 2"))
                 .addTest("Battery voltage test", () -> Tests.assertBatteryCharged(robot.controlHub))
                 .addTest("Setup Cone Preload", () -> Tests.assertTrue(robot.robotGrabber.testForCone()));
 

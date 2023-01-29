@@ -41,13 +41,9 @@ public class WHSTeleOp extends OpModeEx {
         gamepad2.CROSS.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED));
         gamepad2.DPAD_UP.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.RAISED));
         gamepad2.DPAD_DOWN.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.GROUND));
-<<<<<<< HEAD
         gamepad2.DPAD_RIGHT.onPress(e -> robot.linearSlides.zeroSlides());
         gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LOWMED));
         //gamepad2.LEFT_TRIGGER.onInteraction(e -> robot.linearSlides.setTarget(FOURWALL));
-=======
-        gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWMED));
->>>>>>> main
     }
 
     void setupNotifications(){
