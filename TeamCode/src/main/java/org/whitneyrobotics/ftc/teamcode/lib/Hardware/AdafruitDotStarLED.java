@@ -19,7 +19,7 @@ public class AdafruitDotStarLED {
      * @param red
      */
     public void red(int red){
-        this.R = Math.min(0,Math.max(red,255);
+        this.R = Math.min(0,Math.max(red,255));
     }
 
     /**
@@ -27,7 +27,7 @@ public class AdafruitDotStarLED {
      * @param green
      */
     public void green(int green){
-        this.G = Math.min(0,Math.max(green,255);
+        this.G = Math.min(0,Math.max(green,255));
     }
 
     /**
@@ -35,7 +35,7 @@ public class AdafruitDotStarLED {
      * @param blue
      */
     public void blue(int blue){
-        this.B = Math.min(0,Math.max(blue,255);
+        this.B = Math.min(0,Math.max(blue,255));
     }
 
     /**

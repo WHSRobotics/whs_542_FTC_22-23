@@ -86,13 +86,6 @@ public class WHSRobotImpl {
         //robotIntake.resetEncoders();
         odometry = new HWheelOdometry(
                 new EncoderConverter.EncoderConverterBuilder()
-                        .setEncoderMotor(hardwareMap.get(DcMotorEx.class,"driveBL"))
-                        .setTicksPerRev(8192)
-                        .setUnit(DistanceUnit.INCH)
-                        .setWheelDiameter(2)
-                        .setRevEncoder(true)
-                        .build(),
-                new EncoderConverter.EncoderConverterBuilder()
                         .setEncoderMotor(hardwareMap.get(DcMotorEx.class,"driveFR"))
                         .setTicksPerRev(8192)
                         .setUnit(DistanceUnit.INCH)
@@ -101,6 +94,13 @@ public class WHSRobotImpl {
                         .build(),
                 new EncoderConverter.EncoderConverterBuilder()
                         .setEncoderMotor(hardwareMap.get(DcMotorEx.class,"driveBR"))
+                        .setTicksPerRev(8192)
+                        .setUnit(DistanceUnit.INCH)
+                        .setWheelDiameter(2)
+                        .setRevEncoder(true)
+                        .build(),
+                new EncoderConverter.EncoderConverterBuilder()
+                        .setEncoderMotor(hardwareMap.get(DcMotorEx.class,"driveFL"))
                         .setTicksPerRev(8192)
                         .setUnit(DistanceUnit.INCH)
                         .setWheelDiameter(2)

@@ -21,7 +21,7 @@ public class AdafruitDotStarWithSPIBridge extends I2cDeviceSynchDevice<I2cDevice
     }
 
     protected void writeShort(short value){
-        deviceClient.write();
+        //deviceClient.write();
     }
     /**
      * Actually carries out the initialization of the instance.
