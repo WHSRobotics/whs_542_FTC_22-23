@@ -2,6 +2,7 @@ package org.whitneyrobotics.ftc.teamcode.autoop.FinalAuto;
 
 import static org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl.Alliance.RED;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
@@ -24,6 +25,7 @@ import org.whitneyrobotics.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.whitneyrobotics.ftc.teamcode.visionImpl.AprilTagScanner2022;
 
+@Config
 @Autonomous(name="Left", group="A", preselectTeleOp = "PowerPlayTeleOp")
 public class PowerPlayLeft extends OpModeEx {
     enum GrabberMode {
@@ -43,7 +45,7 @@ public class PowerPlayLeft extends OpModeEx {
     @TelemetryData
     public double currentConePrediction = 4.25;
     @TelemetryData
-    public int pos = 1;
+    public static int pos = 1;
     @TelemetryData
     boolean coneDetected;
 

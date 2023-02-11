@@ -1,9 +1,5 @@
 package org.whitneyrobotics.ftc.teamcode.subsys;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,6 +9,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.whitneyrobotics.ftc.teamcode.framework.Alias;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDControllerNew;
+import org.whitneyrobotics.ftc.teamcode.lib.control.PIDFCoefficientsNew;
+import org.whitneyrobotics.ftc.teamcode.lib.control.PIDFControllerNew;
+import org.whitneyrobotics.ftc.teamcode.lib.control.PIDVACoefficients;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDVAControllerNew;
 import org.whitneyrobotics.ftc.teamcode.lib.filters.RateLimitingFilter;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
@@ -25,26 +24,32 @@ public class LinearSlidesMeet3  {
     public static double acceleration = 9;
     public static double TICKS_PER_INCH = 100;
     public static double SPOOL_RADIUS = 0.75;
+    public static double powerMultiplier = 0.0d;
     boolean fullyAutonomousMode;
     double initial = 0.0d;
 
 
     //coefficients to control slidesVelocity
-    public static double PIdle = 3;
-    public static double IIdle = 0.00001;
-    public static double DIdle = 0.008;
-    public static PIDControllerNew idleController = new PIDControllerNew(PIdle, IIdle, DIdle);
+    public static PIDFCoefficientsNew idleCoefficients = new PIDFCoefficientsNew()
+            .setKP(3)
+            .setKD(0.0001)
+            .setKD(0.008);
+    public static PIDFControllerNew idleController = new PIDFControllerNew(idleCoefficients);
 
-    public static double kP = 0.02;
-    public static double kD = 0.0012;
-    public static double kI = 0.00;
-    public static double kV = 1.08;
-    public static double kA = 0.012;
-    public static double kStatic = 0.5;
+    public static PIDVACoefficients slidingCoefficients = new PIDVACoefficients()
+            .setKP(0.02)
+            .setKD(0.0012)
+            .setKD(0.0012)
+            .setKI(0.00)
+            .setKV(1.08)
+            .setKA(0.012)
+            .setKStatic(0.5)
+            .setMaxAcceleration(4.2)
+            .setMaxVelocity(9);
 
     public static double TRUE_VELOCITY = 4;
-    public static PIDVAControllerNew slidingController = new PIDVAControllerNew(kP, kI, kD, kV, kA, kStatic, maxVelocity, acceleration);
-    RateLimitingFilter velocityLimiter = new RateLimitingFilter(acceleration,0);
+    public static PIDVAControllerNew slidingController = new PIDVAControllerNew(slidingCoefficients);
+    public static RateLimitingFilter velocityLimiter = new RateLimitingFilter(acceleration,0);
 
 
 
@@ -114,11 +119,6 @@ public class LinearSlidesMeet3  {
         //pidR = new PIDControlledMotor(slidesR,5,new PIDCoefficientsNew(kP,kI,kD));
     }
 
-    public void EmptyConstants(){
-        idleController = new PIDControllerNew(0, 0, 0);
-        slidingController = new PIDVAControllerNew(0, 0, 0, 0, 0, 0, maxVelocity, acceleration);
-    }
-
     public void setTarget(double t){
         this.currentTarget = t;
         slidingController.reset();
@@ -171,7 +171,7 @@ public class LinearSlidesMeet3  {
                 velocityLimiter.calculate(targetVelocity); //synthetic acceleration
                 targetVelocity = velocityLimiter.getOutput();
                 idleController.calculate(targetVelocity, velocity);
-                output = Math.signum(idleController.getOutput()) * Functions.map(Math.abs(idleController.getOutput()),0,10,0,1);
+                output = Math.signum(idleController.getOutput()) * Functions.map(Math.abs(idleController.getOutput() + powerMultiplier * targetVelocity),0,10,0,1);
                 break;
             case PID_CONTROLLED:
                 error = currentTarget - getPosition();
