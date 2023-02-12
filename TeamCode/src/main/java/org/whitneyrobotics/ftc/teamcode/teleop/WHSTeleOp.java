@@ -82,7 +82,7 @@ public class WHSTeleOp extends OpModeEx {
     public void initInternal() {
         RobotDataUtil.load(WHSRobotData.class);
         robot = new WHSRobotImpl(hardwareMap);
-        robot.imu.zeroHeading(-WHSRobotData.heading+90);
+        robot.imu.zeroHeading(WHSRobotData.heading+90);
         robot.linearSlides.setInitialPosition(WHSRobotData.slidesHeight);
         setupGamepads();
         setupNotifications();
