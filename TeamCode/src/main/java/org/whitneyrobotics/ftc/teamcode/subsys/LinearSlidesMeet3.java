@@ -20,32 +20,33 @@ import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 @Config
 public class LinearSlidesMeet3  {
     public static double DEADBAND_ERROR = 0.5;
-    public static double maxVelocity = 4.2;
+    public static double maxVelocity = 3.5;
     public static double acceleration = 9;
     public static double TICKS_PER_INCH = 100;
     public static double SPOOL_RADIUS = 0.75;
-    public static double powerMultiplier = 0.0d;
+    public static double powerMultiplier = 2;
     boolean fullyAutonomousMode;
     double initial = 0.0d;
+    public static double idleStatic = 0.08;
+    public static boolean useIdleStatic = false;
 
 
     //coefficients to control slidesVelocity
     public static PIDFCoefficientsNew idleCoefficients = new PIDFCoefficientsNew()
-            .setKP(3)
-            .setKD(0.0001)
-            .setKD(0.008);
+            .setKP(0.13)
+            .setKI(0)
+            .setKD(0.003);
     public static PIDFControllerNew idleController = new PIDFControllerNew(idleCoefficients);
 
     public static PIDVACoefficients slidingCoefficients = new PIDVACoefficients()
-            .setKP(0.02)
-            .setKD(0.0012)
-            .setKD(0.0012)
+            .setKP(0.1)
             .setKI(0.00)
-            .setKV(1.08)
-            .setKA(0.012)
+            .setKD(0.012)
+            .setKV(1.12)
+            .setKA(0.04)
             .setKStatic(0.5)
-            .setMaxAcceleration(4.2)
-            .setMaxVelocity(9);
+            .setMaxAcceleration(9)
+            .setMaxVelocity(3.5);
 
     public static double TRUE_VELOCITY = 4;
     public static PIDVAControllerNew slidingController = new PIDVAControllerNew(slidingCoefficients);
@@ -167,11 +168,11 @@ public class LinearSlidesMeet3  {
         if(Math.abs(power) > 0.1){ cancelMovement();} // signal filtering
         switch (currentState) {
             case IDLE:
-                double targetVelocity = power * TRUE_VELOCITY * (slow ? 0.5 : 1);
-                velocityLimiter.calculate(targetVelocity); //synthetic acceleration
-                targetVelocity = velocityLimiter.getOutput();
+                double rawTargetVelocity = power * TRUE_VELOCITY * (slow ? 0.5 : 1);
+                velocityLimiter.calculate(rawTargetVelocity); //synthetic acceleration
+                double targetVelocity = velocityLimiter.getOutput();
                 idleController.calculate(targetVelocity, velocity);
-                output = Math.signum(idleController.getOutput()) * Functions.map(Math.abs(idleController.getOutput() + powerMultiplier * targetVelocity),0,10,0,1);
+                output = Math.signum(idleController.getOutput()) * Functions.map(Math.abs(idleController.getOutput() + powerMultiplier * rawTargetVelocity),0,10,0,1) + (useIdleStatic ? idleStatic : 0);
                 break;
             case PID_CONTROLLED:
                 error = currentTarget - getPosition();

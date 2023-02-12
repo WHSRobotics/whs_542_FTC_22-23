@@ -90,6 +90,11 @@ public class WHSTeleOp extends OpModeEx {
     }
 
     @Override
+    public void startInternal(){
+        robot.linearSlides.useIdleStatic = true;
+    }
+
+    @Override
     protected void loopInternal() {
         if(gamepad2.BUMPER_LEFT.value()){
             robot.robotGrabber.forceOpen();

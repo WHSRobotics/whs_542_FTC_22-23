@@ -37,6 +37,5 @@ public class LinearSlidesMeet3Test extends OpModeEx {
         betterTelemetry.addData("sliding Controller output", slides.slidingController.getOutput());
         betterTelemetry.addData("Error",slides.error);
         betterTelemetry.addData("Mode",slides.currentState);
-        betterTelemetry.addData("message",slides.slidingController.FTCDashboardTest);
     }
 }
