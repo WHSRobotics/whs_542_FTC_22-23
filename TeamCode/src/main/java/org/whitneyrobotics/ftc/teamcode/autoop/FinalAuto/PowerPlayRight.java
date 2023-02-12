@@ -109,6 +109,7 @@ public class PowerPlayRight extends OpModeEx {
 
     @Override
     public void initInternal() {
+        LinearSlidesMeet3.useIdleStatic = false;
         robot = new WHSRobotImpl(hardwareMap,false);
         robot.setCurrentAlliance(RED);
         drivetrain = new RoadrunnerOmniDrive(hardwareMap);
@@ -133,6 +134,7 @@ public class PowerPlayRight extends OpModeEx {
 
     @Override
     public void initInternalLoop() {
+        LinearSlidesMeet3.useIdleStatic = true;
         testManager.run();
         //.addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.INCH,28.5, 29.5));
         int lastPos = pos;

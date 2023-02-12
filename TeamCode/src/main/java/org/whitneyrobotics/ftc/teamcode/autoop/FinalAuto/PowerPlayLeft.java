@@ -111,6 +111,7 @@ public class PowerPlayLeft extends OpModeEx {
 
     @Override
     public void initInternal() {
+        LinearSlidesMeet3.useIdleStatic = false;
         robot = new WHSRobotImpl(hardwareMap,false);
         robot.setCurrentAlliance(RED);
         drivetrain = new RoadrunnerOmniDrive(hardwareMap);
@@ -147,6 +148,7 @@ public class PowerPlayLeft extends OpModeEx {
 
     @Override
     public void startInternal(){
+        LinearSlidesMeet3.useIdleStatic = true;
         switch(pos){
             case 1:
                 trajectory = baseTrajectoryBuilder
