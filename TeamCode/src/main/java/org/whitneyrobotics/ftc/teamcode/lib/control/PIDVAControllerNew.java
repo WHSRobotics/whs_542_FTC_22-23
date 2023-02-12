@@ -1,39 +1,9 @@
 package org.whitneyrobotics.ftc.teamcode.lib.control;
 
-import org.whitneyrobotics.ftc.teamcode.MotionProfile.MotionProfileTrapezoidal;
-
-import java.util.function.Supplier;
-
 public class PIDVAControllerNew {
-    public static double kP = 1;
-    public double getKP() { return kP; }
-    public void setKP(double kP) { this.kP = kP; }
-
-    public static double kI = 0;
-    public double getKI() { return kI; }
-    public void setKI(double kI) { this.kI = kI; }
-
-    public static double kD = 0;
-    public double getKD() { return kD; }
-    public void setKD(double kD) { this.kD = kD; }
-
-    public static double kA = 0;
-    public double getKA() { return kA; }
-    public void setKA(double kA) { this.kA = kA; }
-
-    public static double kV = 0;
-    public double getKV() { return kV; }
-    public void setKV(double kV) { this.kV = kV; }
-
-    public static double kStatic = 0;
-    public double getkStatic() {return kStatic; }
-    public void setkStatic(double kStatic) { this.kStatic = kStatic; }
-
-    public double maxVelocity;
-    public double maxAcceleration;
 
     public String phase = "IDLE";
-    public String FTCDashboardTest = "hi";
+    public PIDVACoefficients coefficients;
 
     //private PIDCoefficientsNew.FeedForwardProvider FeedforwardCalculation = (double t, double c, long time) -> 0;
     /*public void setFeedforwardCalculation(PIDCoefficientsNew.FeedForwardProvider f) {
@@ -52,28 +22,26 @@ public class PIDVAControllerNew {
         this(kP, kI, kD, kV, kA, 0, maxVelocity, maxAcceleration);
     }
 
+    public PIDVAControllerNew(PIDVACoefficients coeff){
+        this.coefficients = coeff;
+    }
+
     public PIDVAControllerNew(double kP, double kI, double kD, double kV, double kA, double kStatic, double maxVelocity, double maxAcceleration){
-        this.kP = kP;
-        this.kI = kI;
-        this.kD = kD;
-        this.kV = kV;
-        this.kA = kA;
-        this.kStatic = kStatic;
-        this.maxVelocity = maxVelocity;
-        this.maxAcceleration = maxAcceleration;
+        coefficients = new PIDVACoefficients()
+                .setKP(kP)
+                .setKI(kI)
+                .setKD(kD)
+                .setKV(kV)
+                .setKA(kA)
+                .setKStatic(kStatic)
+                .setMaxVelocity(maxVelocity)
+                .setMaxAcceleration(maxAcceleration);
     }
 
 
     private double lastKnownTime = 0;
     private double lastKnownError = 0;
     private double lastKnownInput = 0;
-
-    /*
-    public void setTarget(double target, double current) {
-        //motionProfile = new MotionProfileTrapezoidal(0,maxAcceleration,maxVelocity);
-        this.target = target;
-    }
-     */
 
     private double target = 0;
 
@@ -152,19 +120,19 @@ public class PIDVAControllerNew {
         }
         double outputVelocity;
 
-        if (Math.abs(velocity) < maxVelocity){
-            outputVelocity = velocity + direction * maxAcceleration * deltaTime;
-            outputAcceleration = direction * maxAcceleration;
+        if (Math.abs(velocity) < coefficients.getMaxVelocity()){
+            outputVelocity = velocity + direction * coefficients.getMaxAcceleration() * deltaTime;
+            outputAcceleration = direction * coefficients.getMaxAcceleration();
             phase = "RAMP UP";
         } else {
-            outputVelocity = direction*maxVelocity;
+            outputVelocity = direction* coefficients.getMaxVelocity();
             outputAcceleration = 0;
             phase = "CRUISE";
         }
 
-        if(Math.abs(error) <= Math.pow(velocity,2)/(2*maxAcceleration)){
-            outputVelocity = velocity - direction * maxAcceleration * deltaTime;
-            outputAcceleration = -direction * maxAcceleration;
+        if(Math.abs(error) <= Math.pow(velocity,2)/(2* coefficients.getMaxAcceleration())){
+            outputVelocity = velocity - direction * coefficients.getMaxAcceleration() * deltaTime;
+            outputAcceleration = -direction * coefficients.getMaxAcceleration();
             phase = "RAMP DOWN";
         }
         velocity = outputVelocity;
@@ -175,6 +143,11 @@ public class PIDVAControllerNew {
      * @return Value of the PID controller. It's recommended to pass this to a scaling or clamping function before applying it to the system.
      */
     public double getOutput(){
-        return (kP * lastKnownError) + (kI * integral) + (kD * derivative) + (kV * velocity) +(kA * outputAcceleration) + kStatic;
+        return (coefficients.getKP() * lastKnownError) +
+                (coefficients.getKI() * integral) +
+                (coefficients.getKD() * derivative) +
+                (coefficients.getKV() * velocity) +
+                (coefficients.getKA() * outputAcceleration) +
+                coefficients.getkStatic();
     }
 }

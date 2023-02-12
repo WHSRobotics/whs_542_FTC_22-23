@@ -25,7 +25,6 @@ public final class RobotDataUtil {
 
     @JsonIgnored
     static AppUtil util = AppUtil.getInstance();
-    private static JSONObject json;
 
     @JsonIgnored
     public synchronized static Field[] getClassWriteableFields(Class<?> dataClass){

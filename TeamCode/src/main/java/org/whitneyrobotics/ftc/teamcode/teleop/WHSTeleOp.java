@@ -2,6 +2,8 @@ package org.whitneyrobotics.ftc.teamcode.teleop;
 
 import static org.whitneyrobotics.ftc.teamcode.lib.util.RumbleEffects.endgame;
 import static org.whitneyrobotics.ftc.teamcode.lib.util.RumbleEffects.matchEnd;
+import static org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet3.Target.FOURWALL;
+import static org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet3.Target.LOWMED;
 
 import android.os.Build;
 
@@ -39,8 +41,14 @@ public class WHSTeleOp extends OpModeEx {
         gamepad2.CROSS.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED));
         gamepad2.DPAD_UP.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.RAISED));
         gamepad2.DPAD_DOWN.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.GROUND));
+<<<<<<< HEAD
         gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWMED));
         gamepad2.LEFT_TRIGGER.onInteraction(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.FOURWALL));
+=======
+        gamepad2.DPAD_RIGHT.onPress(e -> robot.linearSlides.zeroSlides());
+        gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LOWMED));
+        //gamepad2.LEFT_TRIGGER.onInteraction(e -> robot.linearSlides.setTarget(FOURWALL));
+>>>>>>> main
     }
 
     void setupNotifications(){
@@ -77,7 +85,8 @@ public class WHSTeleOp extends OpModeEx {
     public void initInternal() {
         RobotDataUtil.load(WHSRobotData.class);
         robot = new WHSRobotImpl(hardwareMap);
-        robot.imu.zeroHeading(WHSRobotData.heading);
+        robot.imu.zeroHeading(-WHSRobotData.heading+90);
+        robot.linearSlides.setInitialPosition(WHSRobotData.slidesHeight);
         setupGamepads();
         setupNotifications();
         betterTelemetry.addItem(new SliderDisplayLine("Slides position", robot.linearSlides::getPosition, LineItem.Color.AQUA)
@@ -110,5 +119,7 @@ public class WHSTeleOp extends OpModeEx {
 
         betterTelemetry.addData("current target slides vel",robot.linearSlides.getVelocity());
         betterTelemetry.addData("current slides vel",robot.linearSlides.getVelocity());
+
+        betterTelemetry.addData("heading", robot.imu.getHeading());
     }
 }

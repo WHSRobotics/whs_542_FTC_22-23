@@ -1,6 +1,8 @@
 package org.whitneyrobotics.ftc.teamcode.drive.Omni
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 object OmniKinematics {
@@ -61,5 +63,12 @@ object OmniKinematics {
                 (frontLeft + rearLeft - frontRight - rearRight) / k * RAD_2,
                 wheelVelocities.sum()/k
         ) * 0.25
+    }
+
+    @JvmStatic
+    fun normalize(velocities: List<Double>): List<Double> {
+        var divisor = 1.0
+        divisor = velocities.maxOrNull()?.let { min(it,1.0) }!!
+        return velocities.map { it/divisor }
     }
 }
