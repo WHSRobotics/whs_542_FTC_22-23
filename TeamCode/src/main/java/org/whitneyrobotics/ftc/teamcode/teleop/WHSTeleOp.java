@@ -41,11 +41,17 @@ public class WHSTeleOp extends OpModeEx {
         gamepad2.CROSS.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED));
         gamepad2.DPAD_UP.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.RAISED));
         gamepad2.DPAD_DOWN.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.GROUND));
+<<<<<<< HEAD
 
         gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWMED));
         gamepad2.LEFT_TRIGGER.onInteraction(e -> {
             if (e.floatVal>0.5) robot.linearSlides.setTarget(LinearSlidesMeet3.Target.FOURWALL);
         });
+=======
+        gamepad2.LEFT_TRIGGER.onInteraction(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.FOURWALL));
+        gamepad2.DPAD_RIGHT.onPress(e -> robot.linearSlides.zeroSlides());
+        gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LOWMED));
+>>>>>>> main
     }
 
     void setupNotifications(){
@@ -82,13 +88,22 @@ public class WHSTeleOp extends OpModeEx {
     public void initInternal() {
         RobotDataUtil.load(WHSRobotData.class);
         robot = new WHSRobotImpl(hardwareMap);
+<<<<<<< HEAD
         robot.imu.zeroHeading(WHSRobotData.heading+90);
+=======
+        robot.imu.zeroHeading(-WHSRobotData.heading-90);
+>>>>>>> main
         robot.linearSlides.setInitialPosition(WHSRobotData.slidesHeight);
         setupGamepads();
         setupNotifications();
         betterTelemetry.addItem(new SliderDisplayLine("Slides position", robot.linearSlides::getPosition, LineItem.Color.AQUA)
                 .setScale(36));
         betterTelemetry.useDashboardTelemetry(dashboardTelemetry);
+    }
+
+    @Override
+    public void startInternal(){
+        robot.linearSlides.useIdleStatic = true;
     }
 
     @Override

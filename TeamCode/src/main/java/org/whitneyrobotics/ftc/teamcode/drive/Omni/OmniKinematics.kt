@@ -68,7 +68,7 @@ object OmniKinematics {
     @JvmStatic
     fun normalize(velocities: List<Double>): List<Double> {
         var divisor = 1.0
-        divisor = velocities.maxOrNull()?.let { min(it,1.0) }!!
+        divisor = velocities.maxOrNull()?.let { max(it,1.0) }!!
         return velocities.map { it/divisor }
     }
 }
