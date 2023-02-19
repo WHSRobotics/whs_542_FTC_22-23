@@ -15,7 +15,7 @@ public class AdafruitDotStarWithSPIBridge extends I2cDeviceSynchDevice<I2cDevice
 
         super(deviceClient, true);
         this.length = length;
-        this.deviceClient.setI2cAddress(I2cAddr.create8bit(0x0101000));
+        this.deviceClient.setI2cAddress(I2cAddr.create8bit(0x50)); //0x50
 
         super.registerArmingStateCallback(false);
         this.deviceClient.engage();

@@ -13,6 +13,7 @@ import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 
 public class AprilTagScanner2022 {
@@ -39,9 +40,16 @@ public class AprilTagScanner2022 {
 
     // UNITS ARE METERS
     double tagsize = 0.166;
+    int lastDetection = -1;
 
     private AprilTagDetection latestTag = null;
     public int getLatestTag() {return latestTag.id;}
+
+    private Consumer<Integer> onDetectChangeCallback = i -> {};
+
+    public void onDetectChange(Consumer<Integer> callback){
+        this.onDetectChangeCallback = callback;
+    }
 
     int cameraMonitorViewId = 0;
     public AprilTagScanner2022(HardwareMap hardwareMap, BetterTelemetry telemetry) {
@@ -91,7 +99,9 @@ public class AprilTagScanner2022 {
             }
             if (tagFound) {
                 latestTag = tagOfInterest;
-                return tagOfInterest.id;
+                if(lastDetection != tagOfInterest.id) onDetectChangeCallback.accept(tagOfInterest.id);
+                lastDetection = tagOfInterest.id;
+                return lastDetection;
             } else return -1;
         } else return -1;
     }

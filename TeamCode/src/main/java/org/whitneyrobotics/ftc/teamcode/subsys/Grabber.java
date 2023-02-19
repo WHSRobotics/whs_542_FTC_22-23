@@ -11,14 +11,14 @@ import org.whitneyrobotics.ftc.teamcode.framework.Subsystem;
 public class Grabber implements Subsystem {
     private final Servo gate;
     public final RevColorSensorV3 sensor;
-    private double initializationCutoff = 2;
+    private double initializationCutoff = 5;
     private boolean override = false;
 
     private Servo[] servos = new Servo[2];
 
-    //For closing the grabber, issues with going all the w ay down. Should decrease Close position
+    //For closing the grabber, issues with going all the way down. Should decrease Close position
     public enum GrabberStates {
-        OPEN(1), CLOSE(-1);
+        OPEN(0), CLOSE(0.48);
         private double position;
         GrabberStates(double position){
             this.position = position;
@@ -38,7 +38,7 @@ public class Grabber implements Subsystem {
     }
 
     public boolean testForCone(){
-        boolean coneDetected = sensor.getDistance(DistanceUnit.CM) < initializationCutoff; //if a cone is retained in autonomous
+        boolean coneDetected = /*sensor.getDistance(DistanceUnit.CM) > 13 ||*/ sensor.getDistance(DistanceUnit.CM) < initializationCutoff; //if a cone is retained in autonomous
         if (coneDetected){
             currentState = GrabberStates.CLOSE;
         } else {

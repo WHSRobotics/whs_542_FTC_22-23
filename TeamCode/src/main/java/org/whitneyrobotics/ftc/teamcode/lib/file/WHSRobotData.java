@@ -1,5 +1,4 @@
 package org.whitneyrobotics.ftc.teamcode.lib.file;
-
 import org.whitneyrobotics.ftc.teamcode.lib.util.Alliance;
 
 public class WHSRobotData {
