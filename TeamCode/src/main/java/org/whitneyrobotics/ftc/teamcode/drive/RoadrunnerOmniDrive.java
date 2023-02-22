@@ -54,7 +54,7 @@ import static org.whitneyrobotics.ftc.teamcode.drive.DriveConstants.kV;
 @Config
 public class RoadrunnerOmniDrive extends OmniDrive { ;
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(7, 0, 1);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7, 0, 0.75);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0.5);
 
     public static double LATERAL_MULTIPLIER = 1;
     public static double VX_WEIGHT = 1;
@@ -77,7 +77,7 @@ public class RoadrunnerOmniDrive extends OmniDrive { ;
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(3.0)), 0.75);
+                new Pose2d(0.5, 0.5, Math.toRadians(3.0)), 1);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
