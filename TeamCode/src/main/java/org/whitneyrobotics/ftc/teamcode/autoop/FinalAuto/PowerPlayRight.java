@@ -110,6 +110,7 @@ public class PowerPlayRight extends OpModeEx {
 
     @Override
     public void initInternal() {
+        betterTelemetry.useDashboardTelemetry(dashboardTelemetry);
         LinearSlidesMeet3.useIdleStatic = false;
         robot = new WHSRobotImpl(hardwareMap,false);
         robot.setCurrentAlliance(RED);

@@ -67,16 +67,16 @@ public class PowerPlayLeft extends OpModeEx {
                 .splineTo(westHigh, Math.toRadians(60))
                 .addDisplacementMarker(()->grabberMode = GrabberMode.RELEASE)
                 .back(4)
-                .lineToLinearHeading(new Pose2d(-36,-13,Math.toRadians(160)))
+                .lineToLinearHeading(new Pose2d(-36,-15,Math.toRadians(150)))
                 .addDisplacementMarker(()-> {
                     grabberMode = GrabberMode.GRAB_ON_DETECT;
-                    robot.linearSlides.setTarget(currentConePrediction+2);
+                    robot.linearSlides.setTarget(currentConePrediction+1);
                 })
                 .waitSeconds(0.5)
-                .addDisplacementMarker(()-> robot.linearSlides.setTarget(currentConePrediction+2))
-                .splineTo(new Vector2d(-61,-11),Math.toRadians(180))
+                .addDisplacementMarker(()-> robot.linearSlides.setTarget(currentConePrediction+1))
+                .splineTo(new Vector2d(-61,-5),Math.toRadians(180))
                 .forward(6)
-                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction))
+                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction-2))
                 .waitSeconds(0.1)
                 .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction+6))
                 .waitSeconds(0.5)
@@ -115,6 +115,7 @@ public class PowerPlayLeft extends OpModeEx {
 
     @Override
     public void initInternal() {
+        betterTelemetry.useDashboardTelemetry(dashboardTelemetry);
         LinearSlidesMeet3.useIdleStatic = false;
         robot = new WHSRobotImpl(hardwareMap,false);
         robot.setCurrentAlliance(RED);
@@ -124,7 +125,7 @@ public class PowerPlayLeft extends OpModeEx {
         testManager = betterTelemetry.useTestManager()
                 .addTest("Gamepad 1 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 1"))
                 .addTest("Gamepad 2 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 2"))
-                .addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.INCH,28.5, 29.5))
+                .addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.CM,115, 125))
                 .addTest("Battery voltage test", () -> Tests.assertBatteryCharged(robot.controlHub))
                 .addTest("Setup Cone Preload", () -> Tests.assertTrue(robot.robotGrabber.testForCone()));
 
