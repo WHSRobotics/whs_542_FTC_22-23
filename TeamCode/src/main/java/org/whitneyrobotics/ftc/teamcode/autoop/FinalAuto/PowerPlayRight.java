@@ -121,6 +121,7 @@ public class PowerPlayRight extends OpModeEx {
                 .addTest("Gamepad 1 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 1"))
                 .addTest("Gamepad 2 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 1"))
                 .addTest("Battery voltage test", () -> Tests.assertBatteryCharged(robot.controlHub))
+                .addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.INCH,105.4, 105.6))
                 .addTest("Setup Cone Preload", () -> Tests.assertTrue(robot.robotGrabber.testForCone()));
 
         addTemporalCallback(resolve -> {

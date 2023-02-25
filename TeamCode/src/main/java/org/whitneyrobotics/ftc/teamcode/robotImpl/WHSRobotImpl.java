@@ -111,8 +111,8 @@ public class WHSRobotImpl {
         );
         controlHub = hardwareMap.get(LynxModule.class,"Control Hub");
         colorSensorMethod = robotGrabber.sensor::red;
-        //leftDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceLeft");
-        //rightDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceRight");
+        leftDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceLeft");
+        rightDist = hardwareMap.get(Rev2mDistanceSensor.class,"distanceRight");
         //drivetrain.setFollower(PurePursuitFollower::new);
     }
 

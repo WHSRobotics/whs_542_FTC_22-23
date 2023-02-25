@@ -6,6 +6,7 @@ import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
+import org.whitneyrobotics.ftc.teamcode.lib.filters.Filter;
 
 public class Tests {
 
@@ -62,8 +63,16 @@ public class Tests {
     }
 
     public static void assertDistanceInRange(Rev2mDistanceSensor sensor, DistanceUnit unit, double min, double max) throws AssertionError{
+        assertDistanceInRange(sensor, unit, min, max,null);
+    }
+
+    public static void assertDistanceInRange(Rev2mDistanceSensor sensor, DistanceUnit unit, double min, double max, Filter filter) throws AssertionError{
         assertNotNull(sensor);
         double measurement = sensor.getDistance(unit);
+        if (filter != null) {
+            filter.calculate(sensor.getDistance(unit));
+            measurement = filter.getOutput();
+        }
         if(measurement < Math.abs(min) || measurement > Math.abs(max)) throw new AssertionError(String.format("%s was not in expected range of %s-%s. Actual: %s", sensor.getDeviceName(), Math.abs(min), Math.abs(max),measurement));
     }
 

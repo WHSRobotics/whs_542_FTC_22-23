@@ -18,6 +18,7 @@ import org.whitneyrobotics.ftc.teamcode.drive.RoadrunnerOmniDrive;
 import org.whitneyrobotics.ftc.teamcode.framework.opmodes.OpModeEx;
 import org.whitneyrobotics.ftc.teamcode.lib.file.RobotDataUtil;
 import org.whitneyrobotics.ftc.teamcode.lib.file.WHSRobotData;
+import org.whitneyrobotics.ftc.teamcode.lib.filters.LowPassFilter;
 import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrains.Drivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.LinearSlidesMeet3;
@@ -41,11 +42,15 @@ public class PowerPlayLeft extends OpModeEx {
     TrajectorySequenceBuilder baseTrajectoryBuilder;
     TrajectorySequence trajectory;
     TestManager testManager;
+
+    LowPassFilter distanceSensorFilter = new LowPassFilter(33, smoothing);
     boolean firstCall = true;
     @TelemetryData
     public static double currentConePrediction = 3;
     @TelemetryData
     public static int pos = 1;
+
+    public static double smoothing = 0.2;
     @TelemetryData
     boolean coneDetected;
     @TelemetryData
@@ -67,16 +72,16 @@ public class PowerPlayLeft extends OpModeEx {
                 .splineTo(westHigh, Math.toRadians(60))
                 .addDisplacementMarker(()->grabberMode = GrabberMode.RELEASE)
                 .back(4)
-                .lineToLinearHeading(new Pose2d(-36,-15,Math.toRadians(150)))
+                .lineToLinearHeading(new Pose2d(-36,-13,Math.toRadians(160)))
                 .addDisplacementMarker(()-> {
                     grabberMode = GrabberMode.GRAB_ON_DETECT;
-                    robot.linearSlides.setTarget(currentConePrediction+1);
+                    robot.linearSlides.setTarget(currentConePrediction+2);
                 })
                 .waitSeconds(0.5)
-                .addDisplacementMarker(()-> robot.linearSlides.setTarget(currentConePrediction+1))
-                .splineTo(new Vector2d(-61,-5),Math.toRadians(180))
+                .addDisplacementMarker(()-> robot.linearSlides.setTarget(currentConePrediction+2))
+                .splineTo(new Vector2d(-61,-11),Math.toRadians(180))
                 .forward(6)
-                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction-2))
+                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction))
                 .waitSeconds(0.1)
                 .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction+6))
                 .waitSeconds(0.5)
@@ -125,7 +130,7 @@ public class PowerPlayLeft extends OpModeEx {
         testManager = betterTelemetry.useTestManager()
                 .addTest("Gamepad 1 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 1"))
                 .addTest("Gamepad 2 Initialization", () -> Tests.assertGamepadSetup(gamepad1, "Gamepad 2"))
-                .addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.CM,115, 125))
+                .addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.INCH,32, 34, distanceSensorFilter))
                 .addTest("Battery voltage test", () -> Tests.assertBatteryCharged(robot.controlHub))
                 .addTest("Setup Cone Preload", () -> Tests.assertTrue(robot.robotGrabber.testForCone()));
 
@@ -151,6 +156,7 @@ public class PowerPlayLeft extends OpModeEx {
 
         }
         betterTelemetry.addData("park pos",pos);
+        betterTelemetry.addData("distance",distanceSensorFilter.getOutput());
     }
 
     @Override

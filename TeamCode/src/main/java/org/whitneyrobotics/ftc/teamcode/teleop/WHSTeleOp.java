@@ -41,26 +41,22 @@ public class WHSTeleOp extends OpModeEx {
         gamepad2.CROSS.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED));
         gamepad2.DPAD_UP.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.RAISED));
         gamepad2.DPAD_DOWN.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.GROUND));
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWMED));
         gamepad2.LEFT_TRIGGER.onInteraction(e -> {
-            if (e.floatVal>0.5) robot.linearSlides.setTarget(LinearSlidesMeet3.Target.FOURWALL);
+            if (e.floatVal>0.99) robot.linearSlides.setTarget(LinearSlidesMeet3.Target.FOURWALL);
         });
-=======
-        gamepad2.LEFT_TRIGGER.onInteraction(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.FOURWALL));
-=======
+
         //gamepad2.LEFT_TRIGGER.onInteraction(e -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.FOURWALL));
->>>>>>> main
+
         gamepad2.DPAD_RIGHT.onPress(e -> robot.linearSlides.zeroSlides());
         gamepad2.BUMPER_LEFT.onPress(e -> robot.linearSlides.setTarget(LOWMED));
->>>>>>> main
+
     }
 
     void setupNotifications(){
         addTemporalCallback(resolve -> {
-            playSound("endgame",100f);
+            //playSound("endgame",100f);
             gamepad1.getEncapsulatedGamepad().runRumbleEffect(endgame);
             gamepad2.getEncapsulatedGamepad().runRumbleEffect(endgame);
             betterTelemetry.addLine("Endgame approaching soon!", LineItem.Color.ROBOTICS, LineItem.RichTextFormat.BOLD).persistent();
@@ -73,7 +69,7 @@ public class WHSTeleOp extends OpModeEx {
         },90000);
 
         addTemporalCallback(resolve -> {
-            playSound("matchend",100f);
+            //playSound("matchend",100f);
             gamepad1.getEncapsulatedGamepad().runRumbleEffect(matchEnd);
             gamepad2.getEncapsulatedGamepad().runRumbleEffect(matchEnd);
             betterTelemetry.addLine("Match ends in 5 seconds!", LineItem.Color.FUCHSIA, LineItem.RichTextFormat.BOLD).persistent();
@@ -81,7 +77,7 @@ public class WHSTeleOp extends OpModeEx {
         }, 113000);
 
         addTemporalCallback(resolve -> {
-            playSound("slay",100f);
+            //playSound("slay",100f);
             betterTelemetry.removeLineByCaption("Match ends in 5 seconds!");
             betterTelemetry.addLine("Match has ended.", LineItem.Color.LIME, LineItem.RichTextFormat.ITALICS).persistent();
             resolve.accept(true);
@@ -92,15 +88,13 @@ public class WHSTeleOp extends OpModeEx {
     public void initInternal() {
         RobotDataUtil.load(WHSRobotData.class);
         robot = new WHSRobotImpl(hardwareMap);
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         robot.imu.zeroHeading(WHSRobotData.heading+90);
-=======
+
         robot.imu.zeroHeading(-WHSRobotData.heading-90);
->>>>>>> main
-=======
+
         robot.imu.zeroHeading(WHSRobotData.heading-90);
->>>>>>> main
+
         robot.linearSlides.setInitialPosition(WHSRobotData.slidesHeight);
         setupGamepads();
         setupNotifications();
