@@ -81,6 +81,6 @@ public class DriverNotificationTest extends OpModeEx {
 
     @Override
     protected void loopInternal() {
-        telemetry.addData("Rumble", gamepad1.getEncapsulatedGamepad().isRumbling());
+        betterTelemetry.addData("Rumble", gamepad1.getEncapsulatedGamepad().isRumbling());
     }
 }
