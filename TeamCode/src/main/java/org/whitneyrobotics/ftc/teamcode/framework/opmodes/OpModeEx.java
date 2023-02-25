@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamServer;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.BetterTelemetry;
 import org.whitneyrobotics.ftc.teamcode.BetterTelemetry.LineItem;
 import org.whitneyrobotics.ftc.teamcode.GamepadEx.GamepadEx;
@@ -47,6 +49,11 @@ public abstract class OpModeEx extends OpMode {
         telemetry = dashboard.getTelemetry();
         telemetry = new MultipleTelemetry(telemetry,telemetry);
         telemetry.setMsTransmissionInterval(msTransmissionInterval);
+    }
+
+    protected void startDriverStationWebcamStream(CameraStreamSource source){
+        CameraStreamServer.getInstance().setSource(source);
+        dashboard.startCameraStream(source,30);
     }
 /*    public OpModeEx(boolean useFTCDashboard){
         this(useFTCDashboard,100);

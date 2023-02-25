@@ -21,38 +21,58 @@ public class Main {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setColorScheme(new ColorSchemeRedLight())
                 .setDimensions(14,14)
-                .setConstraints(40, 30, Math.toRadians(120), Math.toRadians(150), 5.77)
+                .setConstraints(45, 50, Math.toRadians(120), Math.toRadians(150), 5.77)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, -65, Math.toRadians(90)))
-                                .forward(72)
-                                .back(26)
+                                .forward(64)
+                                .back(18)
                                 .setReversed(false)
-                                //.addTemporalMarker(3.5,()-> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1.5))
                                 .splineTo(westHigh, Math.toRadians(60))
-                                .waitSeconds(0.25)
-                                //.addDisplacementMarker(()->grabberMode = GrabberMode.RELEASE)
-
-                                .back(3)
-                                .lineToLinearHeading(new Pose2d(-36,-16,Math.toRadians(160)))
-                                /*.addDisplacementMarker(()-> {
-                                    grabberMode = GrabberMode.GRAB_ON_DETECT;
-                                    robot.linearSlides.setTarget(currentConePrediction+2);
-                                })*/
-                                .splineTo(new Vector2d(-61,-12.25),Math.toRadians(180))
-                                .forward(4)
-                                //.addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction))
-                                .waitSeconds(0.5)
-                                //.addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction+5))
+                                .back(4)
+                                //single cycle
+                                .lineToLinearHeading(new Pose2d(-36,-14,Math.toRadians(165)))
+                                .splineTo(new Vector2d(-61,-11),Math.toRadians(180))
+                                .forward(6)
+                                .waitSeconds(0.1)
                                 .waitSeconds(0.5)
                                 .setReversed(true)
-                                .back(4)
-                                //addDisplacementMarker(() -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH))
-                                .splineTo(new Vector2d(-36,-16),Math.toRadians(-15))
+                                .back(5)
+                                .splineTo(new Vector2d(-36,-14),Math.toRadians(-15))
                                 .setReversed(false)
                                 .lineToLinearHeading(approachWestHigh)
                                 .splineTo(westHigh, Math.toRadians(60))
-                                //.addDisplacementMarker(()->grabberMode = GrabberMode.RELEASE)
+                                .back(4)
+                                //fin
+                                //single cycle
+                                .lineToLinearHeading(new Pose2d(-36,-14,Math.toRadians(165)))
+                                .splineTo(new Vector2d(-61,-11),Math.toRadians(180))
+                                .forward(6)
+                                .waitSeconds(0.1)
                                 .waitSeconds(0.5)
+                                .setReversed(true)
+                                .back(5)
+                                .splineTo(new Vector2d(-36,-14),Math.toRadians(-15))
+                                .setReversed(false)
+                                .lineToLinearHeading(approachWestHigh)
+                                .splineTo(westHigh, Math.toRadians(60))
+                                .back(4)
+                                //fin
+                                //single cycle
+                                .lineToLinearHeading(new Pose2d(-36,-14,Math.toRadians(165)))
+                                .splineTo(new Vector2d(-61,-11),Math.toRadians(180))
+                                .forward(6)
+                                .waitSeconds(0.1)
+                                .waitSeconds(0.5)
+                                .setReversed(true)
+                                .back(5)
+                                .splineTo(new Vector2d(-36,-14),Math.toRadians(-15))
+                                .setReversed(false)
+                                .lineToLinearHeading(approachWestHigh)
+                                .splineTo(westHigh, Math.toRadians(60))
+                                .back(4)
+                                //fin
+                                .splineToConstantHeading(new Vector2d(-36,-15),Math.toRadians(-90))
+                                .lineToSplineHeading(new Pose2d(-36,-36,-Math.toRadians(90)))
                                 .build()
                 );
 

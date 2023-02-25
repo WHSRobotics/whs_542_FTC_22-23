@@ -11,7 +11,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
@@ -27,6 +26,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.whitneyrobotics.ftc.teamcode.drive.Omni.OmniDrive;
+import org.whitneyrobotics.ftc.teamcode.drive.Omni.OmniVelocityConstraint;
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.whitneyrobotics.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -48,9 +48,6 @@ import static org.whitneyrobotics.ftc.teamcode.drive.DriveConstants.kA;
 import static org.whitneyrobotics.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.whitneyrobotics.ftc.teamcode.drive.DriveConstants.kV;
 
-/*
- * Simple mecanum drive hardware implementation for REV hardware.
- */
 @Config
 public class RoadrunnerOmniDrive extends OmniDrive { ;
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(7, 0, 1);
@@ -309,7 +306,7 @@ public class RoadrunnerOmniDrive extends OmniDrive { ;
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
         return new MinVelocityConstraint(Arrays.asList(
                 new AngularVelocityConstraint(maxAngularVel),
-                new MecanumVelocityConstraint(maxVel, trackWidth)
+                new OmniVelocityConstraint(maxVel, trackWidth)
         ));
     }
 
