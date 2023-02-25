@@ -18,10 +18,14 @@ import java.util.function.Consumer;
 
 public class AprilTagScanner2022 {
 //    OpenCvCamera camera;
-    OpenCvWebcam camera;
-    AprilTagDetectionPipeline aprilTagDetectionPipeline;
+    public OpenCvWebcam camera;
+    private AprilTagDetectionPipeline aprilTagDetectionPipeline;
     static final double FEET_PER_METER = 3.28084;
     BetterTelemetry telemetry;
+
+    public AprilTagDetectionPipeline getPipeline(){
+        return aprilTagDetectionPipeline;
+    }
 
     // Lens intrinsics
     // UNITS ARE PIXELS

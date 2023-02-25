@@ -55,35 +55,36 @@ public class PowerPlayRight extends OpModeEx {
         Vector2d eastHigh = new Vector2d(+24 + (8 * Math.cos(Math.toRadians(60))), 0 - (8 * Math.sin(Math.toRadians(60))));
         Pose2d approachEastHigh = new Pose2d(24 + (11 * Math.cos(Math.toRadians(60))),0 - (11 * Math.sin(Math.toRadians(60))), Math.toRadians(120));
         baseTrajectoryBuilder = drive.trajectorySequenceBuilder(startPose)
-                .forward(72)
-                .back(26)
+                .addDisplacementMarker(56,()-> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1))
+                .forward(64)
+                .back(18)
                 .setReversed(false)
-                .addTemporalMarker(2.5,()-> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1.5))
-                .splineTo(eastHigh, Math.toRadians(120))
-                .waitSeconds(0.25)
+                .splineTo(eastHigh, Math.toRadians(60))
                 .addDisplacementMarker(()->grabberMode = PowerPlayLeft.GrabberMode.RELEASE)
-
-                .back(3)
-                .lineToLinearHeading(new Pose2d(36,-16,Math.toRadians(20)))
+                .back(4)
+                .lineToLinearHeading(new Pose2d(-36,-13,Math.toRadians(160)))
                 .addDisplacementMarker(()-> {
                     grabberMode = PowerPlayLeft.GrabberMode.GRAB_ON_DETECT;
                     robot.linearSlides.setTarget(currentConePrediction+2);
                 })
-                .splineTo(new Vector2d(61,-12.25),Math.toRadians(0))
-                .forward(4)
-                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction))
                 .waitSeconds(0.5)
-                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction+5))
+                .addDisplacementMarker(()-> robot.linearSlides.setTarget(currentConePrediction+2))
+                .splineTo(new Vector2d(-61,-11),Math.toRadians(180))
+                .forward(6)
+                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction))
+                .waitSeconds(0.1)
+                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction+6))
                 .waitSeconds(0.5)
                 .setReversed(true)
-                .back(4)
-                .addDisplacementMarker(() -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH))
-                .splineTo(new Vector2d(36,-16),Math.toRadians(165))
+                .back(5)
+                .addDisplacementMarker(() -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1))
+                .splineTo(new Vector2d(-36,-14),Math.toRadians(-15))
                 .setReversed(false)
                 .lineToLinearHeading(approachEastHigh)
-                .splineTo(eastHigh, Math.toRadians(120))
-                .addDisplacementMarker(()->grabberMode = PowerPlayLeft.GrabberMode.RELEASE)
-                .waitSeconds(0.5)
+                .splineTo(eastHigh, Math.toRadians(60))
+                .addDisplacementMarker(()-> {
+                    grabberMode = PowerPlayLeft.GrabberMode.RELEASE;
+                })
 /*
                 .back(3)
                 .lineToLinearHeading(new Pose2d(-36,-16,Math.toRadians(160)))
@@ -102,9 +103,9 @@ public class PowerPlayRight extends OpModeEx {
                 .splineTo(westHigh, Math.toRadians(60))
                 .waitSeconds(0.5)
 */
-                .back(3)
-                .splineToConstantHeading(new Vector2d(36,-15),Math.toRadians(-90))
-                .addDisplacementMarker(()->robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED));
+                .back(5)
+                .addDisplacementMarker(()->robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED))
+                .splineToConstantHeading(new Vector2d(-36,-15),Math.toRadians(-90));
     }
 
     @Override
@@ -134,7 +135,6 @@ public class PowerPlayRight extends OpModeEx {
 
     @Override
     public void initInternalLoop() {
-        LinearSlidesMeet3.useIdleStatic = true;
         testManager.run();
         //.addTest("Left wall setup distance", () -> Tests.assertDistanceInRange(robot.leftDist, DistanceUnit.INCH,28.5, 29.5));
         int lastPos = pos;
@@ -147,6 +147,7 @@ public class PowerPlayRight extends OpModeEx {
 
     @Override
     public void startInternal(){
+        LinearSlidesMeet3.useIdleStatic = true;
         switch(pos){
             case 3:
                 trajectory = baseTrajectoryBuilder
@@ -157,7 +158,8 @@ public class PowerPlayRight extends OpModeEx {
                         .lineToLinearHeading(new Pose2d(12.5,-12.5, Math.toRadians(-90))).build();
                 break;
             default:
-                trajectory = baseTrajectoryBuilder.turn(Angle.normDelta(Math.toRadians(-90)-drivetrain.getLocalizer().getPoseEstimate().getHeading()))
+                trajectory = baseTrajectoryBuilder.
+                        lineToSplineHeading(new Pose2d(36,-36,-Math.toRadians(90)))
                         .build();
         }
     }

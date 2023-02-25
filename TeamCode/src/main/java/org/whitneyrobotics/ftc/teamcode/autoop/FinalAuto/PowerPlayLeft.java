@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.system.Watchdog;
 import org.whitneyrobotics.ftc.teamcode.autoop.AutoSetupTesting.TestManager;
 import org.whitneyrobotics.ftc.teamcode.autoop.AutoSetupTesting.Tests;
@@ -136,6 +137,7 @@ public class PowerPlayLeft extends OpModeEx {
             RobotDataUtil.save(WHSRobotData.class, true);
             resolve.accept(true);
         },29500);
+        startDriverStationWebcamStream(aprilTagScanner.camera);
     }
 
     @Override
@@ -187,10 +189,6 @@ public class PowerPlayLeft extends OpModeEx {
                 robot.robotGrabber.setState(false);
                 robot.robotGrabber.tick();
                 break;
-        }
-
-        if(!robot.linearSlides.isSliding()){
-            robot.linearSlides.operate(0.3,false);
         }
         robot.linearSlides.tick();
     }
