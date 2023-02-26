@@ -46,7 +46,7 @@ public class PowerPlayLeft extends OpModeEx {
     LowPassFilter distanceSensorFilter = new LowPassFilter(33, smoothing);
     boolean firstCall = true;
     @TelemetryData
-    public static double currentConePrediction = 3;
+    public static double currentConePrediction = 3.75;
     @TelemetryData
     public static int pos = 1;
 
@@ -66,35 +66,44 @@ public class PowerPlayLeft extends OpModeEx {
         Pose2d approachWestHigh = new Pose2d(-24 - (11 * Math.cos(Math.toRadians(60))),0 - (11 * Math.sin(Math.toRadians(60))), Math.toRadians(60));
         baseTrajectoryBuilder = drive.trajectorySequenceBuilder(startPose)
                 .addDisplacementMarker(56,()-> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1))
-                .forward(64)
-                .back(18)
+                .forward(60)
+                .back(16)
                 .setReversed(false)
                 .splineTo(westHigh, Math.toRadians(60))
                 .addDisplacementMarker(()->grabberMode = GrabberMode.RELEASE)
-                .back(4)
-                .lineToLinearHeading(new Pose2d(-36,-13,Math.toRadians(160)))
+                .waitSeconds(0.3)
+                .back(11.5)
+                //.lineToLinearHeading(new Pose2d(-36,-13,Math.toRadians(160)))
                 .addDisplacementMarker(()-> {
                     grabberMode = GrabberMode.GRAB_ON_DETECT;
                     robot.linearSlides.setTarget(currentConePrediction+2);
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(0.2)
                 .addDisplacementMarker(()-> robot.linearSlides.setTarget(currentConePrediction+2))
-                .splineTo(new Vector2d(-61,-11),Math.toRadians(180))
-                .forward(6)
+
+                .setReversed(true)
+                .lineToLinearHeading(new Pose2d(-52,-14,Math.toRadians(180)))
+                .setReversed(false)
+                .lineToLinearHeading(new Pose2d(-66,-12,Math.toRadians(180)))
                 .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction))
                 .waitSeconds(0.1)
-                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction+6))
-                .waitSeconds(0.5)
-                .setReversed(true)
-                .back(5)
+                .addDisplacementMarker(()->robot.linearSlides.setTarget(currentConePrediction+4.5))
+                .waitSeconds(0.3)
                 .addDisplacementMarker(() -> robot.linearSlides.setTarget(LinearSlidesMeet3.Target.HIGH.getPosition()+1))
-                .splineTo(new Vector2d(-36,-14),Math.toRadians(-15))
+                .setReversed(true)
+                .splineTo(new Vector2d(-52,-14),Math.toRadians(0))
+                .splineTo(new Vector2d(-36,-14),Math.toRadians(0))
                 .setReversed(false)
                 .lineToLinearHeading(approachWestHigh)
+                //.lineToLinearHeading(new Pose2d(-24,-14, Math.toRadians(90)))
+                //.forward(3)
                 .splineTo(westHigh, Math.toRadians(60))
                 .addDisplacementMarker(()-> {
                     grabberMode = GrabberMode.RELEASE;
                 })
+                .waitSeconds(0.3)
+                .back(10)
+                .addDisplacementMarker(()->robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED));
 /*
                 .back(3)
                 .lineToLinearHeading(new Pose2d(-36,-16,Math.toRadians(160)))
@@ -113,9 +122,7 @@ public class PowerPlayLeft extends OpModeEx {
                 .splineTo(westHigh, Math.toRadians(60))
                 .waitSeconds(0.5)
 */
-                .back(5)
-                .addDisplacementMarker(()->robot.linearSlides.setTarget(LinearSlidesMeet3.Target.LOWERED))
-                .splineToConstantHeading(new Vector2d(-36,-15),Math.toRadians(-90));
+                //.splineToConstantHeading(new Vector2d(-36,-15),Math.toRadians(-90));
     }
 
     @Override
@@ -165,15 +172,16 @@ public class PowerPlayLeft extends OpModeEx {
         switch(pos){
             case 1:
                 trajectory = baseTrajectoryBuilder
-                        .lineToLinearHeading(new Pose2d(-60,-12, Math.toRadians(180))).build();
+                        .lineToLinearHeading(new Pose2d(-60,-14, Math.toRadians(180))).build();
                 break;
             case 3:
                 trajectory = baseTrajectoryBuilder
-                        .lineToLinearHeading(new Pose2d(-12.5,-12.5, Math.toRadians(-90))).build();
+                        .lineToLinearHeading(new Pose2d(-12.5,-14, Math.toRadians(-90))).build();
                 break;
             default:
-                trajectory = baseTrajectoryBuilder.
-                        lineToSplineHeading(new Pose2d(-36,-36,-Math.toRadians(90)))
+                trajectory = baseTrajectoryBuilder
+                //        .lineToSplineHeading(new Pose2d(-36,-14,Math.toRadians(0)))
+                        .lineToSplineHeading(new Pose2d(-36,-36,-Math.toRadians(-90)))
                         .build();
         }
     }

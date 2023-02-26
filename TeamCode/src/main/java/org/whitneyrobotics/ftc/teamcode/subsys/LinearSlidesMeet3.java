@@ -19,7 +19,7 @@ import org.whitneyrobotics.ftc.teamcode.robotImpl.WHSRobotImpl;
 
 @Config
 public class LinearSlidesMeet3  {
-    public static double DEADBAND_ERROR = 0.5;
+    public static double DEADBAND_ERROR = 0.35;
     public static double maxVelocity = 3.5;
     public static double acceleration = 9;
     public static double TICKS_PER_INCH = 100;
@@ -55,7 +55,7 @@ public class LinearSlidesMeet3  {
 
 
     public enum Target {
-        LOWERED(0), GROUND(3), RAISED(6),LOW(9.2), MEDIUM(14.9), HIGH(18), LOWMED(8), FOURWALL(10.5);
+        LOWERED(0), GROUND(3), RAISED(6),LOW(15), MEDIUM(26.5), HIGH(37), LOWMED(8), FOURWALL(10.5);
 
         Target(double position){
             this.position = position;
